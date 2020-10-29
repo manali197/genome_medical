@@ -152,5 +152,4 @@ view: patient_encounter_summary {
     drill_fields: [patient_first_name, patient_last_name]
   }
 
-  measure: count_in_june {}
 }

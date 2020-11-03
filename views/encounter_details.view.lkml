@@ -142,6 +142,35 @@ view: encounter_details {
     sql: ${TABLE}."order_status" ;;
   }
 
+  dimension: pa_forms_sending_cc {
+    type: string
+    sql: ${TABLE}."pa_forms_sending_cc" ;;
+  }
+
+  dimension: preauthorization_dispatch_status {
+    type: string
+    sql: ${TABLE}."preauthorization_dispatch_status" ;;
+  }
+
+  dimension_group: preauthorization_dispatch_date {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."preauthorization_dispatch_date" ;;
+  }
+
+  dimension: results_cap_sending_cc {
+    type: string
+    sql: ${TABLE}."results_cap_sending_cc" ;;
+  }
+
   dimension_group: ror_date_contacted {
     type: time
     timeframes: [
@@ -175,6 +204,11 @@ view: encounter_details {
     hidden: yes
     type: string
     sql: ${user_uuid} || '_' || ${encounter_uuid} ;;
+  }
+
+  dimension: visit_caps_sending_cc {
+    type: string
+    sql: ${TABLE}."visit_caps_sending_cc" ;;
   }
 
   dimension: visit_provider {

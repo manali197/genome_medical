@@ -9,3 +9,6 @@ explore: patient_encounter_summary {
     relationship: one_to_many
   }
 }
+
+explore: encounter_details {
+}

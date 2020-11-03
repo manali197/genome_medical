@@ -172,6 +172,7 @@ view: encounter_details {
   }
 
   dimension: pk {
+    primary_key: yes
     hidden: yes
     type: string
     sql: ${user_uuid} || '_' || ${encounter_uuid} ;;

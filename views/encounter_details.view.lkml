@@ -210,6 +210,7 @@ view: encounter_details {
   dimension: visit_caps_sending_cc {
     type: string
     sql: ${TABLE}."visit_caps_sending_cc" ;;
+    drill_fields: [encounter_type, visit_status]
   }
 
   dimension: visit_provider {
@@ -222,8 +223,33 @@ view: encounter_details {
     sql: ${TABLE}."visit_status" ;;
   }
 
+  dimension_group: cap_completion_time {
+    type: duration
+    sql_start:  ${date_of_service_raw};;
+    sql_end:  ${initial_cap_completed_raw};;
+  }
+
   measure: count {
     type: count
-    drill_fields: []
+  }
+
+  measure: count_not_null_not_blank_visit_caps {
+    type: count
+    filters: [visit_caps_sending_cc: "-EMPTY,-NULL"]
+    drill_fields: [visit_caps_sending_cc,count_not_null_not_blank_visit_caps]
+  }
+
+  measure: count_not_null_not_blank_result_caps {
+    type: count
+    filters: [results_cap_sending_cc: "-EMPTY,-NULL"]
+    drill_fields: [results_cap_sending_cc,count_not_null_not_blank_result_caps]
+  }
+
+  measure: average_time_in_days {
+    type: average
+    filters: [days_cap_completion_time: ">=0"]
+    sql: ${days_cap_completion_time} ;;
+    drill_fields: [visit_provider,average_time_in_days]
+    value_format_name: decimal_2
   }
 }

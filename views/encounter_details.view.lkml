@@ -43,6 +43,38 @@ view: encounter_details {
     sql: ${TABLE}."date_of_service" ;;
   }
 
+  # parameter: date_granularity {
+  #   type: string
+  #   allowed_value: {
+  #     value: "month"
+  #   }
+  #   allowed_value: {
+  #     value: "day"
+  #   }
+  # }
+
+  dimension: dynamic_date_of_service {
+    # type: string
+    sql:  CASE
+              WHEN
+                  DATE_PART(
+                  'day',
+                  {% date_end date_of_service_date  %} -
+                  {% date_start date_of_service_date %}
+                  ) >90
+              THEN ${date_of_service_month}
+              WHEN
+                  DATE_PART(
+                  'day',
+                  {% date_end date_of_service_date  %} -
+                  {% date_start date_of_service_date %}
+                  ) >30
+              THEN ${date_of_service_week}
+
+              ELSE cast(${date_of_service_date} as varchar)
+              END ;;
+  }
+
   dimension_group: date_received_report {
     type: time
     timeframes: [
@@ -143,11 +175,15 @@ view: encounter_details {
   }
 
   dimension: pa_forms_sending_cc {
+    label: "PA Forms"
+    group_label: "PA info"
+    description: "This is PA forms"
     type: string
     sql: ${TABLE}."pa_forms_sending_cc" ;;
   }
 
   dimension: preauthorization_dispatch_status {
+    group_label: "PA info"
     type: string
     sql: ${TABLE}."preauthorization_dispatch_status" ;;
   }
@@ -196,6 +232,7 @@ view: encounter_details {
   }
 
   dimension: user_uuid {
+    hidden: yes
     type: string
     sql: ${TABLE}."user_uuid" ;;
   }

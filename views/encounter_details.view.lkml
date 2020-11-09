@@ -225,13 +225,19 @@ view: encounter_details {
     sql: ${TABLE}."visit_status" ;;
   }
 
-  dimension_group: cap_completion_time {
+  dimension_group: visit_cap_completion_time {
     type: duration
     label: "Time to Complete Visit CAP"
     sql_start:  ${date_of_service_raw};;
     sql_end:  ${initial_cap_completed_raw};;
   }
 
+  dimension_group: result_cap_completion_time {
+    type: duration
+    label: "Time to Complete Visit CAP"
+    sql_start:  ${date_of_service_raw};;
+    sql_end:  ${followup_cap_completed_raw};;
+  }
   measure: count {
     type: count
   }
@@ -248,11 +254,19 @@ view: encounter_details {
     drill_fields: [results_cap_sending_cc,count_not_null_not_blank_result_caps]
   }
 
-  measure: average_time_in_days {
+  measure: average_visit_cap_completion_time_in_days {
     type: average
-    filters: [days_cap_completion_time: ">=0"]
-    sql: ${days_cap_completion_time} ;;
-    drill_fields: [visit_provider,average_time_in_days]
+    filters: [days_visit_cap_completion_time: ">=0"]
+    sql: ${days_visit_cap_completion_time} ;;
+    drill_fields: [visit_provider,average_visit_cap_completion_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_result_cap_completion_time_in_days {
+    type: average
+    filters: [days_result_cap_completion_time: ">=0"]
+    sql: ${days_result_cap_completion_time} ;;
+    drill_fields: [results_cap_sending_cc,average_result_cap_completion_time_in_days]
     value_format_name: decimal_2
   }
 }

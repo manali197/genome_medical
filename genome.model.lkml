@@ -11,4 +11,13 @@ explore: patient_encounter_summary {
 }
 
 explore: encounter_details {
+  access_filter: {
+    field: patient_encounter_summary.referral_program
+    user_attribute: referral_program
+  }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${patient_encounter_summary.patient_uuid} = ${encounter_details.user_uuid} ;;
+    relationship: many_to_one
+  }
 }

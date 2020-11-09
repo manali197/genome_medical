@@ -111,6 +111,7 @@ view: encounter_details {
 
   dimension_group: initial_cap_completed {
     type: time
+    label: "Visit CAP Completed Date"
     timeframes: [
       raw,
       time,
@@ -125,6 +126,7 @@ view: encounter_details {
 
   dimension_group: initial_visit_summary_sent {
     type: time
+    label: "Visit CAP Sent to Patient"
     timeframes: [
       raw,
       time,
@@ -225,6 +227,7 @@ view: encounter_details {
 
   dimension_group: cap_completion_time {
     type: duration
+    label: "Time to Complete Visit CAP"
     sql_start:  ${date_of_service_raw};;
     sql_end:  ${initial_cap_completed_raw};;
   }

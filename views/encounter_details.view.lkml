@@ -207,7 +207,8 @@ view: encounter_details {
   dimension: results_cap_sending_cc {
     type: string
     sql: ${TABLE}."results_cap_sending_cc" ;;
-  }
+    drill_fields: [initial_cap_completed_month, visit_status]
+    }
 
   dimension_group: ror_date_contacted {
     type: time
@@ -249,7 +250,7 @@ view: encounter_details {
   dimension: visit_caps_sending_cc {
     type: string
     sql: ${TABLE}."visit_caps_sending_cc" ;;
-    drill_fields: [encounter_type, visit_status]
+    drill_fields: [initial_cap_completed_month, visit_status]
   }
 
   dimension: visit_provider {

@@ -280,14 +280,23 @@ view: encounter_details {
     type: count
   }
 
+  measure: count_not_null_encounters {
+    type: count
+    label: "Encounters"
+    filters: [created_date: "-NULL"]
+    drill_fields: [encounter_type, count_not_null_encounters]
+  }
+
   measure: count_not_null_not_blank_visit_caps {
     type: count
+    label: "Visit CAP Count"
     filters: [visit_caps_sending_cc: "-EMPTY,-NULL"]
     drill_fields: [visit_caps_sending_cc,count_not_null_not_blank_visit_caps]
   }
 
   measure: count_not_null_not_blank_result_caps {
     type: count
+    label: "Result CAP Count"
     filters: [results_cap_sending_cc: "-EMPTY,-NULL"]
     drill_fields: [results_cap_sending_cc,count_not_null_not_blank_result_caps]
   }

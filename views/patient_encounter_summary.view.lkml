@@ -145,6 +145,15 @@ view: patient_encounter_summary {
   dimension: referral_program {
     type: string
     sql: ${TABLE}."referral_program" ;;
+    drill_fields: [encounter_details.encounter_type]
+  }
+
+  dimension: top_referral_programs {
+    type: string
+    sql: CASE
+              WHEN ${referral_program} IN (${top_referral_programs.referral_program}) THEN ${referral_program}
+              ELSE 'Other'
+         END;;
   }
 
   measure: count {

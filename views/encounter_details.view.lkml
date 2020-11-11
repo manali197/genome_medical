@@ -41,6 +41,22 @@ view: encounter_details {
       year
     ]
     sql: ${TABLE}."date_of_service" ;;
+    drill_fields: [encounter_type]
+  }
+
+  dimension_group: date_of_service_2 {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."date_of_service" ;;
+    drill_fields: [encounter_type]
   }
 
   # parameter: date_granularity {
@@ -276,6 +292,16 @@ view: encounter_details {
     sql_start:  ${date_of_service_raw};;
     sql_end:  ${followup_cap_completed_raw};;
   }
+
+  dimension: is_completed_encounter {
+    type: yesno
+    sql: (${encounter_details.encounter_type} = 'visit' AND ${encounter_details.visit_status} = 'completed') OR
+(${encounter_details.encounter_type} = 'cc-intake' AND ${encounter_details.visit_status} = 'completed') OR
+(${encounter_details.encounter_type} = 'group-session' AND (${encounter_details.visit_status} = 'webinar_attended' OR ${encounter_details.visit_status} = 'webinar_recording_viewed')) OR
+(${encounter_details.encounter_type} = 'research-data') OR
+(${encounter_details.encounter_type} = 'scp') ;;
+  }
+
   measure: count {
     type: count
   }
@@ -285,6 +311,14 @@ view: encounter_details {
     label: "Encounters"
     filters: [created_date: "-NULL"]
     drill_fields: [encounter_type, count_not_null_encounters]
+    link: {
+      label: "Drill by visit status"
+      url: "{{ link }}&fields=encounter_details.visit_status,encounter_details.count_not_null_encounters"
+    }
+    link: {
+      label: "Drill by Referral Program"
+      url: "{{ link }}&fields=patient_encounter_summary.referral_program,encounter_details.count_not_null_encounters"
+    }
   }
 
   measure: count_not_null_not_blank_visit_caps {

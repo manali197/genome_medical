@@ -46,17 +46,11 @@ view: encounter_details {
 
   dimension_group: date_of_service_2 {
     type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
     sql: ${TABLE}."date_of_service" ;;
     drill_fields: [encounter_type]
+    label: "Date Of Service For Grouping"
+    description: "Group by this when using the Top Referral Programs Dimension"
+    group_label: "Z Other Fields"
   }
 
   # parameter: date_granularity {

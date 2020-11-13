@@ -315,6 +315,12 @@ view: encounter_details {
     }
   }
 
+  measure: completed_encounters {
+    type: count
+    filters: [created_date: "-NULL", is_completed_encounter: "Yes"]
+    drill_fields: [encounter_type, count_not_null_encounters]
+  }
+
   measure: count_not_null_not_blank_visit_caps {
     type: count
     label: "Visit CAP Count"

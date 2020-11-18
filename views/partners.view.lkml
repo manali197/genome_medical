@@ -13,27 +13,27 @@ view: partners {
 
   dimension: name {
     type: string
-    sql: json_extract_path(${TABLE}.data, 'name') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'name') ;;
   }
 
   dimension: display_name {
     type: string
-    sql: json_extract_path(${TABLE}.data, 'display_name') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'display_name') ;;
   }
 
   dimension: partner_organization_ids {
     type: string
-    sql: json_extract_path(${TABLE}.data, 'partner_organization_ids') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'partner_organization_ids') ;;
   }
 
   dimension: referral_channel_id {
     type: number
-    sql: json_extract_path(${TABLE}.data, 'referral_channel_id')::int ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id')::int ;;
   }
 
   dimension: insurance_enabled {
     type: yesno
-    sql: json_extract_path(${TABLE}.data, 'insurance_enabled')::bool ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled')::bool ;;
   }
 
   dimension: test {

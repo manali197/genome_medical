@@ -8,7 +8,7 @@ view: referral_channels {
 
   dimension: id {
     type: number
-    sql: json_extract_path(${TABLE}.data, 'id') ;;
+    sql: json_extract_path(${TABLE}.data, 'id')::int ;;
   }
 
   dimension: name {

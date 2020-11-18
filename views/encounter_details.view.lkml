@@ -300,7 +300,7 @@ view: encounter_details {
   dimension_group: referral_to_scheduling_time {
     type: duration
     label: "Time to Schedule from Referral"
-    sql_start:  ${date_of_service_raw};;
+    sql_start:  ${created_raw};;
     sql_end:  ${patient_encounter_summary.original_referral_raw};;
   }
 

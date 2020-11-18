@@ -297,6 +297,13 @@ view: encounter_details {
     sql_end:  ${followup_cap_completed_raw};;
   }
 
+  dimension_group: referral_to_scheduling_time {
+    type: duration
+    label: "Time to Schedule from Referral"
+    sql_start:  ${date_of_service_raw};;
+    sql_end:  ${patient_encounter_summary.original_referral_raw};;
+  }
+
   dimension: is_completed_encounter {
     type: yesno
     sql: (${encounter_details.encounter_type} = 'visit' AND ${encounter_details.visit_status} = 'completed') OR
@@ -358,6 +365,15 @@ view: encounter_details {
     filters: [days_result_cap_completion_time: ">=0"]
     sql: ${days_result_cap_completion_time} ;;
     drill_fields: [results_cap_sending_cc,average_result_cap_completion_time_in_days]
+    value_format_name: decimal_2
+  }
+
+
+  measure: average_referral_to_scheduling_time_in_days {
+    type: average
+    filters: [days_referral_to_scheduling_time: ">=0"]
+    sql: ${days_referral_to_scheduling_time} ;;
+    drill_fields: [visit_status,average_referral_to_scheduling_time_in_days]
     value_format_name: decimal_2
   }
 }

@@ -257,9 +257,9 @@ view: encounter_details {
     sql: ${user_uuid} || '_' || ${encounter_uuid} ;;
   }
 
-  dimension: visit_caps_sending_cc {
+  dimension: visit_cap_sending_cc {
     type: string
-    sql: ${TABLE}."visit_caps_sending_cc" ;;
+    sql: ${TABLE}."visit_cap_sending_cc" ;;
     drill_fields: [initial_cap_completed_month, visit_status]
   }
 
@@ -318,8 +318,8 @@ view: encounter_details {
   measure: count_not_null_not_blank_visit_caps {
     type: count
     label: "Visit CAP Count"
-    filters: [visit_caps_sending_cc: "-EMPTY,-NULL"]
-    drill_fields: [visit_caps_sending_cc,count_not_null_not_blank_visit_caps]
+    filters: [visit_cap_sending_cc: "-EMPTY,-NULL"]
+    drill_fields: [visit_cap_sending_cc,count_not_null_not_blank_visit_caps]
   }
 
   measure: count_not_null_not_blank_result_caps {

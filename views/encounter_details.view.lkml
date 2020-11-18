@@ -273,6 +273,16 @@ view: encounter_details {
     sql: ${TABLE}."visit_status" ;;
   }
 
+  dimension: provider_indicated_specialty {
+    type: string
+    sql:  ${TABLE}."provider_indicated_specialty" ;;
+  }
+
+  dimension: state_of_visit {
+    type: string
+    sql:  ${TABLE}."state_of_visit" ;;
+  }
+
   dimension_group: visit_cap_completion_time {
     type: duration
     label: "Time to Complete Visit CAP"

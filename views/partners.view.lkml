@@ -8,7 +8,7 @@ view: partners {
 
   dimension: id {
     type: string
-    sql: nullif(jsonb_extract_path(${TABLE}.data, 'id'), '')::int ;;
+    sql: nullif(jsonb_extract_path(${TABLE}.data, 'id')::text, '')::int ;;
   }
 
   dimension: name {

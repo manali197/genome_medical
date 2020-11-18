@@ -8,7 +8,7 @@ view: partners {
 
   dimension: id {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'id')
+    sql: jsonb_extract_path(${TABLE}.data, 'id') ;;
   }
 
   dimension: name {
@@ -28,12 +28,12 @@ view: partners {
 
   dimension: referral_channel_id {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id')
+    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id') ;;
   }
 
   dimension: insurance_enabled {
     type: yesno
-    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled')
+    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled') ;;
   }
 
   dimension: test {

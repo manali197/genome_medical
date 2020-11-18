@@ -8,12 +8,12 @@ view: referral_channels {
 
   dimension: id {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'id') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'id')::text ;;
   }
 
   dimension: name {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'name') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'name')::text ;;
   }
 
   dimension: test {

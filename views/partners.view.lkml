@@ -8,32 +8,32 @@ view: partners {
 
   dimension: id {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'id') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'id')::text ;;
   }
 
   dimension: name {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'name') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'name')::text ;;
   }
 
   dimension: display_name {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'display_name') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'display_name')::text ;;
   }
 
   dimension: partner_organization_ids {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'partner_organization_ids') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'partner_organization_ids')::text ;;
   }
 
   dimension: referral_channel_id {
     type: string
-    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id')::text ;;
   }
 
   dimension: insurance_enabled {
     type: yesno
-    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled') ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled')::text ;;
   }
 
   dimension: test {

@@ -8,7 +8,7 @@ view: partners {
 
   dimension: id {
     type: number
-    sql: json_extract_path(${TABLE}.data, 'id')::int ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'id')::int ;;
   }
 
   dimension: name {

@@ -7,8 +7,8 @@ view: partners {
   }
 
   dimension: id {
-    type: number
-    sql: jsonb_extract_path(${TABLE}.data, 'id')::int ;;
+    type: string
+    sql: jsonb_extract_path(${TABLE}.data, 'id')
   }
 
   dimension: name {
@@ -27,13 +27,13 @@ view: partners {
   }
 
   dimension: referral_channel_id {
-    type: number
-    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id')::int ;;
+    type: string
+    sql: jsonb_extract_path(${TABLE}.data, 'referral_channel_id')
   }
 
   dimension: insurance_enabled {
     type: yesno
-    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled')::bool ;;
+    sql: jsonb_extract_path(${TABLE}.data, 'insurance_enabled')
   }
 
   dimension: test {

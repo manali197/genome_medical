@@ -26,6 +26,11 @@ view: partners {
     sql: json_extract_path(${TABLE}.data, 'partner_organization_ids')" ;;
   }
 
+  dimension: referral_channel_id {
+    type: number
+    sql: json_extract_path(${TABLE}.data, 'referral_channel_id')" ;;
+  }
+
   dimension: insurance_enabled {
     type: yesno
     sql: json_extract_path(${TABLE}.data, 'insurance_enabled')" ;;

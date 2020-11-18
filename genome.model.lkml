@@ -20,6 +20,16 @@ explore: encounter_details {
     sql_on: ${patient_encounter_summary.patient_uuid} = ${encounter_details.user_uuid} ;;
     relationship: many_to_one
   }
+  join: partners {
+    type: left_outer
+    sql_on: ${patient_encounter_summary.partner_id} = ${partners.id} ;;
+    relationship: many_to_one
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: many_to_one
+  }
   join: top_referral_programs {
     type: left_outer
     sql_on: ${patient_encounter_summary.referral_program} = ${top_referral_programs.referral_program} ;;

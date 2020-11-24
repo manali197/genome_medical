@@ -335,7 +335,11 @@ view: encounter_details {
   measure: completed_encounters {
     type: count
     filters: [created_date: "-NULL", is_completed_encounter: "Yes"]
-    drill_fields: [encounter_type, count_not_null_encounters]
+    drill_fields: [encounter_uuid, date_of_service_date, visit_provider, patient_encounter_summary.referral_program]
+    link: {
+      label: "Break out by Encounter Type"
+      url: "{{ link }}&fields=encounter_details.encounter_type,encounter_details.count_not_null_encounters"
+    }
   }
 
   measure: count_not_null_not_blank_visit_caps {

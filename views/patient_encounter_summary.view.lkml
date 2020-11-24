@@ -132,6 +132,7 @@ view: patient_encounter_summary {
   }
 
   dimension: patient_state {
+    map_layer_name: us_states
     type: string
     sql: ${TABLE}."patient_state" ;;
   }

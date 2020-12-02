@@ -20,6 +20,16 @@ explore: encounter_details {
     sql_on: ${patient_encounter_summary.patient_uuid} = ${encounter_details.user_uuid} ;;
     relationship: many_to_one
   }
+  join: gene_test_orders {
+    type: left_outer
+    sql_on: ${encounter_details.encounter_uuid} = ${gene_test_orders.encounter_uuid} ;;
+    relationship: many_to_one
+  }
+  join: gene_test_results {
+    type: left_outer
+    sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
+    relationship: many_to_one
+  }
   join: partners {
     type: left_outer
     sql_on: ${patient_encounter_summary.partner_id} = ${partners.id} ;;

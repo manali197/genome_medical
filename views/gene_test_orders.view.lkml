@@ -173,4 +173,10 @@ view: gene_test_orders {
     type: count
     drill_fields: []
   }
+
+  measure: orders_with_results_entered {
+    type: count
+    filters: [order_status: "results_entered"]
+    drill_fields: []
+  }
 }

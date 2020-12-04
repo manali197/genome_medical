@@ -114,6 +114,12 @@ view: gene_test_results {
     sql: ${TABLE}."zygosity" ;;
   }
 
+
+  dimension: orders_with_results_entered {
+    type: yesno
+    sql: ${gene_test_orders.order_status} = 'results_entered';;
+  }
+
   measure: count {
     type: count
     drill_fields: [gene_name]

@@ -155,11 +155,6 @@ view: gene_test_orders {
     sql: ${TABLE}."test_outreach_status" ;;
   }
 
-  dimension: orders_with_results_entered {
-    type: yesno
-    sql: ${TABLE}."order_status" = 'results_entered';;
-  }
-
   dimension_group: updated {
     type: time
     timeframes: [

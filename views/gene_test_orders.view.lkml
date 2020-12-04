@@ -155,6 +155,11 @@ view: gene_test_orders {
     sql: ${TABLE}."test_outreach_status" ;;
   }
 
+  dimension: orders_with_results_entered {
+    type: yesno
+    sql: ${TABLE}."order_status" == 'results_entered';;
+  }
+
   dimension_group: updated {
     type: time
     timeframes: [
@@ -171,12 +176,6 @@ view: gene_test_orders {
 
   measure: count {
     type: count
-    drill_fields: []
-  }
-
-  measure: orders_with_results_entered {
-    type: count
-    filters: [order_status: "results_entered"]
     drill_fields: []
   }
 }

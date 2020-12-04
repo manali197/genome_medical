@@ -169,6 +169,31 @@ view: gene_test_orders {
     sql: ${TABLE}."updated_at" ;;
   }
 
+  dimension: gene_test_display_name {
+    type:  string
+    sql:  ${TABLE}."gene_test_display_name" ;;
+  }
+
+  dimension: gene_test_classification {
+    type:  string
+    sql: ${TABLE}."gene_test_classification" ;;
+  }
+
+  dimension: genetic_test_type {
+    type:  string
+    sql:${TABLE}."genetic_test_type" ;;
+  }
+
+  dimension: lab_name {
+    type:  string
+    sql:${TABLE}."lab_name" ;;
+  }
+
+  dimension: lab_display_name {
+    type:  string
+    sql:${TABLE}."lab_display_name" ;;
+  }
+
   measure: count {
     type: count
     drill_fields: []

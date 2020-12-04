@@ -157,7 +157,7 @@ view: gene_test_orders {
 
   dimension: orders_with_results_entered {
     type: yesno
-    sql: ${TABLE}."order_status" == 'results_entered';;
+    sql: ${TABLE}."order_status" = 'results_entered';;
   }
 
   dimension_group: updated {

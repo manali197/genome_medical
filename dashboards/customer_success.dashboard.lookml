@@ -5,7 +5,7 @@
   elements:
   - title: 'Average Time: Referral to Date of Scheduling'
     name: 'Average Time: Referral to Date of Scheduling'
-    model: genome
+    model: analytics_prod
     explore: encounter_details
     type: looker_area
     fields: [patient_encounter_summary.original_referral_month, encounter_details.average_referral_to_scheduling_time_in_days,
@@ -63,7 +63,7 @@
     height: 6
   - title: Visit Volume By Visit Status
     name: Visit Volume By Visit Status
-    model: genome
+    model: analytics_prod
     explore: encounter_details
     type: looker_area
     fields: [encounter_details.date_of_service_month, encounter_details.visit_status,

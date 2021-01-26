@@ -1,6 +1,7 @@
 connection: "analytics_db"
 
 include: "/views/*.view.lkml"
+include: "/dashboards/*.dashboard"
 
 # explore: patient_encounter_summary {
 #   join: encounter_details {

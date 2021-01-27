@@ -23,6 +23,7 @@ view: referral_channels {
 
   dimension: uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}."uuid" ;;
   }
 

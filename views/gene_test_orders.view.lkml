@@ -122,6 +122,7 @@ view: gene_test_orders {
 
   dimension: order_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}."order_uuid" ;;
   }
 

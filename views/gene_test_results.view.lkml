@@ -82,6 +82,7 @@ view: gene_test_results {
 
   dimension: result_uuid {
     type: string
+    primary_key: yes
     sql: ${TABLE}."result_uuid" ;;
   }
 

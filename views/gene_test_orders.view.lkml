@@ -201,8 +201,7 @@ view: gene_test_orders {
 
   measure: count_not_null_orders {
     type: count
-    label: "Order count"
-    filters: [created_date: "-NULL"]
+    filters: [date_test_ordered_date: "-NULL"]
     drill_fields: [lab_display_name, count_not_null_orders]
     link: {
       label: "Drill by genetic test type"

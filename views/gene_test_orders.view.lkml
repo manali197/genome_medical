@@ -198,4 +198,19 @@ view: gene_test_orders {
     type: count
     drill_fields: []
   }
+
+  measure: count_not_null_orders {
+    type: count
+    label: "Order count"
+    filters: [created_date: "-NULL"]
+    drill_fields: [lab_display_name, count_not_null_orders]
+    link: {
+      label: "Drill by genetic test type"
+      url: "{{ link }}&fields=gene_test_orders.genetic_test_type,gene_test_orders.count_not_null_orders"
+    }
+    link: {
+      label: "Drill by Referral Program"
+      url: "{{ link }}&fields=patient_encounter_summary.referral_program,gene_test_orders.count_not_null_orders"
+    }
+  }
 }

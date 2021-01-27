@@ -52,3 +52,11 @@ explore: encounter_details {
     relationship: many_to_one
   }
 }
+
+explore: gene_test_orders {
+  join: gene_test_results {
+    type: left_outer
+    sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
+    relationship: many_to_one
+  }
+}

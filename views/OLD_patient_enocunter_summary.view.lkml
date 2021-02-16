@@ -1,10 +1,5 @@
-view: patient_encounter_summary {
+view: old_patient_encounter_summary {
   sql_table_name: public.patient_encounter_summary ;;
-
-  dimension: consent_to_treat {
-    type: string
-    sql: ${TABLE}."consent_to_treat" ;;
-  }
 
   dimension_group: created {
     type: time
@@ -22,7 +17,7 @@ view: patient_encounter_summary {
 
   dimension: has_multiple_visits_different_providers {
     type: yesno
-    sql: ${TABLE}."has_multiple_visits_different_providers" ;;
+    sql: ${TABLE}."has_multiple_visits_different_providers"  ;;
   }
 
   dimension_group: initial_consent {
@@ -42,11 +37,6 @@ view: patient_encounter_summary {
   dimension: is_deleted {
     type: yesno
     sql: ${TABLE}."is_deleted" ;;
-  }
-
-  dimension: lab_patients {
-    type: string
-    sql: ${TABLE}."lab_patients" ;;
   }
 
   dimension_group: last_completed_visit_dos {
@@ -75,20 +65,6 @@ view: patient_encounter_summary {
       year
     ]
     sql: ${TABLE}."last_consent_date" ;;
-  }
-
-  dimension_group: last_login {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}."last_login_date" ;;
   }
 
   dimension: latest_visit_provider {
@@ -120,26 +96,6 @@ view: patient_encounter_summary {
     sql: ${TABLE}."partner_id" ;;
   }
 
-  dimension: partner_organization_ids {
-    type: string
-    sql: ${TABLE}."partner_organization_ids" ;;
-  }
-
-  dimension: patient_address_line_1 {
-    type: string
-    sql: ${TABLE}."patient_address_line_1" ;;
-  }
-
-  dimension: patient_address_line_2 {
-    type: string
-    sql: ${TABLE}."patient_address_line_2" ;;
-  }
-
-  dimension: patient_city {
-    type: string
-    sql: ${TABLE}."patient_city" ;;
-  }
-
   dimension_group: patient_dob {
     type: time
     timeframes: [
@@ -165,11 +121,6 @@ view: patient_encounter_summary {
     sql: ${TABLE}."patient_first_name" ;;
   }
 
-  dimension: patient_gender {
-    type: string
-    sql: ${TABLE}."patient_gender" ;;
-  }
-
   dimension: patient_id {
     type: number
     sql: ${TABLE}."patient_id" ;;
@@ -181,6 +132,7 @@ view: patient_encounter_summary {
   }
 
   dimension: patient_state {
+    map_layer_name: us_states
     type: string
     sql: ${TABLE}."patient_state" ;;
   }
@@ -191,19 +143,10 @@ view: patient_encounter_summary {
     sql: ${TABLE}."patient_uuid" ;;
   }
 
-  dimension: patient_zipcode {
-    type: string
-    sql: ${TABLE}."patient_zipcode" ;;
-  }
-
   dimension: referral_program {
     type: string
     sql: ${TABLE}."referral_program" ;;
-  }
-
-  dimension: referral_reason_ids {
-    type: string
-    sql: ${TABLE}."referral_reason_ids" ;;
+    drill_fields: [encounter_details.encounter_type]
   }
 
   dimension: top_referral_programs {

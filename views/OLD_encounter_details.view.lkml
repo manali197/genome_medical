@@ -1,10 +1,5 @@
-view: encounter_details {
+view: old_encounter_details {
   sql_table_name: public.encounter_details ;;
-
-  dimension: billing_status {
-    type: string
-    sql: ${TABLE}."billing_status" ;;
-  }
 
   dimension_group: cap_sent_to_patient {
     type: time
@@ -18,11 +13,6 @@ view: encounter_details {
       year
     ]
     sql: ${TABLE}."cap_sent_to_patient" ;;
-  }
-
-  dimension: consultation_type {
-    type: string
-    sql: ${TABLE}."consultation_type" ;;
   }
 
   dimension_group: created {
@@ -51,6 +41,48 @@ view: encounter_details {
       year
     ]
     sql: ${TABLE}."date_of_service" ;;
+    drill_fields: [encounter_type]
+  }
+
+  dimension_group: date_of_service_2 {
+    type: time
+    sql: ${TABLE}."date_of_service" ;;
+    drill_fields: [encounter_type]
+    label: "Date Of Service For Grouping"
+    description: "Group by this when using the Top Referral Programs Dimension"
+    group_label: "Z Other Fields"
+  }
+
+  # parameter: date_granularity {
+  #   type: string
+  #   allowed_value: {
+  #     value: "month"
+  #   }
+  #   allowed_value: {
+  #     value: "day"
+  #   }
+  # }
+
+  dimension: dynamic_date_of_service {
+    # type: string
+    sql:  CASE
+              WHEN
+                  DATE_PART(
+                  'day',
+                  {% date_end date_of_service_date  %} -
+                  {% date_start date_of_service_date %}
+                  ) >90
+              THEN ${date_of_service_month}
+              WHEN
+                  DATE_PART(
+                  'day',
+                  {% date_end date_of_service_date  %} -
+                  {% date_start date_of_service_date %}
+                  ) >30
+              THEN ${date_of_service_week}
+
+              ELSE cast(${date_of_service_date} as varchar)
+              END ;;
   }
 
   dimension_group: date_received_report {
@@ -95,18 +127,12 @@ view: encounter_details {
     sql: ${TABLE}."date_test_recommended" ;;
   }
 
-  dimension: encounter_subtype {
-    type: string
-    sql: ${TABLE}."encounter_subtype" ;;
-  }
-
   dimension: encounter_type {
     type: string
     sql: ${TABLE}."encounter_type" ;;
   }
 
   dimension: encounter_uuid {
-    primary_key: yes
     type: string
     sql: ${TABLE}."encounter_uuid" ;;
   }
@@ -127,6 +153,7 @@ view: encounter_details {
 
   dimension_group: initial_cap_completed {
     type: time
+    label: "Visit CAP Completed Date"
     timeframes: [
       raw,
       time,
@@ -141,6 +168,7 @@ view: encounter_details {
 
   dimension_group: initial_visit_summary_sent {
     type: time
+    label: "Visit CAP Sent to Patient"
     timeframes: [
       raw,
       time,
@@ -153,47 +181,26 @@ view: encounter_details {
     sql: ${TABLE}."initial_visit_summary_sent" ;;
   }
 
-  dimension: insurance_claim_status {
-    type: string
-    sql: ${TABLE}."insurance_claim_status" ;;
-  }
-
-  dimension: lab {
-    type: string
-    sql: ${TABLE}."lab" ;;
-  }
-
-  dimension: multiple_labs {
-    type: yesno
-    sql: ${TABLE}."multiple_labs" ;;
-  }
-
-  dimension: order_request_status {
-    type: string
-    sql: ${TABLE}."order_request_status" ;;
-  }
-
   dimension: order_status {
     type: string
     sql: ${TABLE}."order_status" ;;
   }
 
   dimension: pa_forms_sending_cc {
+    label: "PA Forms"
+    group_label: "PA info"
+    description: "This is PA forms"
     type: string
     sql: ${TABLE}."pa_forms_sending_cc" ;;
   }
 
-  dimension: partner_uuid {
+  dimension: preauthorization_dispatch_status {
+    group_label: "PA info"
     type: string
-    sql: ${TABLE}."partner_uuid" ;;
+    sql: ${TABLE}."preauthorization_dispatch_status" ;;
   }
 
-  dimension: payor {
-    type: string
-    sql: ${TABLE}."payor" ;;
-  }
-
-  dimension_group: preauthorization_dispatch {
+  dimension_group: preauthorization_dispatch_date {
     type: time
     timeframes: [
       raw,
@@ -207,24 +214,10 @@ view: encounter_details {
     sql: ${TABLE}."preauthorization_dispatch_date" ;;
   }
 
-  dimension: preauthorization_dispatch_status {
-    type: string
-    sql: ${TABLE}."preauthorization_dispatch_status" ;;
-  }
-
-  dimension: preauthorization_id {
-    type: number
-    sql: ${TABLE}."preauthorization_id" ;;
-  }
-
-  dimension: provider_indicated_specialty {
-    type: string
-    sql: ${TABLE}."provider_indicated_specialty" ;;
-  }
-
   dimension: results_cap_sending_cc {
     type: string
     sql: ${TABLE}."results_cap_sending_cc" ;;
+    drill_fields: [followup_cap_completed_month, visit_status]
   }
 
   dimension_group: ror_date_contacted {
@@ -246,34 +239,28 @@ view: encounter_details {
     sql: ${TABLE}."ror_visit_status" ;;
   }
 
-  dimension: state_of_visit {
-    type: string
-    sql: ${TABLE}."state_of_visit" ;;
-  }
-
   dimension: test_recommended {
     type: string
     sql: ${TABLE}."test_recommended" ;;
   }
 
-  dimension: type_of_test {
-    type: string
-    sql: ${TABLE}."type_of_test" ;;
-  }
-
-  dimension: units {
-    type: number
-    sql: ${TABLE}."units" ;;
-  }
-
   dimension: user_uuid {
+    hidden: yes
     type: string
     sql: ${TABLE}."user_uuid" ;;
+  }
+
+  dimension: pk {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: ${user_uuid} || '_' || ${encounter_uuid} ;;
   }
 
   dimension: visit_cap_sending_cc {
     type: string
     sql: ${TABLE}."visit_cap_sending_cc" ;;
+    drill_fields: [initial_cap_completed_month, visit_status]
   }
 
   dimension: visit_provider {
@@ -286,9 +273,14 @@ view: encounter_details {
     sql: ${TABLE}."visit_status" ;;
   }
 
-  dimension: vsee_specialty {
+  dimension: provider_indicated_specialty {
     type: string
-    sql: ${TABLE}."vsee_specialty" ;;
+    sql:  ${TABLE}."provider_indicated_specialty" ;;
+  }
+
+  dimension: state_of_visit {
+    type: string
+    sql:  ${TABLE}."state_of_visit" ;;
   }
 
   dimension_group: visit_cap_completion_time {
@@ -312,35 +304,13 @@ view: encounter_details {
     sql_end:  ${patient_encounter_summary.original_referral_raw};;
   }
 
-  dimension: dynamic_date_of_service {
-    # type: string
-    sql:  CASE
-              WHEN
-                  DATE_PART(
-                  'day',
-                  {% date_end date_of_service_date  %} -
-                  {% date_start date_of_service_date %}
-                  ) >90
-              THEN ${date_of_service_month}
-              WHEN
-                  DATE_PART(
-                  'day',
-                  {% date_end date_of_service_date  %} -
-                  {% date_start date_of_service_date %}
-                  ) >30
-              THEN ${date_of_service_week}
-
-              ELSE cast(${date_of_service_date} as varchar)
-              END ;;
-  }
   dimension: is_completed_encounter {
     type: yesno
     sql: (${encounter_details.encounter_type} = 'visit' AND ${encounter_details.visit_status} = 'completed') OR
       (${encounter_details.encounter_type} = 'cc-intake' AND ${encounter_details.visit_status} = 'completed') OR
       (${encounter_details.encounter_type} = 'group-session' AND (${encounter_details.visit_status} = 'webinar_attended' OR ${encounter_details.visit_status} = 'webinar_recording_viewed')) OR
       (${encounter_details.encounter_type} = 'research-data') OR
-      (${encounter_details.encounter_type} = 'scp') OR
-      (${encounter_details.encounter_type} = 'lab_test_authorization' and (${encounter_details.order_request_status} in ('approved', 'rejected')));;
+      (${encounter_details.encounter_type} = 'scp') ;;
   }
 
   measure: count {

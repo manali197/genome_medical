@@ -60,7 +60,7 @@ view: completed_encounters {
             'N/A' AS referral_partner,
             'Health Systems' AS referral_channel,
             m.uuid AS encounter_uuid,
-            'Medical Geneticist' AS encounter_type,
+            'medical-geneticist' AS encounter_type,
             'N/A' AS encounter_subtype,
             'N/A' AS consultation_type,
             'N/A' AS payor,

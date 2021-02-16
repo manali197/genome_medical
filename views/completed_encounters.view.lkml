@@ -30,7 +30,7 @@ view: completed_encounters {
             p.patient_first_name AS first_name,
             p.patient_last_name AS last_name,
             p.patient_email AS patient_email,
-            p.patient_uuid AS patient_uuid,
+            p.patient_uuid::text AS patient_uuid,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,

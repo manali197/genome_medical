@@ -5,10 +5,10 @@ view: completed_encounters {
     sql:
       WITH lp AS (
         SELECT
-            p.lab_patient_first_name AS first_name,
-            p.lab_patient_last_name AS last_name,
-            p.lab_patient_email AS patient_email,
-            p.lab_patient_uuid AS patient_uuid,
+            json_extract_path(json_array_elements(p.lab_patients), 'first_name')::text AS first_name,
+            json_extract_path(json_array_elements(p.lab_patients), 'last_name')::text AS last_name,
+            json_extract_path(json_array_elements(p.lab_patients), 'email')::text AS patient_email,
+            json_extract_path(json_array_elements(p.lab_patients), 'uuid')::text AS patient_uuid,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -21,16 +21,16 @@ view: completed_encounters {
             e.partner_uuid AS partner_uuid,
             e.visit_provider AS visit_provider
         FROM encounter_details AS e
-        JOIN patient_encounter_summary AS p ON p.uuid = e.user_uuid
+        JOIN patient_encounter_summary AS p ON p.patient_uuid = e.user_uuid
         WHERE
             e.encounter_type = 'lab_test_authorization' and (e.order_request_status in ('approved', 'rejected'))
       ),
       nlp AS (
         SELECT
-            p.lab_patient_first_name AS first_name,
-            p.lab_patient_last_name AS last_name,
-            p.lab_patient_email AS patient_email,
-            p.lab_patient_uuid AS patient_uuid,
+            p.patient_first_name AS first_name,
+            p.patient_last_name AS last_name,
+            p.patient_email AS patient_email,
+            p.patient_uuid AS patient_uuid,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -43,7 +43,7 @@ view: completed_encounters {
             e.partner_uuid AS partner_uuid,
             e.visit_provider AS visit_provider
         FROM encounter_details AS e
-        JOIN patient_encounter_summary AS p ON p.uuid = e.user_uuid
+        JOIN patient_encounter_summary AS p ON p.patient_uuid = e.user_uuid
         WHERE
             (e.encounter_type = 'visit' and e.visit_status = 'completed') OR
             (e.encounter_type = 'cc-intake' and e.visit_status = 'completed') OR
@@ -53,13 +53,13 @@ view: completed_encounters {
       ),
       mgr AS (
         SELECT
-            to_char(to_date(eg.data ->> 'date_of_service', 'YYYY-MM-DD HH24:MI:SS'), 'MM/DD/YYYY'),
+            to_char(to_date(m.date_of_service, 'YYYY-MM-DD HH24:MI:SS'), 'MM/DD/YYYY'),
             'N/A' AS patient_name,
             'N/A'  AS patient_email,
-            eg.data ->> 'referral_program' AS referral_program,
+            m.referral_program AS referral_program,
             'N/A' AS referral_partner,
             'Health Systems' AS referral_channel,
-            eg.uuid AS encounter_uuid,
+            m.uuid AS encounter_uuid,
             'Medical Geneticist' AS encounter_type,
             'N/A' AS encounter_subtype,
             'N/A' AS consultation_type,
@@ -67,22 +67,13 @@ view: completed_encounters {
             (NULL)::int AS units,
             'N/A' AS requested_specialty,
             'N/A' AS provider_indicated_specialty,
-            eg.data->>'visit_provider' AS visit_provider
-        FROM
-            mg_encounters AS eg
-        WHERE
-            to_date(eg.data ->> 'date_of_service', 'YYYY-MM-DD HH24:MI:SS') between '%s' AND '%s'
+            m.visit_provider AS visit_provider
+        FROM mg_encounters AS m
     ),
     final AS (
-        SELECT
-            *
-        FROM
-            lp
+        SELECT * FROM lp
         UNION
-        SELECT
-            *
-        FROM
-            nlp
+        SELECT * FROM nlp
     ),
     final_from_db AS (
       SELECT
@@ -232,7 +223,7 @@ view: completed_encounters {
     filters: []
     drill_fields: [encounter_type, count_not_null_encounters]
     link: {
-      label: "Drill by visit status"
+      label: "Drill by Referral Channel"
       url: "{{ link }}&fields=encounter_details.visit_status,encounter_details.count_not_null_encounters"
     }
     link: {

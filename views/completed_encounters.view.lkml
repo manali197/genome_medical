@@ -217,18 +217,18 @@ view: completed_encounters {
     type: count
   }
 
-  measure: count_not_null_encounters {
+  measure: count_with_drill_down {
     type: count
     label: "Encounters"
     filters: []
-    drill_fields: [encounter_type, count_not_null_encounters]
+    drill_fields: [encounter_type, referral_program, count_with_drill_down]
     link: {
       label: "Drill by Referral Channel"
-      url: "{{ link }}&fields=encounter_details.visit_status,encounter_details.count_not_null_encounters"
+      url: "{{ link }}&fields=completed_encounters.referral_channel,completed_encounters.count_with_drill_down"
     }
     link: {
-      label: "Drill by Referral Program"
-      url: "{{ link }}&fields=patient_encounter_summary.referral_program,encounter_details.count_not_null_encounters"
+      label: "Drill by Referral Partner"
+      url: "{{ link }}&fields=completed_encounters.referral_partner,completed_encounters.count_with_drill_down"
     }
   }
 

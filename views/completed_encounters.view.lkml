@@ -1,7 +1,6 @@
 view: completed_encounters {
-  # Or, you could make this view a derived table, like this:
   # TODOs:
-  # 1. add the
+  # 1. add the (lp.data ->> 'uuid')::uuid = c.lab_patient_uuid condition
   derived_table: {
     sql:
       WITH lp AS (

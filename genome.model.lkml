@@ -59,3 +59,7 @@ explore: gene_test_orders {
     relationship: many_to_one
   }
 }
+
+explore: completed_encounters {
+
+}

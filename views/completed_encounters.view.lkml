@@ -89,8 +89,8 @@ view: completed_encounters {
           final.consultation_type AS consultation_type,
           case when final.payor = 'self_pay' then 'Self' else final.payor end AS payor,
           final.units AS units,
-          final.vsee_specialty AS requested_specialty,
-          final.provider_indicated_specialty AS provider_indicated_specialty,
+          INITCAP(REPLACE(final.vsee_specialty, '_', ' ')) AS requested_specialty,
+          INITCAP(REPLACE(final.provider_indicated_specialty, '_', ' ')) AS provider_indicated_specialty,
           INITCAP(REPLACE(final.visit_provider, '_', ' ')) AS visit_provider
       FROM final
       LEFT JOIN partners AS prt ON final.partner_uuid = prt.uuid

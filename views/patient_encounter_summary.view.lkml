@@ -214,6 +214,27 @@ view: patient_encounter_summary {
          END;;
   }
 
+  # Lab patient fields:
+  dimension: lab_patient_first_name {
+    type: string
+    sql: json_extract_path(json_array_elements(${TABLE}.lab_patients), 'first_name')::text ;;
+  }
+
+  dimension: lab_patient_last_name {
+    type: string
+    sql: json_extract_path(json_array_elements(${TABLE}.lab_patients), 'last_name')::text ;;
+  }
+
+  dimension: lab_patient_email {
+    type: string
+    sql: json_extract_path(json_array_elements(${TABLE}.lab_patients), 'email')::text ;;
+  }
+
+  dimension: lab_patient_uuid {
+    type: string
+    sql: json_extract_path(json_array_elements(${TABLE}.lab_patients), 'uuid')::text ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [patient_first_name, patient_last_name]

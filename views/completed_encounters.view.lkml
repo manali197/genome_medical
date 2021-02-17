@@ -87,7 +87,7 @@ view: completed_encounters {
           final.encounter_type AS encounter_type,
           final.encounter_subtype AS encounter_subtype,
           final.consultation_type AS consultation_type,
-          case when final.payor = 'self_pay' then 'Self' else final.payor end AS payor,
+          final.payor AS payor,
           final.units AS units,
           INITCAP(REPLACE(final.vsee_specialty, '_', ' ')) AS requested_specialty,
           INITCAP(REPLACE(final.provider_indicated_specialty, '_', ' ')) AS provider_indicated_specialty,

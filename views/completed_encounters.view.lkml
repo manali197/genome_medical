@@ -53,7 +53,7 @@ view: completed_encounters {
       ),
       mgr AS (
         SELECT
-            to_char(to_date(m.date_of_service, 'YYYY-MM-DD HH24:MI:SS'), 'MM/DD/YYYY'),
+            to_date(m.date_of_service, 'YYYY-MM-DD HH24:MI:SS'),
             'N/A' AS patient_name,
             'N/A'  AS patient_email,
             m.referral_program AS referral_program,
@@ -77,7 +77,7 @@ view: completed_encounters {
     ),
     final_from_db AS (
       SELECT
-          to_char(final.date_of_service, 'MM/DD/YYYY') AS date_of_service,
+          date(final.date_of_service) AS date_of_service,
           initcap(concat(final.first_name, ' ', final.last_name)) AS patient_name,
           final.patient_email AS patient_email,
           prt.data ->> 'display_name' AS referral_program,
@@ -116,6 +116,7 @@ view: completed_encounters {
   dimension_group: date_of_service {
     description: "Encounter Date of Service (UTC)"
     type: time
+    drill_fields: [encounter_type, referral_program]
     timeframes: [
       raw,
       time,
@@ -220,15 +221,6 @@ view: completed_encounters {
   measure: count_with_drill_down {
     type: count
     label: "Encounters Count"
-    filters: []
     drill_fields: [encounter_type, referral_program, count_with_drill_down]
-    link: {
-      label: "Drill by Referral Channel"
-      url: "{{ link }}&fields=completed_encounters.referral_channel,completed_encounters.count_with_drill_down"
-    }
-    link: {
-      label: "Drill by Referral Partner"
-      url: "{{ link }}&fields=completed_encounters.referral_partner,completed_encounters.count_with_drill_down"
-    }
   }
 }

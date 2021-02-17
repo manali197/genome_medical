@@ -219,7 +219,7 @@ view: completed_encounters {
 
   measure: count_with_drill_down {
     type: count
-    label: "Encounters"
+    label: "Encounters Count"
     filters: []
     drill_fields: [encounter_type, referral_program, count_with_drill_down]
     link: {
@@ -229,16 +229,6 @@ view: completed_encounters {
     link: {
       label: "Drill by Referral Partner"
       url: "{{ link }}&fields=completed_encounters.referral_partner,completed_encounters.count_with_drill_down"
-    }
-  }
-
-  measure: completed_encounters {
-    type: count
-    filters: []
-    drill_fields: [encounter_uuid, date_of_service_date, visit_provider, patient_encounter_summary.referral_program]
-    link: {
-      label: "Break out by Encounter Type"
-      url: "{{ link }}&fields=encounter_details.encounter_type,encounter_details.count_not_null_encounters"
     }
   }
 }

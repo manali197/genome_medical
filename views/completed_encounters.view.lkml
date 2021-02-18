@@ -67,13 +67,20 @@ view: completed_encounters {
             (NULL)::int AS units,
             'N/A' AS requested_specialty,
             'N/A' AS provider_indicated_specialty,
-            m.visit_provider AS visit_provider
+            m.visit_provider AS visit_provider,
+            true AS is_first_completed_encounter
         FROM mg_encounters AS m
     ),
     final AS (
-        SELECT * FROM lp
-        UNION
-        SELECT * FROM nlp
+      SELECT * FROM lp
+      UNION
+      SELECT * FROM nlp
+    ),
+    first_encounters AS (
+      SELECT DISTINCT ON (patient_email)
+       encounter_uuid
+      FROM final
+      ORDER BY patient_email, date_of_service ASC ASC
     ),
     final_from_db AS (
       SELECT
@@ -91,8 +98,10 @@ view: completed_encounters {
           final.units AS units,
           INITCAP(REPLACE(final.vsee_specialty, '_', ' ')) AS requested_specialty,
           INITCAP(REPLACE(final.provider_indicated_specialty, '_', ' ')) AS provider_indicated_specialty,
-          INITCAP(REPLACE(final.visit_provider, '_', ' ')) AS visit_provider
+          INITCAP(REPLACE(final.visit_provider, '_', ' ')) AS visit_provider,
+          CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_completed_encounter
       FROM final
+      LEFT JOIN first_encounters fe ON fe.encounter_uuid = final.encounter_uuid
       LEFT JOIN partners AS prt ON final.partner_uuid = prt.uuid
       LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
       LEFT JOIN
@@ -212,6 +221,12 @@ view: completed_encounters {
     description: "Visit Provider"
     type: string
     sql: ${TABLE}.visit_provider ;;
+  }
+
+  dimension: is_first_completed_encounter {
+    type: yesno
+    description: "Whether or not this is the first completed encounter from a patient"
+    sql: ${TABLE}.is_first_completed_encounter ;;
   }
 
   measure: count {

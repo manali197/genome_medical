@@ -233,9 +233,16 @@ view: completed_encounters {
     type: count
   }
 
-  measure: count_with_drill_down {
+  measure: count_completed_encounters {
     type: count
-    label: "Encounters Count"
-    drill_fields: [encounter_type, referral_program, count_with_drill_down]
+    label: "Completed Encounters Count"
+    drill_fields: [encounter_type, referral_program, count_completed_encounters]
+  }
+
+  measure: count_new_patients {
+    type: count
+    label: "New Patients Count"
+    filters: [is_first_completed_encounter: "Yes"]
+    drill_fields: [patient_email, date_of_service_date, visit_provider, referral_program, referral_channel, count_new_patients]
   }
 }

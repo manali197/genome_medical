@@ -80,7 +80,7 @@ view: completed_encounters {
       SELECT DISTINCT ON (patient_email)
        encounter_uuid
       FROM final
-      ORDER BY patient_email, date_of_service ASC ASC
+      ORDER BY patient_email, date_of_service ASC
     ),
     final_from_db AS (
       SELECT

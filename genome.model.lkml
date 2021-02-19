@@ -50,6 +50,7 @@ explore: encounter_details {
     sql_on: ${patient_encounter_summary.referral_program} = ${top_referral_programs.referral_program} ;;
     relationship: many_to_one
   }
+  # join: pop_parameters {}
 }
 
 explore: gene_test_orders {

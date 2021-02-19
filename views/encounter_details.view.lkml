@@ -380,4 +380,76 @@ view: encounter_details {
     drill_fields: [visit_status,average_referral_to_scheduling_time_in_days]
     value_format_name: decimal_2
   }
+
+## ------------------ HIDDEN HELPER DIMENSIONS  ------------------ ##
+
+  # dimension: days_in_period {
+  #   hidden:  yes
+  #   view_label: "_PoP"
+  #   description: "Gives the number of days in the current period date range"
+  #   type: number
+  #   sql: DATEDIFF(DAY, DATE({% date_start current_date_range %}), DATE({% date_end current_date_range %})) ;;
+  # }
+
+  # dimension: period_2_start {
+  #   hidden:  yes
+  #   view_label: "_PoP"
+  #   description: "Calculates the start of the previous period"
+  #   type: date
+  #   sql:
+  #       {% if compare_to._parameter_value == "Period" %}
+  #       DATEADD(DAY, -${days_in_period}, DATE({% date_start current_date_range %}))
+  #       {% else %}
+  #       DATEADD({% parameter compare_to %}, -1, DATE({% date_start current_date_range %}))
+  #       {% endif %};;
+  # }
+
+  # dimension: period_2_end {
+  #   hidden:  yes
+  #   view_label: "_PoP"
+  #   description: "Calculates the end of the previous period"
+  #   type: date
+  #   sql:
+  #       {% if compare_to._parameter_value == "Period" %}
+  #       DATEADD(DAY, -1, DATE({% date_start current_date_range %}))
+  #       {% else %}
+  #       DATEADD({% parameter compare_to %}, -1, DATEADD(DAY, -1, DATE({% date_end current_date_range %})))
+  #       {% endif %};;
+  # }
+
+  # dimension: day_in_period {
+  #   hidden: yes
+  #   description: "Gives the number of days since the start of each period. Use this to align the event dates onto the same axis, the axes will read 1,2,3, etc."
+  #   type: number
+  #   sql:
+  #   {% if current_date_range._is_filtered %}
+  #       CASE
+  #       WHEN {% condition current_date_range %} ${date_of_service_2_raw} {% endcondition %}
+  #       THEN DATEDIFF(DAY, DATE({% date_start current_date_range %}), ${date_of_service_2_date}) + 1
+  #       WHEN ${date_of_service_2_date} between ${period_2_start} and ${period_2_end}
+  #       THEN DATEDIFF(DAY, ${period_2_start}, ${date_of_service_2_date}) + 1
+  #       END
+  #   {% else %} NULL
+  #   {% endif %}
+  #   ;;
+  # }
+
+  # dimension: order_for_period {
+  #   hidden: yes
+  #   type: number
+  #   sql:
+  #       {% if current_date_range._is_filtered %}
+  #           CASE
+  #           WHEN {% condition current_date_range %} ${date_of_service_2_raw} {% endcondition %}
+  #           THEN 1
+  #           WHEN ${date_of_service_2_date} between ${period_2_start} and ${period_2_end}
+  #           THEN 2
+  #           END
+  #       {% else %}
+  #           NULL
+  #       {% endif %}
+  #       ;;
+  # }
+
+
 }

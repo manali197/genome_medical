@@ -1,6 +1,7 @@
 connection: "qa_analytics_db"
 
 include: "/views/*.view.lkml"
+include: "business_operations_v2_qa.dashboard"
 
 # explore: patient_encounter_summary {
 #   join: encounter_details {

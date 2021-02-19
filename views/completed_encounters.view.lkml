@@ -155,6 +155,7 @@ view: completed_encounters {
   }
 
   dimension: patient_state {
+    map_layer_name: us_states
     description: "Patient State"
     type: string
     sql: ${TABLE}.patient_state ;;

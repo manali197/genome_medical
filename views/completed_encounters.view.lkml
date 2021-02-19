@@ -10,6 +10,7 @@ view: completed_encounters {
             json_extract_path(json_array_elements(p.lab_patients), 'email')::text AS patient_email,
             json_extract_path(json_array_elements(p.lab_patients), 'uuid')::text AS patient_uuid,
             json_extract_path(json_array_elements(p.lab_patients), 'state')::text AS patient_state,
+            p.original_referral_date AS original_referral_date,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -33,6 +34,7 @@ view: completed_encounters {
             p.patient_email AS patient_email,
             p.patient_uuid::text AS patient_uuid,
             p.patient_state::text AS patient_state,
+            p.original_referral_date AS original_referral_date,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -59,6 +61,7 @@ view: completed_encounters {
             'N/A' AS patient_name,
             'N/A'  AS patient_email,
             NULL AS patient_state,
+            NULL::timestamp AS original_referral_date,
             m.referral_program AS referral_program,
             'N/A' AS referral_partner,
             'Health Systems' AS referral_channel,
@@ -91,6 +94,7 @@ view: completed_encounters {
           initcap(concat(final.first_name, ' ', final.last_name)) AS patient_name,
           final.patient_email AS patient_email,
           final.patient_state AS patient_state,
+          final.original_referral_date AS original_referral_date,
           prt.data ->> 'display_name' AS referral_program,
           po.name AS referral_partner,
           rc.data ->> 'name'AS referral_channel,
@@ -159,6 +163,20 @@ view: completed_encounters {
     description: "Patient State"
     type: string
     sql: ${TABLE}.patient_state ;;
+  }
+
+  dimension_group: original_referral_date {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."original_referral_date" ;;
   }
 
   dimension: referral_program {
@@ -240,6 +258,13 @@ view: completed_encounters {
     sql: ${TABLE}.is_first_completed_encounter ;;
   }
 
+  dimension_group: referral_to_completion_time {
+    type: duration
+    label: "Time to Schedule from Referral"
+    sql_start:  ${TABLE}.date_of_service;;
+    sql_end:  ${TABLE}.original_referral_raw;;
+  }
+
   measure: count {
     type: count
   }
@@ -256,4 +281,13 @@ view: completed_encounters {
     filters: [is_first_completed_encounter: "Yes"]
     drill_fields: [patient_email, date_of_service_date, visit_provider, referral_program, referral_channel, count_new_patients]
   }
+
+  measure: average_referral_to_completion_time_time_in_days {
+    type: average
+    filters: [days_referral_to_completion_time: ">=0"]
+    sql: ${days_referral_to_completion_time} ;;
+    drill_fields: [average_referral_to_completion_time_time_in_days]
+    value_format_name: decimal_2
+  }
+
 }

@@ -9,6 +9,7 @@ view: completed_encounters {
             json_extract_path(json_array_elements(p.lab_patients), 'last_name')::text AS last_name,
             json_extract_path(json_array_elements(p.lab_patients), 'email')::text AS patient_email,
             json_extract_path(json_array_elements(p.lab_patients), 'uuid')::text AS patient_uuid,
+            json_extract_path(json_array_elements(p.lab_patients), 'state')::text AS patient_state,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -31,6 +32,7 @@ view: completed_encounters {
             p.patient_last_name AS last_name,
             p.patient_email AS patient_email,
             p.patient_uuid::text AS patient_uuid,
+            p.patient_state::text AS patient_state,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -56,6 +58,7 @@ view: completed_encounters {
             to_date(m.date_of_service, 'YYYY-MM-DD HH24:MI:SS'),
             'N/A' AS patient_name,
             'N/A'  AS patient_email,
+            NULL AS patient_state,
             m.referral_program AS referral_program,
             'N/A' AS referral_partner,
             'Health Systems' AS referral_channel,
@@ -87,6 +90,7 @@ view: completed_encounters {
           date(final.date_of_service) AS date_of_service,
           initcap(concat(final.first_name, ' ', final.last_name)) AS patient_name,
           final.patient_email AS patient_email,
+          final.patient_state AS patient_state,
           prt.data ->> 'display_name' AS referral_program,
           po.name AS referral_partner,
           rc.data ->> 'name'AS referral_channel,
@@ -148,6 +152,12 @@ view: completed_encounters {
     description: "Patient Email"
     type: string
     sql: ${TABLE}.patient_email ;;
+  }
+
+  dimension: patient_state {
+    description: "Patient State"
+    type: string
+    sql: ${TABLE}.patient_state ;;
   }
 
   dimension: referral_program {

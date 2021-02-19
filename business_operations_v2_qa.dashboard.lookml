@@ -1,7 +1,7 @@
 - dashboard: business_operations_v2_qa
   title: Business Operations v2 (QA)
   layout: newspaper
-  preferred_viewer: dashboards-next
+  preferred_viewer: dashboards
   elements:
   - title: Completed Encounter Trends - Monthly
     name: Completed Encounter Trends - Monthly
@@ -195,7 +195,7 @@
     y_axis_reversed: false
     plot_size_by_field: false
     trellis: ''
-    stacking: normal
+    stacking: ''
     limit_displayed_rows: false
     legend_position: center
     point_style: circle

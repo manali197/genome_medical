@@ -1,5 +1,5 @@
 - dashboard: business_operations_v2_qa
-  title: Business Operations v2
+  title: Business Operations v2 (QA)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:

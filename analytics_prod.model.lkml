@@ -2,6 +2,7 @@ connection: "analytics_db"
 
 include: "/views/*.view.lkml"
 include: "/dashboards/*.dashboard"
+include: "business_operations_v2.dashboard"
 
 # explore: patient_encounter_summary {
 #   join: encounter_details {

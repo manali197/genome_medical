@@ -471,6 +471,10 @@
       completed_encounters.date_of_service_month: 2021/02/01 to 2021/02/18
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
+    dynamic_fields: [{table_calculation: days_in_month, label: Days In Month, expression: 'round(mean(${completed_encounters.count_completed_encounters}
+          / diff_days(${completed_encounters.date_of_service_month},now())), 2)',
+        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
+        _type_hint: number}]
     custom_color_enabled: true
     show_single_value_title: true
     show_comparison: false
@@ -487,6 +491,7 @@
     note_state: expanded
     note_display: above
     note_text: For Current Month
+    hidden_fields: [completed_encounters.count_completed_encounters]
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel

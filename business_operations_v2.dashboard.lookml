@@ -823,6 +823,22 @@
     col: 0
     width: 24
     height: 2
+  - name: NEW PATIENTS SEEN
+    type: text
+    title_text: NEW PATIENTS SEEN
+    subtitle_text: For Current Year
+    row: 22
+    col: 0
+    width: 24
+    height: 2
+  - name: COMPLETED ENCOUNTERS
+    type: text
+    title_text: COMPLETED ENCOUNTERS
+    subtitle_text: For Current Year
+    row: 4
+    col: 0
+    width: 24
+    height: 2
   filters:
   - name: Referral Program
     title: Referral Program

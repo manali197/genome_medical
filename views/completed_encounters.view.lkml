@@ -138,12 +138,47 @@ view: completed_encounters {
       raw,
       time,
       date,
+      day_of_month,
+      day_of_year,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
     sql: ${TABLE}."date_of_service" ;;
+  }
+
+  dimension_group: current {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_month,
+      day_of_year,
+      week,
+      month,
+      month_name,
+      quarter,
+      year
+    ]
+    sql: CURRENT_TIMESTAMP ;;
+  }
+
+  dimension: is_before_mtd {
+    # hidden: yes
+    type: yesno
+    sql:
+    (EXTRACT(DAY FROM ${TABLE}."date_of_service") < EXTRACT(DAY FROM CURRENT_TIMESTAMP))
+    OR
+    (EXTRACT(DAY FROM ${TABLE}."date_of_service") = EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND
+    EXTRACT(HOUR FROM ${TABLE}."date_of_service") < EXTRACT(HOUR FROM CURRENT_TIMESTAMP))
+    OR
+    (EXTRACT(DAY FROM ${TABLE}."date_of_service") = EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND
+    EXTRACT(HOUR FROM ${TABLE}."date_of_service") <= EXTRACT(HOUR FROM CURRENT_TIMESTAMP) AND
+    EXTRACT(MINUTE FROM ${TABLE}."date_of_service") < EXTRACT(MINUTE FROM CURRENT_TIMESTAMP)
+    );;
   }
 
   dimension: patient_name {

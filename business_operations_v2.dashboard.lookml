@@ -34,7 +34,7 @@
     trellis: ''
     stacking: normal
     limit_displayed_rows: false
-    legend_position: center
+    legend_position: right
     point_style: none
     show_value_labels: false
     label_density: 25
@@ -46,8 +46,8 @@
     show_silhouette: false
     totals_color: "#808080"
     color_application:
-      collection_id: 1297ec12-86a5-4ae0-9dfc-82de70b3806a
-      palette_id: 93f8aeb4-3f4a-4cd7-8fee-88c3417516a1
+      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
       options:
         steps: 5
     series_colors: {}
@@ -56,10 +56,10 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 8
+    row: 10
     col: 12
     width: 12
-    height: 7
+    height: 5
   - title: Completed Encounter Trends - Weekly
     name: Completed Encounter Trends - Weekly
     model: analytics_prod
@@ -71,7 +71,7 @@
       completed_encounters.date_of_service_date: 8 weeks
     sorts: [completed_encounters.date_of_service_week desc]
     limit: 5000
-    x_axis_gridlines: false
+    x_axis_gridlines: true
     y_axis_gridlines: true
     show_view_names: false
     show_y_axis_labels: true
@@ -113,11 +113,11 @@
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 15
-    col: 12
-    width: 12
+    col: 16
+    width: 8
     height: 7
-  - title: Completed Encounter - Quarterly Trend (Last 4 Quarters)
-    name: Completed Encounter - Quarterly Trend (Last 4 Quarters)
+  - title: Completed Encounter - Quarterly Trend (Last 5 Quarters)
+    name: Completed Encounter - Quarterly Trend (Last 5 Quarters)
     model: analytics_prod
     explore: completed_encounters
     type: looker_column
@@ -126,9 +126,9 @@
     pivots: [completed_encounters.referral_channel]
     fill_fields: [completed_encounters.date_of_service_quarter]
     filters:
-      completed_encounters.date_of_service_date: after 2019/01/01
+      completed_encounters.date_of_service_date: 5 quarters
     sorts: [completed_encounters.date_of_service_quarter desc, completed_encounters.referral_channel]
-    limit: 4
+    limit: 5
     x_axis_gridlines: false
     y_axis_gridlines: true
     show_view_names: false
@@ -145,7 +145,7 @@
     trellis: ''
     stacking: normal
     limit_displayed_rows: false
-    legend_position: center
+    legend_position: right
     point_style: none
     show_value_labels: false
     label_density: 25
@@ -157,8 +157,8 @@
     show_silhouette: false
     totals_color: "#808080"
     color_application:
-      collection_id: 1297ec12-86a5-4ae0-9dfc-82de70b3806a
-      palette_id: 93f8aeb4-3f4a-4cd7-8fee-88c3417516a1
+      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
       options:
         steps: 5
     series_colors: {}
@@ -170,12 +170,12 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 8
+    row: 10
     col: 0
     width: 12
-    height: 7
-  - title: New Patients Trends - Quarterly (Last 4 Quarters)
-    name: New Patients Trends - Quarterly (Last 4 Quarters)
+    height: 5
+  - title: New Patients Trends - Quarterly (Last 5 Quarters)
+    name: New Patients Trends - Quarterly (Last 5 Quarters)
     model: analytics_prod
     explore: completed_encounters
     type: looker_column
@@ -184,7 +184,7 @@
     pivots: [completed_encounters.referral_channel]
     fill_fields: [completed_encounters.date_of_service_quarter]
     filters:
-      completed_encounters.date_of_service_date: 4 quarters
+      completed_encounters.date_of_service_date: 5 quarters
     sorts: [completed_encounters.date_of_service_quarter desc, completed_encounters.referral_channel]
     limit: 5000
     x_axis_gridlines: false
@@ -203,7 +203,7 @@
     trellis: ''
     stacking: normal
     limit_displayed_rows: false
-    legend_position: center
+    legend_position: right
     point_style: none
     show_value_labels: false
     label_density: 25
@@ -215,8 +215,8 @@
     show_silhouette: false
     totals_color: "#808080"
     color_application:
-      collection_id: 1297ec12-86a5-4ae0-9dfc-82de70b3806a
-      palette_id: 93f8aeb4-3f4a-4cd7-8fee-88c3417516a1
+      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
       options:
         steps: 5
     series_colors: {}
@@ -228,7 +228,7 @@
     row: 26
     col: 0
     width: 12
-    height: 7
+    height: 6
   - title: New Patients Trends - Monthly (Last 6 Months)
     name: New Patients Trends - Monthly (Last 6 Months)
     model: analytics_prod
@@ -260,7 +260,7 @@
     trellis: ''
     stacking: normal
     limit_displayed_rows: false
-    legend_position: center
+    legend_position: right
     point_style: none
     show_value_labels: false
     label_density: 25
@@ -272,8 +272,8 @@
     show_silhouette: false
     totals_color: "#808080"
     color_application:
-      collection_id: 1297ec12-86a5-4ae0-9dfc-82de70b3806a
-      palette_id: 93f8aeb4-3f4a-4cd7-8fee-88c3417516a1
+      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
       options:
         steps: 5
     series_colors: {}
@@ -285,7 +285,7 @@
     row: 26
     col: 12
     width: 12
-    height: 7
+    height: 6
   - title: New Patients Trends - Weekly
     name: New Patients Trends - Weekly
     model: analytics_prod
@@ -297,7 +297,7 @@
       completed_encounters.date_of_service_date: 8 weeks
     sorts: [completed_encounters.date_of_service_week desc]
     limit: 5000
-    x_axis_gridlines: false
+    x_axis_gridlines: true
     y_axis_gridlines: true
     show_view_names: false
     show_y_axis_labels: true
@@ -338,10 +338,10 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 33
+    row: 32
     col: 12
     width: 12
-    height: 7
+    height: 6
   - title: All-Time Completed Encounters (2018 - 2021)
     name: All-Time Completed Encounters (2018 - 2021)
     model: analytics_prod
@@ -358,6 +358,7 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
+    custom_color: "#592EC2"
     single_value_title: ''
     series_types: {}
     defaults_version: 1
@@ -368,28 +369,33 @@
     col: 0
     width: 12
     height: 2
-  - title: Total Completed Encounters in Feb 2021
-    name: Total Completed Encounters in Feb 2021
+  - title: Total Completed Encounters - MTD
+    name: Total Completed Encounters - MTD
     model: analytics_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
+    pivots: [completed_encounters.date_of_service_month]
     fill_fields: [completed_encounters.date_of_service_month]
     filters:
-      completed_encounters.date_of_service_month: 2021/02/01 to 2021/02/18
-    sorts: [completed_encounters.date_of_service_month]
+      completed_encounters.date_of_service_month: 2 months
+      completed_encounters.is_before_mtd: 'Yes'
+    sorts: [completed_encounters.date_of_service_month desc]
     limit: 500
+    dynamic_fields: [{table_calculation: variance, label: Variance, expression: 'pivot_index(${completed_encounters.count_completed_encounters},1)
+          - pivot_index(${completed_encounters.count_completed_encounters},2)', value_format: !!null '',
+        value_format_name: decimal_0, _kind_hint: supermeasure, _type_hint: number}]
     custom_color_enabled: true
     show_single_value_title: true
-    show_comparison: false
+    show_comparison: true
     comparison_type: change
-    comparison_reverse_colors: true
+    comparison_reverse_colors: false
     show_comparison_label: true
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     single_value_title: ''
-    comparison_label: ''
+    comparison_label: Encounters vs Previous MTD
     series_types: {}
     defaults_version: 1
     note_state: expanded
@@ -401,26 +407,29 @@
     row: 6
     col: 12
     width: 6
-    height: 2
-  - title: Total Completed Encounters in 2021
-    name: Total Completed Encounters in 2021
+    height: 4
+  - title: Total Completed Encounters - YTD
+    name: Total Completed Encounters - YTD
     model: analytics_prod
     explore: completed_encounters
     type: single_value
-    fields: [completed_encounters.count_completed_encounters]
+    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_year]
+    fill_fields: [completed_encounters.date_of_service_year]
     filters:
-      completed_encounters.date_of_service_year: '2021'
+      completed_encounters.date_of_service_year: 1 years
+    sorts: [completed_encounters.date_of_service_year desc]
     limit: 500
     custom_color_enabled: true
     show_single_value_title: true
     show_comparison: false
-    comparison_type: value
+    comparison_type: change
     comparison_reverse_colors: false
     show_comparison_label: true
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     single_value_title: ''
+    comparison_label: Encounters vs Previous YTD
     series_types: {}
     defaults_version: 1
     listen:
@@ -429,7 +438,7 @@
     row: 6
     col: 0
     width: 12
-    height: 2
+    height: 4
   - title: 2021 Completed Encounters by Referral Program
     name: 2021 Completed Encounters by Referral Program
     model: analytics_prod
@@ -439,7 +448,20 @@
     filters:
       completed_encounters.date_of_service_year: '2021'
     sorts: [completed_encounters.count_completed_encounters desc]
-    limit: 10
+    limit: 11
+    total: true
+    dynamic_fields: [{table_calculation: encounters_count_with_other, label: Encounters
+          Count with Other, expression: "if(\n# For rows other than the last row\n\
+          \ row() != max(row()) \n# Display event count\n ,${completed_encounters.count_completed_encounters}\n\
+          # For the last row, display total event count from all rows above this one\n\
+          \ , ${completed_encounters.count_completed_encounters:total} - sum( if(row()=\
+          \ max(row()) , 0 , ${completed_encounters.count_completed_encounters}) )\n\
+          )", value_format: !!null '', value_format_name: decimal_0, _kind_hint: measure,
+        _type_hint: number}, {table_calculation: referral_program_with_other, label: Referral
+          Program with Other, expression: "if(\n# For rows other than the last row\n\
+          \ row() != max(row()) \n# Display event name\n ,${completed_encounters.referral_program}\n\
+          # For the last row, display \"Other\"\n , \"Other\"\n)", value_format: !!null '',
+        value_format_name: !!null '', _kind_hint: dimension, _type_hint: string}]
     value_labels: legend
     label_type: labPer
     color_application:
@@ -453,22 +475,23 @@
     note_state: collapsed
     note_display: above
     note_text: Top 10 Referral Programs in 2021 to-date
+    hidden_fields: [completed_encounters.count_completed_encounters, completed_encounters.referral_program]
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 15
     col: 0
-    width: 6
+    width: 8
     height: 7
-  - title: Avg Encounters Per Day in Feb 2021
-    name: Avg Encounters Per Day in Feb 2021
+  - title: Avg Encounters Per Day - MTD
+    name: Avg Encounters Per Day - MTD
     model: analytics_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
     fill_fields: [completed_encounters.date_of_service_month]
     filters:
-      completed_encounters.date_of_service_month: 2021/02/01 to 2021/02/18
+      completed_encounters.date_of_service_month: 1 months
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
     dynamic_fields: [{table_calculation: days_in_month, label: Days In Month, expression: 'round(mean(${completed_encounters.count_completed_encounters}
@@ -490,7 +513,7 @@
     defaults_version: 1
     note_state: expanded
     note_display: above
-    note_text: For Current Month
+    note_text: ''
     hidden_fields: [completed_encounters.count_completed_encounters]
     listen:
       Referral Program: completed_encounters.referral_program
@@ -498,18 +521,42 @@
     row: 6
     col: 18
     width: 6
-    height: 2
+    height: 4
   - title: New Patients Seen in 2021 by US State
     name: New Patients Seen in 2021 by US State
     model: analytics_prod
     explore: completed_encounters
-    type: looker_map
+    type: looker_grid
     fields: [completed_encounters.patient_state, completed_encounters.count_new_patients]
     filters:
       completed_encounters.date_of_service_year: '2021'
     sorts: [completed_encounters.count_new_patients desc]
     limit: 500
     column_limit: 50
+    show_view_names: false
+    show_row_numbers: true
+    transpose: false
+    truncate_text: true
+    hide_totals: false
+    hide_row_totals: false
+    size_to_fit: true
+    table_theme: white
+    limit_displayed_rows: false
+    enable_conditional_formatting: false
+    header_text_alignment: left
+    header_font_size: '12'
+    rows_font_size: '12'
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    color_application:
+      collection_id: 1297ec12-86a5-4ae0-9dfc-82de70b3806a
+      palette_id: 93f8aeb4-3f4a-4cd7-8fee-88c3417516a1
+    show_sql_query_menu_options: false
+    show_totals: true
+    show_row_totals: true
+    series_cell_visualizations:
+      completed_encounters.count_new_patients:
+        is_active: true
     map_plot_mode: points
     heatmap_gridlines: true
     heatmap_gridlines_empty: false
@@ -527,7 +574,6 @@
     map_marker_units: meters
     map_marker_proportional_scale_type: linear
     map_marker_color_mode: fixed
-    show_view_names: false
     show_legend: true
     quantize_map_value_colors: false
     reverse_map_value_colors: false
@@ -548,7 +594,6 @@
     plot_size_by_field: false
     trellis: ''
     stacking: ''
-    limit_displayed_rows: false
     legend_position: center
     point_style: none
     show_value_labels: false
@@ -565,10 +610,10 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 33
+    row: 32
     col: 0
     width: 12
-    height: 7
+    height: 6
   - name: All-Time New Patients Seen (2018 - 2021)
     title: All-Time New Patients Seen (2018 - 2021)
     model: analytics_prod
@@ -586,6 +631,12 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
+    color_application:
+      collection_id: 80e60a97-c02b-4a41-aa05-83522ee2144b
+      palette_id: 629b455f-662e-4854-a424-4f0c9d4bbdfb
+      options:
+        steps: 5
+    custom_color: "#2a62d1"
     x_axis_gridlines: false
     y_axis_gridlines: true
     show_view_names: false
@@ -613,11 +664,6 @@
     show_totals_labels: false
     show_silhouette: false
     totals_color: "#808080"
-    color_application:
-      collection_id: 80e60a97-c02b-4a41-aa05-83522ee2144b
-      palette_id: 629b455f-662e-4854-a424-4f0c9d4bbdfb
-      options:
-        steps: 5
     series_colors: {}
     defaults_version: 1
     hidden_fields: []
@@ -629,8 +675,8 @@
     col: 12
     width: 12
     height: 2
-  - name: Total New Patients Seen in 2021
-    title: Total New Patients Seen in 2021
+  - name: Total New Patients Seen - YTD
+    title: Total New Patients Seen - YTD
     model: analytics_prod
     explore: completed_encounters
     type: single_value
@@ -691,8 +737,24 @@
     col: 0
     width: 12
     height: 2
-  - title: Total New Patients Seen in Current Month
-    name: Total New Patients Seen in Current Month
+  - name: NEW PATIENTS SEEN
+    type: text
+    title_text: NEW PATIENTS SEEN
+    subtitle_text: For Current Year
+    row: 22
+    col: 0
+    width: 24
+    height: 2
+  - name: COMPLETED ENCOUNTERS
+    type: text
+    title_text: COMPLETED ENCOUNTERS
+    subtitle_text: For Current Year
+    row: 4
+    col: 0
+    width: 24
+    height: 2
+  - title: Total New Patients Seen - MTD
+    name: Total New Patients Seen - MTD
     model: analytics_prod
     explore: completed_encounters
     type: single_value
@@ -700,7 +762,7 @@
       completed_encounters.count_new_patients]
     fill_fields: [completed_encounters.date_of_service_month]
     filters:
-      completed_encounters.date_of_service_month: 2021/02/01 to 2021/02/18
+      completed_encounters.date_of_service_month: 1 months
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
     custom_color_enabled: true
@@ -718,7 +780,7 @@
     defaults_version: 1
     note_state: expanded
     note_display: above
-    note_text: For Current Month
+    note_text: ''
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
@@ -739,18 +801,18 @@
     value_labels: legend
     label_type: labPer
     color_application:
-      collection_id: 1297ec12-86a5-4ae0-9dfc-82de70b3806a
-      palette_id: 93f8aeb4-3f4a-4cd7-8fee-88c3417516a1
+      collection_id: b43731d5-dc87-4a8e-b807-635bef3948e7
+      palette_id: fb7bb53e-b77b-4ab6-8274-9d420d3d73f3
       options:
         steps: 5
     series_colors:
-      Labs: "#10C871"
-      QA: "#AEC8C1"
-      Consumer/SelfReferral: "#FCCF41"
-      Physician: "#9E7FD0"
-      Employer: "#7CC8FA"
-      Health Systems: "#f56776"
-      Pharma/Research: "#FD9577"
+      Labs: "#592EC2"
+      QA: "#FFD95F"
+      Consumer/SelfReferral: "#3EB0D5"
+      Physician: "#72D16D"
+      Employer: "#B1399E"
+      Health Systems: "#C2DD67"
+      Pharma/Research: "#4276BE"
     series_types: {}
     defaults_version: 1
     note_state: collapsed
@@ -813,29 +875,15 @@
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 15
-    col: 6
-    width: 6
+    col: 8
+    width: 8
     height: 7
   - name: ALL TIME METRICS
     type: text
     title_text: ALL TIME METRICS
+    subtitle_text: ''
+    body_text: ''
     row: 0
-    col: 0
-    width: 24
-    height: 2
-  - name: NEW PATIENTS SEEN
-    type: text
-    title_text: NEW PATIENTS SEEN
-    subtitle_text: For Current Year
-    row: 22
-    col: 0
-    width: 24
-    height: 2
-  - name: COMPLETED ENCOUNTERS
-    type: text
-    title_text: COMPLETED ENCOUNTERS
-    subtitle_text: For Current Year
-    row: 4
     col: 0
     width: 24
     height: 2

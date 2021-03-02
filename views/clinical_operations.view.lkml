@@ -11,7 +11,7 @@ view: clinical_operations {
             AND at.data ->> 'service_type' = 'edit'
             AND at.data -> 'changes' -> 'high_priority' ->> 'new_value' = 'true'
             AND at.data -> 'changes' -> 'high_priority' ->> 'old_value' = 'false'
-      );
+      ),
       order_info AS (
         SELECT e.encounter_uuid AS encounter_uuid,
           CASE WHEN e.encounter_type ='lab_test_authorization' THEN e.date_received_report ELSE max(gto.date_received_report) END AS date_received_report
@@ -23,46 +23,48 @@ view: clinical_operations {
             ((e.encounter_type = 'lab_test_authorization' and e.date_received_report IS NOT NULL) OR
               (e.encounter_type != 'lab_test_authorization' and gto.date_received_report IS NOT NULL))
         GROUP BY e.encounter_uuid
+      ),
+      final AS (
+        SELECT
+          pes.patient_state::text AS patient_state,
+          prt.data ->> 'display_name' AS referral_program,
+          po.name AS referral_partner,
+          rc.data ->> 'name'AS referral_channel,
+          ed.encounter_type AS encounter_type,
+          ed.encounter_uuid AS encounter_uuid,
+          ed.created_at AS created_at,
+          ed.date_of_service AS date_of_service,
+          ed.initial_visit_summary_sent AS initial_visit_summary_sent,
+          ed.initial_cap_completed_date AS initial_cap_completed_date,
+          ed.cap_sent_to_patient AS cap_sent_to_patient,
+          ed.followup_cap_completed_date AS followup_cap_completed_date,
+          ed.user_uuid AS user_uuid,
+          ed.date_test_ordered AS date_test_ordered,
+          ed.ror_visit_status AS ror_visit_status,
+          ed.ror_date_contacted AS ror_date_contacted,
+          ed.order_status AS order_status,
+          ed.visit_status AS visit_status,
+          INITCAP(REPLACE(ed.visit_provider, '_', ' ')) AS visit_provider,
+          ed.date_test_recommended AS date_test_recommended,
+          ed.test_recommended AS test_recommended,
+          oi.date_received_report AS date_received_report,
+          CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
+        FROM encounter_details ed
+        LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
+        LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
+        LEFT JOIN order_info oi ON oi.encounter_uuid = ed.encounter_uuid
+        LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
+        LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
+        LEFT JOIN
+        (
+          SELECT p.data->'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
+          FROM partners p
+          JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
+          GROUP BY p.data->'id'
+        ) AS po ON prt.data->'id' = po.id
+        WHERE pes.is_deleted = 'false'
       )
-      SELECT
-        pes.patient_state::text AS patient_state,
-        prt.data ->> 'display_name' AS referral_program,
-        po.name AS referral_partner,
-        rc.data ->> 'name'AS referral_channel,
-        ed.encounter_type AS encounter_type,
-        ed.encounter_uuid AS encounter_uuid,
-        ed.created_at AS created_at,
-        ed.date_of_service AS date_of_service,
-        ed.initial_visit_summary_sent AS initial_visit_summary_sent,
-        ed.initial_cap_completed_date AS initial_cap_completed_date,
-        ed.cap_sent_to_patient AS cap_sent_to_patient,
-        ed.followup_cap_completed_date AS followup_cap_completed_date,
-        ed.user_uuid AS user_uuid,
-        ed.date_test_ordered AS date_test_ordered,
-        ed.ror_visit_status AS ror_visit_status,
-        ed.ror_date_contacted AS ror_date_contacted,
-        ed.order_status AS order_status,
-        ed.visit_status AS visit_status,
-        ed.visit_provider AS visit_provider,
-        ed.date_test_recommended AS date_test_recommended,
-        ed.test_recommended AS test_recommended,
-        oi.date_received_report AS date_received_report,
-        CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
-      FROM encounter_details ed
-      LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
-      LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
-      LEFT JOIN order_info oi ON oi.encounter_uuid = ed.uuid
-      LEFT JOIN partners AS prt ON final.partner_uuid = prt.uuid
-      LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
-      LEFT JOIN
-      (
-        SELECT p.data->'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
-        FROM partners p
-        JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
-        GROUP BY p.data->'id'
-      ) AS po ON prt.data->'id' = po.id
-      WHERE pes.is_deleted = 'false'
-      ;;
+      SELECT * from final ;;
   }
 
   # Define your dimensions and measures here, like this:
@@ -340,19 +342,19 @@ view: clinical_operations {
   dimension: visit_completion_time {
     type: number
     label: "Visit CAP completion time (visit encounters) from date of visit"
-    sql: count_business_days(${TABLE}.date_of_service, ${TABLE}.initial_cap_completed_date) ;;
+    sql: count_business_days(${date_of_service_date}, ${initial_cap_completed_date_date}) ;;
   }
 
   dimension: result_cap_completed_time {
     type: number
     label: "Results CAP completion time from date report was received"
-    sql: count_business_days(${TABLE}.date_received_report, ${TABLE}.followup_cap_completed_date) ;;
+    sql: count_business_days(${date_received_report_date}, ${followup_cap_completed_date_date}) ;;
   }
 
   dimension: order_request_update_time {
     type: number
     label: "Order-request update time from date of visit"
-    sql: count_business_days(${TABLE}.date_of_service, ${TABLE}.date_test_recommended) ;;
+    sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
   }
 
   measure: count {

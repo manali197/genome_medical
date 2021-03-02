@@ -3,11 +3,9 @@ view: clinical_operations {
   derived_table: {
     sql:
       WITH high_priority_patients AS (
-        SELECT DISTINCT
-            p.patient_uuid AS puuid
-        FROM
-            audit_trail at
-            JOIN patient_encounter_summary p ON at.data ->> 'object_uuid' = p.patient_uuid::text
+        SELECT DISTINCT p.patient_uuid AS puuid
+        FROM audit_trail at
+        JOIN patient_encounter_summary p ON at.data ->> 'object_uuid' = p.patient_uuid::text
         WHERE
             at.data ->> 'object' = 'Patients'
             AND at.data ->> 'service_type' = 'edit'
@@ -15,20 +13,19 @@ view: clinical_operations {
             AND at.data -> 'changes' -> 'high_priority' ->> 'old_value' = 'false'
       );
       order_info AS (
-        SELECT
-          te.encounter_uuid AS encounter_uuid,
-          CASE WHEN te.encounter_type ='lab_test_authorization' THEN te.date_received_report ELSE max(gto.date_received_report) END AS date_received_report
-        FROM encounter_details as te
-        LEFT JOIN gene_test_orders AS gto ON  te.encounter_uuid = gto.encounter_uuid
+        SELECT e.encounter_uuid AS encounter_uuid,
+          CASE WHEN e.encounter_type ='lab_test_authorization' THEN e.date_received_report ELSE max(gto.date_received_report) END AS date_received_report
+        FROM encounter_details as e
+        LEFT JOIN gene_test_orders AS gto ON  e.encounter_uuid = gto.encounter_uuid
         WHERE
-            te.encounter_type in ('visit', 'group-session', 'cc-intake', 'lab_test_authorization') AND
-            te.followup_cap_completed_date is not null AND
-            ((te.encounter_type = 'lab_test_authorization' and te.date_received_report IS NOT NULL) OR
-              (te.encounter_type != 'lab_test_authorization' and gto.date_received_report IS NOT NULL))
-        GROUP BY encounter_uuid
+            e.encounter_type in ('visit', 'group-session', 'cc-intake', 'lab_test_authorization') AND
+            e.followup_cap_completed_date is not null AND
+            ((e.encounter_type = 'lab_test_authorization' and e.date_received_report IS NOT NULL) OR
+              (e.encounter_type != 'lab_test_authorization' and gto.date_received_report IS NOT NULL))
+        GROUP BY e.encounter_uuid
       )
       SELECT
-        p.patient_state::text AS patient_state,
+        pes.patient_state::text AS patient_state,
         prt.data ->> 'display_name' AS referral_program,
         po.name AS referral_partner,
         rc.data ->> 'name'AS referral_channel,
@@ -50,7 +47,7 @@ view: clinical_operations {
         ed.date_test_recommended AS date_test_recommended,
         ed.test_recommended AS test_recommended,
         oi.date_received_report AS date_received_report,
-        CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority
+        CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
       FROM encounter_details ed
       LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
       LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
@@ -329,9 +326,15 @@ view: clinical_operations {
   }
 
   dimension: test_recommended {
-    description: "Was Test Recommended"
+    description: "Was Testing Recommended"
     type: string
     sql: ${TABLE}.test_recommended ;;
+  }
+
+  dimension: is_high_priority_patient {
+    description: "Is High-priority Patient"
+    type: yesno
+    sql: ${TABLE}.is_high_priority_patient ;;
   }
 
   dimension: visit_completion_time {
@@ -348,7 +351,7 @@ view: clinical_operations {
 
   dimension: order_request_update_time {
     type: number
-    label: "OrderRequest update time"
+    label: "Order-request update time"
     sql: count_business_days(${TABLE}.date_of_service, ${TABLE}.date_test_recommended) ;;
   }
 

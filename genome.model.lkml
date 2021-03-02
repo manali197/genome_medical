@@ -64,3 +64,7 @@ explore: gene_test_orders {
 explore: completed_encounters {
 
 }
+
+explore: clinical_operations {
+
+}

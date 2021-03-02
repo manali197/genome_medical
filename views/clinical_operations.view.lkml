@@ -351,7 +351,7 @@ view: clinical_operations {
 
   dimension: order_request_update_time {
     type: number
-    label: "Order-request update time"
+    label: "Order-request update time from date of visit"
     sql: count_business_days(${TABLE}.date_of_service, ${TABLE}.date_test_recommended) ;;
   }
 
@@ -379,7 +379,7 @@ view: clinical_operations {
 
   measure: average_order_request_update_time_in_days {
     type: average
-    label: "Average results CAP completion time from date report was received"
+    label: "Average order-request update time from date of visit"
     filters: [order_request_update_time: ">=0"]
     sql: ${order_request_update_time} ;;
     drill_fields: [visit_provider, average_order_request_update_time_in_days]

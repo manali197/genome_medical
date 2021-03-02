@@ -326,5 +326,4 @@ view: completed_encounters {
     drill_fields: [average_referral_to_completion_time_time_in_days]
     value_format_name: decimal_2
   }
-
 }

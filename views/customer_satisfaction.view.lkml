@@ -6,7 +6,13 @@ view: customer_satisfaction {
       TO_CHAR(date_modified , 'mm/dd/yyyy hh12:mi:ss AM') as date_modified, ip_address, email_address,
       referral_program, last_completed_visit_dos, quarter_for_appt, latest_visit_provider,
       num_completed_visits, has_multiple_visits_different_providers, first_name, last_name,
-      custom_value, q180822923, q180823390, q180826659, q180810987, q180825910, q300495377,
+      custom_value,
+      q180822923,
+      q180823390,
+      q180826659,
+      q180810987,
+      q180825910,
+      q300495377,
       email, phone, provider_indicated_specialty, vsee_specialty, gc_specialty
       FROM (
         SELECT respondent_id, collector_id, date_created,
@@ -38,6 +44,7 @@ view: customer_satisfaction {
   }
 
   # Define your dimensions and measures here, like this:
+
   dimension: respondent_id {
     description: "Respondent ID"
     type: string
@@ -48,6 +55,13 @@ view: customer_satisfaction {
     description: "Collector ID"
     type: string
     sql: ${TABLE}.collector_id ;;
+  }
+
+  dimension: pk {
+    primary_key: yes
+    hidden: yes
+    type: string
+    sql: ${respondent_id} || '_' || ${collector_id} ;;
   }
 
   dimension_group: date_created {
@@ -95,7 +109,6 @@ view: customer_satisfaction {
   dimension: email_address {
     description: "Email Address"
     type: string
-    primary_key: yes
     sql: ${TABLE}.email_address ;;
   }
 

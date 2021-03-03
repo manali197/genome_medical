@@ -69,3 +69,7 @@ explore: completed_encounters {
 explore: clinical_operations {
 
 }
+
+explore: customer_satisfaction {
+
+}

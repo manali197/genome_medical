@@ -2,7 +2,66 @@ view: clinical_operations {
   # Or, you could make this view a derived table, like this:
   derived_table: {
     sql:
-      WITH high_priority_patients AS (
+      WITH visit_cap_sent_by_cc AS (
+        SELECT e.encounter_uuid AS encounter_uuid,
+          coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
+          rank() over (partition by e.encounter_uuid order by aud.data ->> 'timestamp' desc) as pos
+        FROM encounter_details AS e
+        LEFT JOIN audit_trail AS aud ON (aud."data"->>'object_uuid')::uuid = e.encounter_uuid
+        LEFT JOIN users u ON u.email = aud.data ->>'username'
+        WHERE e.initial_visit_summary_sent is not null AND (
+          aud. "data" -> 'changes' -> 'initial_visit_summary_sent' -> 'new_value' IS NOT NULL OR
+          aud. "data"->'changes'->>'root[''initial_visit_summary_sent'']' IS NOT NULL
+        )
+      ),
+      result_cap_sent_by_cc AS (
+        SELECT e.encounter_uuid as encounter_uuid,
+         coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
+         rank() over (partition by e.encounter_uuid order by aud.data ->> 'timestamp' desc) as pos
+        FROM encounter_details AS e
+        LEFT JOIN audit_trail AS aud ON (aud."data" ->> 'object_uuid')::uuid = e.encounter_uuid
+        LEFT JOIN users u ON u.email = aud.data ->>'username'
+        WHERE e.cap_sent_to_patient IS NOT NULL AND (
+          aud. "data" -> 'changes' -> 'cap_sent_to_patient' -> 'new_value' IS NOT NULL OR
+          aud. "data"->'changes'->>'root[''cap_sent_to_patient'']' IS NOT NULL
+        )
+      ),
+      total_and_cc_order_sent_by_cc AS (
+        SELECT e.encounter_uuid AS encounter_uuid,
+         coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
+         rank() over (partition by gto.id order by gtoh.created_at desc) as pos
+        FROM encounter_details AS e
+        LEFT JOIN gene_test_orders AS gto ON e.encounter_uuid=gto.encounter_uuid
+        LEFT JOIN gene_test_orders_history AS gtoh ON gto.id=gtoh.gene_test_orders_id
+        LEFT JOIN users AS u ON gtoh.user_uuid = u.uuid
+        WHERE e.encounter_type in ('visit', 'cc-intake', 'group-session') AND
+          gtoh.order_status ='sent_to_lab'
+      ),
+      pa_forms_sent_by_cc AS (
+        SELECT e.encounter_uuid AS encounter_uuid,
+          coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
+          rank() over (partition by pa.id order by pah.created_at desc) as pos
+        FROM encounter_details AS e
+        LEFT JOIN preauthorizations AS pa ON pa.encounter_uuid=e.encounter_uuid
+        LEFT JOIN preauthorizations_history AS pah ON pa.id=pah.preauthorizations_id
+        LEFT JOIN users AS u ON pah.user_uuid = u.uuid
+        WHERE e.encounter_type in ('visit', 'cc-intake', 'group-session') AND
+          pa.dispatch_status='pa_form_sent' AND
+          pah.dispatch_status ='pa_form_sent'
+      ),
+      cc_metrics AS (
+        SELECT e.encounter_uuid AS encounter_uuid,
+          v.user_name AS visit_cap_cc_user_name,
+          r.user_name AS result_cap_cc_user_name,
+          t.user_name AS total_and_cc_order_cc_user_name,
+          p.user_name AS pa_forms_cc_user_name
+        FROM encounter_details AS e
+        LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = e.encounter_uuid AND v.pos = 1
+        LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = e.encounter_uuid AND r.pos = 1
+        LEFT JOIN total_and_cc_order_sent_by_cc t ON t.encounter_uuid = e.encounter_uuid  AND t.pos = 1
+        LEFT JOIN pa_forms_sent_by_cc p ON p.encounter_uuid = e.encounter_uuid AND p.pos = 1
+      ),
+      high_priority_patients AS (
         SELECT DISTINCT p.patient_uuid AS puuid
         FROM audit_trail at
         JOIN patient_encounter_summary p ON at.data ->> 'object_uuid' = p.patient_uuid::text
@@ -48,11 +107,16 @@ view: clinical_operations {
           ed.date_test_recommended AS date_test_recommended,
           ed.test_recommended AS test_recommended,
           oi.date_received_report AS date_received_report,
+          cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
+          cm.result_cap_cc_user_name AS result_cap_cc_user_name,
+          cm.total_and_cc_order_cc_user_name AS total_and_cc_order_cc_user_name,
+          cm.pa_forms_cc_user_name AS pa_forms_cc_user_name,
           CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
         FROM encounter_details ed
         LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
         LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
         LEFT JOIN order_info oi ON oi.encounter_uuid = ed.encounter_uuid
+        LEFT JOIN cc_metrics AS cm ON cm.encounter_uuid = ed.encounter_uuid
         LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
         LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
         LEFT JOIN
@@ -337,6 +401,34 @@ view: clinical_operations {
     description: "Is High-priority Patient"
     type: yesno
     sql: ${TABLE}.is_high_priority_patient ;;
+  }
+  # cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
+  # cm.result_cap_cc_user_name AS result_cap_cc_user_name,
+  # cm.total_and_cc_order_cc_user_name AS total_and_cc_order_cc_user_name,
+  # cm.pa_forms_cc_user_name AS pa_forms_cc_user_name
+
+  dimension: visit_cap_cc_user_name {
+    description: "Visit CAP Sending CC"
+    type: string
+    sql: ${TABLE}.visit_cap_cc_user_name ;;
+  }
+
+  dimension: result_cap_cc_user_name {
+    description: "Result CAP Sending CC"
+    type: string
+    sql: ${TABLE}.result_cap_cc_user_name ;;
+  }
+
+  dimension: total_and_cc_order_cc_user_name {
+    description: "Total and Order Sending CC"
+    type: string
+    sql: ${TABLE}.total_and_cc_order_cc_user_name ;;
+  }
+
+  dimension: pa_forms_cc_user_name {
+    description: "PA Forms Sending CC"
+    type: string
+    sql: ${TABLE}.pa_forms_cc_user_name ;;
   }
 
   dimension: visit_completion_time {

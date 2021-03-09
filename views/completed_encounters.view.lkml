@@ -24,8 +24,8 @@ view: completed_encounters {
             e.visit_provider AS visit_provider
         FROM encounter_details AS e
         JOIN patient_encounter_summary AS p ON p.patient_uuid = e.user_uuid
-        WHERE
-            e.encounter_type = 'lab_test_authorization' and (e.order_request_status in ('approved', 'rejected'))
+        WHERE e.encounter_type = 'lab_test_authorization' AND
+        (e.order_request_status in ('approved', 'rejected')) AND p.is_deleted = false
       ),
       nlp AS (
         SELECT
@@ -49,11 +49,11 @@ view: completed_encounters {
         FROM encounter_details AS e
         JOIN patient_encounter_summary AS p ON p.patient_uuid = e.user_uuid
         WHERE
-            (e.encounter_type = 'visit' and e.visit_status = 'completed') OR
+            ((e.encounter_type = 'visit' and e.visit_status = 'completed') OR
             (e.encounter_type = 'cc-intake' and e.visit_status = 'completed') OR
             (e.encounter_type = 'group-session' and (e.visit_status in ('webinar_attended', 'webinar_recording_viewed'))) OR
             (e.encounter_type = 'research-data') OR
-            (e.encounter_type = 'scp')
+            (e.encounter_type = 'scp')) AND p.is_deleted = false
       ),
       mgr AS (
         SELECT

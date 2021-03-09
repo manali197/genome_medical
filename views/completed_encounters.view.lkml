@@ -90,7 +90,7 @@ view: completed_encounters {
     ),
     final_from_db AS (
       SELECT
-          date(final.date_of_service) AS date_of_service,
+          final.date_of_service AS date_of_service,
           initcap(concat(final.first_name, ' ', final.last_name)) AS patient_name,
           final.patient_email AS patient_email,
           final.patient_state AS patient_state,

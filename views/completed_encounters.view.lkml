@@ -5,11 +5,11 @@ view: completed_encounters {
     sql:
       WITH lp AS (
         SELECT
-            json_extract_path(json_array_elements(lp.lab_patients), 'first_name')::text AS first_name,
-            json_extract_path(json_array_elements(lp.lab_patients), 'last_name')::text AS last_name,
-            json_extract_path(json_array_elements(lp.lab_patients), 'email')::text AS patient_email,
+            lp.data ->> 'first_name' AS first_name,
+            lp.data ->>  'last_name' AS last_name,
+            lp.data ->>  'email' AS patient_email,
             lp.patient_uuid::text AS patient_uuid,
-            json_extract_path(json_array_elements(lp.lab_patients), 'state')::text AS patient_state,
+            lp.data ->>  'state' AS patient_state,
             lp.original_referral_date AS original_referral_date,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
@@ -25,13 +25,12 @@ view: completed_encounters {
             e.created_at AS created_at
         FROM encounter_details AS e
         LEFT JOIN (
-          SELECT (json_array_elements(lab_patients)->>'uuid')::uuid AS uuid,
+          SELECT json_array_elements(lab_patients) AS data,
             patient_uuid AS patient_uuid,
             is_deleted AS is_deleted,
-            original_referral_date AS original_referral_date,
-            lab_patients AS lab_patients
+            original_referral_date AS original_referral_date
           FROM patient_encounter_summary
-        ) AS lp ON lp.uuid = e.lab_patient_uuid
+        ) AS lp ON (lp.data ->> 'uuid')::uuid = e.lab_patient_uuid
         WHERE e.encounter_type = 'lab_test_authorization' AND
         (e.order_request_status in ('approved', 'rejected')) AND lp.is_deleted = false
       ),

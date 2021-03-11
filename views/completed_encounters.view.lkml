@@ -126,6 +126,7 @@ view: completed_encounters {
         JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
         GROUP BY p.data->'id'
       ) AS po ON prt.data->'id' = po.id
+      WHERE NOT (patient_email ILIKE '%+%test%@%')
     )
     SELECT * FROM final_from_db
     UNION ALL

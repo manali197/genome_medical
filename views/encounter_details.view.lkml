@@ -291,6 +291,11 @@ view: encounter_details {
     sql: ${TABLE}."vsee_specialty" ;;
   }
 
+  dimension: lab_patient_uuid {
+    type: string
+    sql: ${TABLE}."lab_patient_uuid" ;;
+  }
+
   dimension_group: visit_cap_completion_time {
     type: duration
     label: "Time to Complete Visit CAP"

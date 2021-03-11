@@ -5,12 +5,12 @@ view: completed_encounters {
     sql:
       WITH lp AS (
         SELECT
-            json_extract_path(json_array_elements(p.lab_patients), 'first_name')::text AS first_name,
-            json_extract_path(json_array_elements(p.lab_patients), 'last_name')::text AS last_name,
-            json_extract_path(json_array_elements(p.lab_patients), 'email')::text AS patient_email,
-            json_extract_path(json_array_elements(p.lab_patients), 'uuid')::text AS patient_uuid,
-            json_extract_path(json_array_elements(p.lab_patients), 'state')::text AS patient_state,
-            p.original_referral_date AS original_referral_date,
+            json_extract_path(json_array_elements(lp.lab_patients), 'first_name')::text AS first_name,
+            json_extract_path(json_array_elements(lp.lab_patients), 'last_name')::text AS last_name,
+            json_extract_path(json_array_elements(lp.lab_patients), 'email')::text AS patient_email,
+            lp.patient_uuid::text AS patient_uuid,
+            json_extract_path(json_array_elements(lp.lab_patients), 'state')::text AS patient_state,
+            lp.original_referral_date AS original_referral_date,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -21,11 +21,19 @@ view: completed_encounters {
             e.payor AS payor,
             e.units AS units,
             e.partner_uuid AS partner_uuid,
-            e.visit_provider AS visit_provider
+            e.visit_provider AS visit_provider,
+            e.created_at AS created_at
         FROM encounter_details AS e
-        JOIN patient_encounter_summary AS p ON p.patient_uuid = e.user_uuid
+        LEFT JOIN (
+          SELECT (json_array_elements(lab_patients)->>'uuid')::uuid AS uuid,
+            patient_uuid AS patient_uuid,
+            is_deleted AS is_deleted,
+            original_referral_date AS original_referral_date,
+            lab_patients AS lab_patients
+          FROM patient_encounter_summary
+        ) AS lp ON lp.uuid = e.lab_patient_uuid
         WHERE e.encounter_type = 'lab_test_authorization' AND
-        (e.order_request_status in ('approved', 'rejected')) AND p.is_deleted = false
+        (e.order_request_status in ('approved', 'rejected')) AND lp.is_deleted = false
       ),
       nlp AS (
         SELECT
@@ -45,7 +53,8 @@ view: completed_encounters {
             e.payor AS payor,
             e.units AS units,
             e.partner_uuid AS partner_uuid,
-            e.visit_provider AS visit_provider
+            e.visit_provider AS visit_provider,
+            e.created_at AS created_at
         FROM encounter_details AS e
         JOIN patient_encounter_summary AS p ON p.patient_uuid = e.user_uuid
         WHERE
@@ -83,10 +92,9 @@ view: completed_encounters {
       SELECT * FROM nlp
     ),
     first_encounters AS (
-      SELECT DISTINCT ON (patient_email)
-       encounter_uuid
+      SELECT encounter_uuid,
+       rank() over (PARTITION BY patient_uuid ORDER BY date_of_service asc, created_at asc) AS position
       FROM final
-      ORDER BY patient_email, date_of_service ASC
     ),
     final_from_db AS (
       SELECT
@@ -109,7 +117,7 @@ view: completed_encounters {
           INITCAP(REPLACE(final.visit_provider, '_', ' ')) AS visit_provider,
           CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_completed_encounter
       FROM final
-      LEFT JOIN first_encounters fe ON fe.encounter_uuid = final.encounter_uuid
+      LEFT JOIN first_encounters fe ON fe.encounter_uuid = final.encounter_uuid AND fe.position = 1
       LEFT JOIN partners AS prt ON final.partner_uuid = prt.uuid
       LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
       LEFT JOIN

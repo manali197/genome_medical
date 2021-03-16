@@ -89,7 +89,7 @@ view: referral_status {
           END AS test_order_status,
           gto.ordering_physician AS ordering_physician,
           gto.gene_test_display_name AS test_name,
-          gto.lab_display_name AS testing_lab,
+          CASE WHEN etr.encounter_type != 'lab_test_authorization' THEN gto.lab_display_name ELSE etr.lab END AS testing_lab,
           etr.type_of_test AS type_of_test,
           etr.date_test_ordered AS date_test_ordered,
           etr.date_received_report AS date_received_report,

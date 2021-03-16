@@ -37,67 +37,75 @@ view: referral_status {
             string_agg(lab_display_name, ',' ORDER BY id ASC) AS lab_display_name
           FROM gene_test_orders
           GROUP BY encounter_uuid
+        ),
+        first_visit_encounters AS (
+          SELECT encounter_uuid,
+            rank() over (PARTITION BY user_uuid ORDER BY date_of_service asc, created_at asc) AS position
+          FROM encounter_details
+          WHERE encounter_type = 'visit'
         )
         SELECT
-        coalesce(initcap(p.patient_first_name), '') AS patient_first_name,
-        coalesce(initcap(p.patient_last_name), '') AS patient_last_name,
-        p.patient_dob AS patient_dob,
-        p.patient_email AS patient_email,
-        coalesce(initcap(p.external_patient_id), '') AS external_patient_id,
-        p.patient_uuid AS patient_uuid,
-        p.referral_program AS referral_program,
-        coalesce(po.name, 'N/A') AS referral_partner,
-        coalesce(rc.data ->> 'name', 'N/A') AS referral_channel,
-        ref_pro.provider_name AS referring_provider,
-        p.original_referral_date AS original_referral_date,
-        etr.encounter_uuid AS encounter_uuid,
-        etr.encounter_type AS encounter_type,
-        etr.visit_status AS visit_status,
-        etr.date_of_service AS date_of_service,
-        etr.created_at AS created_at,
-        etr.consultation_type AS consultation_type,
-        etr.vsee_specialty AS requested_specialty,
-        etr.provider_indicated_specialty AS provider_indicated_specialty,
-        pos.enabled AS patient_outreach_setting_enabled,
-        pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
-        coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
-        coalesce(etr.drug_interaction, '') AS drug_interaction,
-        coalesce(etr.no_of_interactions, '') AS no_of_interactions,
-        coalesce(etr.drug_contraindications, '') AS drug_contraindications,
-        etr.drug_dosage_adjustment_recommended AS drug_dosage_adjustment_recommended,
-        coalesce(etr.pharmd, '') AS pharmd,
-        coalesce(etr.state_of_visit, '') AS state_of_visit,
-        coalesce(p.patient_state, '') AS patient_state,
-        CASE
-            WHEN etr.test_recommended IS NULL THEN 'Order Status Pending'
-            WHEN lower(etr.test_recommended) = 'no' THEN 'Testing Not Recommended'
-            WHEN lower(etr.test_recommended) = 'pa' THEN 'N/A'
-            WHEN lower(etr.test_recommended) = 'yes' THEN gto.order_status
-            ELSE NULL
-        END AS test_order_status,
-        gto.ordering_physician AS ordering_physician,
-        gto.gene_test_display_name AS test_name,
-        gto.lab_display_name AS testing_lab,
-        etr.type_of_test AS type_of_test,
-        etr.date_test_ordered AS date_test_ordered,
-        etr.date_received_report AS date_received_report,
-        etr.cap_sent_to_patient AS cap_sent_to_patient,
-        etr.ror_date_contacted AS ror_outreach_date
-    FROM patient_encounter_summary AS p
-    LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
-    LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
-    LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
-    LEFT JOIN test_orders AS gto ON gto.encounter_uuid = etr.encounter_uuid
-    LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
-    LEFT JOIN partners AS prt ON etr.partner_uuid = prt.uuid
-    LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
-    LEFT JOIN (
-      SELECT p.data->'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
-      FROM partners p
-      JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
-      GROUP BY p.data->'id'
-    ) AS po ON prt.data->'id' = po.id
-    WHERE NOT (p.patient_email ILIKE '%+%test%@%') AND p.is_deleted = false
+          coalesce(initcap(p.patient_first_name), '') AS patient_first_name,
+          coalesce(initcap(p.patient_last_name), '') AS patient_last_name,
+          p.patient_dob AS patient_dob,
+          p.patient_email AS patient_email,
+          coalesce(initcap(p.external_patient_id), '') AS external_patient_id,
+          p.patient_uuid AS patient_uuid,
+          p.referral_program AS referral_program,
+          coalesce(po.name, 'N/A') AS referral_partner,
+          coalesce(rc.data ->> 'name', 'N/A') AS referral_channel,
+          ref_pro.provider_name AS referring_provider,
+          p.original_referral_date AS original_referral_date,
+          etr.encounter_uuid AS encounter_uuid,
+          etr.encounter_type AS encounter_type,
+          etr.visit_status AS visit_status,
+          etr.date_of_service AS date_of_service,
+          etr.created_at AS created_at,
+          etr.consultation_type AS consultation_type,
+          etr.vsee_specialty AS requested_specialty,
+          etr.provider_indicated_specialty AS provider_indicated_specialty,
+          pos.enabled AS patient_outreach_setting_enabled,
+          pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
+          coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
+          coalesce(etr.drug_interaction, '') AS drug_interaction,
+          coalesce(etr.no_of_interactions, '') AS no_of_interactions,
+          coalesce(etr.drug_contraindications, '') AS drug_contraindications,
+          etr.drug_dosage_adjustment_recommended AS drug_dosage_adjustment_recommended,
+          coalesce(etr.pharmd, '') AS pharmd,
+          coalesce(etr.state_of_visit, '') AS state_of_visit,
+          coalesce(p.patient_state, '') AS patient_state,
+          CASE
+              WHEN etr.test_recommended IS NULL THEN 'Order Status Pending'
+              WHEN lower(etr.test_recommended) = 'no' THEN 'Testing Not Recommended'
+              WHEN lower(etr.test_recommended) = 'pa' THEN 'N/A'
+              WHEN lower(etr.test_recommended) = 'yes' THEN gto.order_status
+              ELSE NULL
+          END AS test_order_status,
+          gto.ordering_physician AS ordering_physician,
+          gto.gene_test_display_name AS test_name,
+          gto.lab_display_name AS testing_lab,
+          etr.type_of_test AS type_of_test,
+          etr.date_test_ordered AS date_test_ordered,
+          etr.date_received_report AS date_received_report,
+          etr.cap_sent_to_patient AS cap_sent_to_patient,
+          etr.ror_date_contacted AS ror_outreach_date,
+          CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_encounter
+        FROM patient_encounter_summary AS p
+        LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
+        LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
+        LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
+        LEFT JOIN first_visit_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
+        LEFT JOIN test_orders AS gto ON gto.encounter_uuid = etr.encounter_uuid
+        LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
+        LEFT JOIN partners AS prt ON etr.partner_uuid = prt.uuid
+        LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
+        LEFT JOIN (
+          SELECT p.data->'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
+          FROM partners p
+          JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
+          GROUP BY p.data->'id'
+        ) AS po ON prt.data->'id' = po.id
+        WHERE NOT (p.patient_email ILIKE '%+%test%@%') AND p.is_deleted = false
     ;;
   }
 
@@ -455,6 +463,12 @@ view: referral_status {
     sql: ${TABLE}."ror_outreach_date" ;;
   }
 
+  dimension: is_first_visit_encounter {
+    type: yesno
+    description: "Whether or not this is the first visit encounter from a patient"
+    sql: ${TABLE}.is_first_vist_encounter ;;
+  }
+
   dimension_group: referral_to_completion_time {
     type: duration
     label: "Time to Schedule from Referral"
@@ -474,14 +488,14 @@ view: referral_status {
 
   dimension: referral_to_scheduling_time {
     type: number
-    label: "Time between the referral date and date 1st appointment was created"
-    sql: count_business_days(${date_of_service_date}, ${original_referral_date_date}) ;;
+    label: "Time between the referral date and date of service was created"
+    sql: count_business_days(${original_referral_date_date}, ${date_of_service_date}) ;;
   }
 
   measure: average_referral_to_scheduling_time_in_days {
     type: average
     label: "Average time between the referral date and date 1st appointment was created"
-    filters: [referral_to_scheduling_time: ">=0"]
+    filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
     sql: ${referral_to_scheduling_time} ;;
     drill_fields: [visit_provider, referral_program, average_referral_to_scheduling_time_in_days]
     value_format_name: decimal_2

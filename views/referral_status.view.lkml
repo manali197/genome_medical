@@ -466,7 +466,7 @@ view: referral_status {
   dimension: is_first_visit_encounter {
     type: yesno
     description: "Whether or not this is the first visit encounter from a patient"
-    sql: ${TABLE}.is_first_vist_encounter ;;
+    sql: ${TABLE}.is_first_visit_encounter ;;
   }
 
   dimension_group: referral_to_completion_time {

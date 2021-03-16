@@ -15,6 +15,28 @@ view: referral_status {
             JOIN patient_encounter_summary pa ON pa.patient_uuid = c.patient_uuid
             WHERE pa.is_deleted = false AND 'referring_provider' = any(c.provider_role)
             GROUP BY c.patient_uuid
+        ),
+        patient_outreach AS (
+          SELECT patient_uuid,
+            array_to_json(array_agg('date: ' || outreach.outreach_date || ', outcome: ' || coalesce(outreach.outreach_outcome, ''))) AS outreaches
+          FROM (
+            SELECT patient_uuid AS patient_uuid,
+              date_time AS outreach_date,
+              patient_communication_outcome_display_name AS outreach_outcome,
+              ROW_NUMBER() OVER (PARTITION BY patient_uuid ORDER BY date_time) AS rank
+            FROM patient_communication_details
+          ) outreach
+          WHERE rank <= 6
+          GROUP BY patient_uuid
+        ),
+        test_orders AS (
+          SELECT encounter_uuid AS encounter_uuid,
+            string_agg(coalesce(nullif(status_reason, ''), order_status), ',' ORDER BY id ASC) AS order_status,
+            string_agg(ordering_physician, ',' ORDER BY id ASC) AS ordering_physician,
+            string_agg(gene_test_display_name, ',' ORDER BY id ASC) AS gene_test_display_name,
+            string_agg(lab_display_name, ',' ORDER BY id ASC) AS lab_display_name
+          FROM gene_test_orders
+          GROUP BY encounter_uuid
         )
         SELECT
         coalesce(initcap(p.patient_first_name), '') AS patient_first_name,
@@ -38,12 +60,6 @@ view: referral_status {
         etr.provider_indicated_specialty AS provider_indicated_specialty,
         pos.enabled AS patient_outreach_setting_enabled,
         pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
-        (SELECT array_to_json(array_agg(outreach)) AS outreachs FROM (
-          SELECT pc.date_time as "outreach_date", pc.patient_communication_outcome_display_name as "outreach_outcome"
-          FROM patient_communication_details as pc
-          WHERE pc.patient_uuid = p.patient_uuid
-          ORDER BY date_time limit 6
-        ) AS outreach),
         coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
         coalesce(etr.drug_interaction, '') AS drug_interaction,
         coalesce(etr.no_of_interactions, '') AS no_of_interactions,
@@ -54,14 +70,14 @@ view: referral_status {
         coalesce(p.patient_state, '') AS patient_state,
         CASE
             WHEN etr.test_recommended IS NULL THEN 'Order Status Pending'
-            WHEN lower(etr.test_recommended) = 'No' THEN 'Testing Not Recommended'
-            WHEN lower(etr.test_recommended) = 'PA' THEN 'N/A'
-            WHEN lower(etr.test_recommended) = 'Yes' THEN
-             (SELECT string_agg(coalesce(nullif(gto.status_reason, ''), gto.order_status), ',' ORDER BY gto.id ASC)
-              FROM gene_test_orders gto
-              WHERE gto.encounter_uuid = etr.encounter_uuid)
+            WHEN lower(etr.test_recommended) = 'no' THEN 'Testing Not Recommended'
+            WHEN lower(etr.test_recommended) = 'pa' THEN 'N/A'
+            WHEN lower(etr.test_recommended) = 'yes' THEN gto.order_status
             ELSE NULL
         END AS test_order_status,
+        gto.ordering_physician AS ordering_physician,
+        gto.gene_test_display_name AS test_name,
+        gto.lab_display_name AS testing_lab,
         etr.type_of_test AS type_of_test,
         etr.date_test_ordered AS date_test_ordered,
         etr.date_received_report AS date_received_report,
@@ -69,7 +85,9 @@ view: referral_status {
         etr.ror_date_contacted AS ror_outreach_date
     FROM patient_encounter_summary AS p
     LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
+    LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
     LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
+    LEFT JOIN test_orders AS gto ON gto.encounter_uuid = etr.encounter_uuid
     LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
     LEFT JOIN partners AS prt ON etr.partner_uuid = prt.uuid
     LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
@@ -332,18 +350,6 @@ view: referral_status {
     sql: ${TABLE}.test_order_status ;;
   }
 
-  dimension: test_name {
-    description: "Test Name"
-    type: string
-    sql: ${TABLE}.test_name ;;
-  }
-
-  dimension: testing_lab {
-    description: "Testing Lab"
-    type: string
-    sql: ${TABLE}.testing_lab ;;
-  }
-
   dimension: preauth_form_status {
     description: "Pre-Auth Form Status"
     type: string
@@ -372,6 +378,24 @@ view: referral_status {
     description: "Type of Test Ordered (Legacy)"
     type: string
     sql: ${TABLE}.type_of_test ;;
+  }
+
+  dimension: ordering_physician {
+    description: "Ordering Physician"
+    type: string
+    sql: ${TABLE}.ordering_physician ;;
+  }
+
+  dimension: test_name {
+    description: "Gene Test Name"
+    type: string
+    sql: ${TABLE}.test_name ;;
+  }
+
+  dimension: testing_lab {
+    description: "Test Lab Name"
+    type: string
+    sql: ${TABLE}.testing_lab ;;
   }
 
   dimension_group: date_test_ordered {

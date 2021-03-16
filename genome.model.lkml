@@ -68,3 +68,7 @@ explore: completed_encounters {
 explore: clinical_operations {
 
 }
+
+explore: referral_status {
+
+}

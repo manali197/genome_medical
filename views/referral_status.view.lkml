@@ -43,6 +43,12 @@ view: referral_status {
             rank() over (PARTITION BY user_uuid ORDER BY date_of_service asc, created_at asc) AS position
           FROM encounter_details
           WHERE encounter_type = 'visit'
+        ),
+        first_visit_status_encounters AS (
+          SELECT encounter_uuid, visit_status,
+            rank() over (PARTITION BY user_uuid ORDER BY date_of_service asc, created_at asc) AS position
+          FROM encounter_details
+          WHERE encounter_type = 'visit'
         )
         SELECT
           coalesce(initcap(p.patient_first_name), '') AS patient_first_name,
@@ -89,12 +95,18 @@ view: referral_status {
           etr.date_received_report AS date_received_report,
           etr.cap_sent_to_patient AS cap_sent_to_patient,
           etr.ror_date_contacted AS ror_outreach_date,
-          CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_encounter
+          CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_encounter,
+          CASE WHEN fvc.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_completed_encounter,
+          CASE WHEN fvb.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_scheduled_encounter
         FROM patient_encounter_summary AS p
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
         LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
         LEFT JOIN first_visit_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
+        LEFT JOIN first_visit_status_encounters fvc
+          ON fvc.encounter_uuid = etr.encounter_uuid AND fvc.position = 1 AND fvc.visit_status = 'completed'
+        LEFT JOIN first_visit_status_encounters fvb
+          ON fvb.encounter_uuid = etr.encounter_uuid AND fvb.position = 1 AND (fvb.visit_status = 'completed' OR fvb.visit_status = 'booked')
         LEFT JOIN test_orders AS gto ON gto.encounter_uuid = etr.encounter_uuid
         LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
         LEFT JOIN partners AS prt ON etr.partner_uuid = prt.uuid
@@ -127,6 +139,25 @@ view: referral_status {
       year
     ]
     sql: ${TABLE}."date_of_service" ;;
+  }
+
+  dimension_group: created_at {
+    description: "Encounter Creation Date (UTC)"
+    type: time
+    drill_fields: [encounter_type, referral_program]
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_week,
+      week_of_year,
+      week,
+      month,
+      month_name,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."created_at" ;;
   }
 
   dimension_group: current {
@@ -469,6 +500,18 @@ view: referral_status {
     sql: ${TABLE}.is_first_visit_encounter ;;
   }
 
+  dimension: is_first_visit_completed_encounter {
+    type: yesno
+    description: "Whether or not this is the first completed visit encounter from a patient"
+    sql: ${TABLE}.is_first_visit_completed_encounter ;;
+  }
+
+  dimension: is_first_visit_scheduled_encounter {
+    type: yesno
+    description: "Whether or not this is the first scheduled visit encounter from a patient"
+    sql: ${TABLE}.is_first_visit_scheduled_encounter ;;
+  }
+
   dimension_group: referral_to_completion_time {
     type: duration
     label: "Time to Schedule from Referral"
@@ -488,16 +531,46 @@ view: referral_status {
 
   dimension: referral_to_scheduling_time {
     type: number
+    label: "Time between the referral date and the date an encounter was created"
+    sql: count_business_days(${original_referral_date_date}, ${created_at_date}) ;;
+  }
+
+  dimension: referral_to_date_of_service_time {
+    type: number
     label: "Time between the referral date and date of service was created"
     sql: count_business_days(${original_referral_date_date}, ${date_of_service_date}) ;;
   }
 
+  dimension: creation_to_date_of_service_time {
+    type: number
+    label: "Time between the encounter creation and date of service"
+    sql: count_business_days(${created_at_date}, ${date_of_service_date}) ;;
+  }
+
   measure: average_referral_to_scheduling_time_in_days {
     type: average
-    label: "Average time between the referral date and date 1st appointment was created"
+    label: "Average time (in days) between the referral date and date 1st appointment was created"
     filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
     sql: ${referral_to_scheduling_time} ;;
     drill_fields: [visit_provider, referral_program, average_referral_to_scheduling_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_referral_to_visit_completion_time_in_days {
+    type: average
+    label: "Average time (in days) from the referral date to the first appointment completed date"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_encounter: "Yes"]
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, average_referral_to_visit_completion_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_visit_created_to_completion_time_in_days {
+    type: average
+    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = booked or completed)"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_scheduled_encounter: "Yes"]
+    sql: ${creation_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, average_visit_created_to_completion_time_in_days]
     value_format_name: decimal_2
   }
 }

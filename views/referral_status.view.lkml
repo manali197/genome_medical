@@ -1,11 +1,4 @@
 view: referral_status {
-  # TODOs
-  # AS test_name,
-  # AS testing_lab,
-  # AS preauth_form_status,
-  # AS preauth_decision,
-  # AS alternate_lab,
-  # AS alternate_test,
   derived_table: {
     sql: WITH referring_providers AS (
             SELECT c.patient_uuid AS patient_uuid,
@@ -38,11 +31,16 @@ view: referral_status {
           FROM gene_test_orders
           GROUP BY encounter_uuid
         ),
-        first_visit_encounters AS (
-          SELECT encounter_uuid,
-            rank() over (PARTITION BY user_uuid ORDER BY date_of_service asc, created_at asc) AS position
-          FROM encounter_details
-          WHERE encounter_type = 'visit'
+        preauthorizations AS (
+          SELECT uuid,
+            encounter_uuid,
+            id,
+            created_at,
+            dispatch_status AS status,
+            dispatch_status_reason AS status_reason,
+            COALESCE(NULLIF(dispatch_status_reason, ''::text), dispatch_status) AS combined_status,
+            request_decision
+          FROM preauthorizations
         ),
         first_visit_status_encounters AS (
           SELECT encounter_uuid, visit_status,
@@ -95,6 +93,10 @@ view: referral_status {
           etr.date_received_report AS date_received_report,
           etr.cap_sent_to_patient AS cap_sent_to_patient,
           etr.ror_date_contacted AS ror_outreach_date,
+          CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE coalesce(nullif(pa.status_reason, ''), pa.status) END AS preauth_form_status,
+          CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE pa.request_decision END AS preauth_decision,
+          CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE gto.lab_display_name END AS alternate_lab,
+          CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE gto.gene_test_display_name END AS alternate_test,
           CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_encounter,
           CASE WHEN fvc.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_completed_encounter,
           CASE WHEN fvb.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_scheduled_encounter
@@ -102,12 +104,13 @@ view: referral_status {
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
         LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
-        LEFT JOIN first_visit_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
+        LEFT JOIN first_visit_status_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
         LEFT JOIN first_visit_status_encounters fvc
           ON fvc.encounter_uuid = etr.encounter_uuid AND fvc.position = 1 AND fvc.visit_status = 'completed'
         LEFT JOIN first_visit_status_encounters fvb
           ON fvb.encounter_uuid = etr.encounter_uuid AND fvb.position = 1 AND (fvb.visit_status = 'completed' OR fvb.visit_status = 'booked')
         LEFT JOIN test_orders AS gto ON gto.encounter_uuid = etr.encounter_uuid
+        LEFT JOIN preauthorizations AS pa ON pa.encounter_uuid = etr.encounter_uuid
         LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
         LEFT JOIN partners AS prt ON etr.partner_uuid = prt.uuid
         LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'

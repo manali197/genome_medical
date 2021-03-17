@@ -198,7 +198,7 @@ view: referral_status {
   dimension: patient_first_name {
     description: "Patient First Name"
     type: string
-    sql: ${TABLE}.patient_name ;;
+    sql: ${TABLE}.patient_first_name ;;
   }
 
   dimension: patient_last_name {
@@ -575,5 +575,55 @@ view: referral_status {
     sql: ${creation_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_created_to_completion_time_in_days]
     value_format_name: decimal_2
+  }
+
+  ### To show in box plot ###
+
+  measure: min_visit_completion_time {
+    type: min
+    group_label: "Boxplot"
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [boxplot_drill*]
+
+  }
+
+  measure: first_percentile_visit_completion_time {
+    type: percentile
+    percentile: 25
+    group_label: "Boxplot"
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [boxplot_drill*]
+  }
+
+  measure: median_visit_completion_time {
+    type: median
+    group_label: "Boxplot"
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [boxplot_drill*]
+  }
+
+  measure: second_percentile_visit_completion_time {
+    type: percentile
+    percentile: 75
+    group_label: "Boxplot"
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [boxplot_drill*]
+  }
+
+  measure: max_visit_completion_time {
+    type: max
+    group_label: "Boxplot"
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [boxplot_drill*]
+  }
+
+  set: boxplot_drill {
+    fields: [patient_first_name,
+      referring_provider,
+      ordering_physician,
+      consultation_type,
+      original_referral_date_date,
+      date_of_service_date,
+      referral_to_date_of_service_time]
   }
 }

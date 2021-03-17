@@ -583,7 +583,7 @@ view: referral_status {
     type: min
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
-    drill_fields: [boxplot_drill*]
+    drill_fields: [boxplot_drill*,min_visit_completion_time]
 
   }
 
@@ -592,14 +592,14 @@ view: referral_status {
     percentile: 25
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
-    drill_fields: [boxplot_drill*]
+    drill_fields: [boxplot_drill*,first_percentile_visit_completion_time]
   }
 
   measure: median_visit_completion_time {
     type: median
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
-    drill_fields: [boxplot_drill*]
+    drill_fields: [boxplot_drill*,median_visit_completion_time]
   }
 
   measure: second_percentile_visit_completion_time {
@@ -607,14 +607,14 @@ view: referral_status {
     percentile: 75
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
-    drill_fields: [boxplot_drill*]
+    drill_fields: [boxplot_drill*,second_percentile_visit_completion_time]
   }
 
   measure: max_visit_completion_time {
     type: max
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
-    drill_fields: [boxplot_drill*]
+    drill_fields: [boxplot_drill*,max_visit_completion_time]
   }
 
   set: boxplot_drill {

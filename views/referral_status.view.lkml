@@ -43,7 +43,7 @@ view: referral_status {
           FROM preauthorizations
         ),
         first_visit_status_encounters AS (
-          SELECT encounter_uuid, visit_status,
+          SELECT encounter_uuid, visit_status, consultation_type,
             rank() over (PARTITION BY user_uuid ORDER BY date_of_service asc, created_at asc) AS position
           FROM encounter_details
           WHERE encounter_type = 'visit'
@@ -99,7 +99,10 @@ view: referral_status {
           CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE gto.gene_test_display_name END AS alternate_test,
           CASE WHEN fe.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_encounter,
           CASE WHEN fvc.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_completed_encounter,
-          CASE WHEN fvb.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_scheduled_encounter
+          CASE WHEN fvb.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_scheduled_encounter,
+          CASE WHEN fvca.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_completed_no_ror_encounter,
+          CASE WHEN fvcb.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_completed_with_ror_encounter,
+          CASE WHEN fvcc.encounter_uuid IS NULL THEN false ELSE true END AS is_first_visit_completed_ror_encounter
         FROM patient_encounter_summary AS p
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
@@ -109,6 +112,12 @@ view: referral_status {
           ON fvc.encounter_uuid = etr.encounter_uuid AND fvc.position = 1 AND fvc.visit_status = 'completed'
         LEFT JOIN first_visit_status_encounters fvb
           ON fvb.encounter_uuid = etr.encounter_uuid AND fvb.position = 1 AND (fvb.visit_status = 'completed' OR fvb.visit_status = 'booked')
+        LEFT JOIN first_visit_status_encounters fvca
+          ON fvca.encounter_uuid = etr.encounter_uuid AND fvca.position = 1 AND fvca.visit_status = 'completed' AND fvca.consultation_type ilike '%%get started%%no result%%'
+        LEFT JOIN first_visit_status_encounters fvcb
+          ON fvcb.encounter_uuid = etr.encounter_uuid AND fvcb.position = 1 AND fvcb.visit_status = 'completed' AND fvcb.consultation_type ilike '%%get started%% w/result%%'
+        LEFT JOIN first_visit_status_encounters fvcc
+          ON fvcc.encounter_uuid = etr.encounter_uuid AND fvcc.position = 1 AND fvcc.visit_status = 'completed' AND fvcc.consultation_type ilike '%%return of result%%'
         LEFT JOIN test_orders AS gto ON gto.encounter_uuid = etr.encounter_uuid
         LEFT JOIN preauthorizations AS pa ON pa.encounter_uuid = etr.encounter_uuid
         LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
@@ -515,6 +524,24 @@ view: referral_status {
     sql: ${TABLE}.is_first_visit_scheduled_encounter ;;
   }
 
+  dimension: is_first_visit_completed_no_ror_encounter {
+    type: yesno
+    description: "Whether or not this is the first completed visit encounter (without RoR) from a patient"
+    sql: ${TABLE}.is_first_visit_completed_no_ror_encounter ;;
+  }
+
+  dimension: is_first_visit_completed_with_ror_encounter {
+    type: yesno
+    description: "Whether or not this is the first completed visit encounter (with RoR) from a patient"
+    sql: ${TABLE}.is_first_visit_completed_with_ror_encounter ;;
+  }
+
+  dimension: is_first_visit_completed_ror_encounter {
+    type: yesno
+    description: "Whether or not this is the first completed visit encounter (RoR) from a patient"
+    sql: ${TABLE}.is_first_visit_completed_ror_encounter ;;
+  }
+
   dimension_group: referral_to_completion_time {
     type: duration
     label: "Time to Schedule from Referral"
@@ -574,6 +601,33 @@ view: referral_status {
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_scheduled_encounter: "Yes"]
     sql: ${creation_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_created_to_completion_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_visit_referral_to_completion_time_no_ror_in_days {
+    type: average
+    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, no RoR)"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_no_ror_encounter: "Yes"]
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, average_visit_referral_to_completion_time_no_ror_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_visit_referral_to_completion_time_with_ror_in_days {
+    type: average
+    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_with_ror_encounter: "Yes"]
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, average_visit_referral_to_completion_time_with_ror_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_visit_referral_to_completion_time_ror_in_days {
+    type: average
+    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, RoR)"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_ror_encounter: "Yes"]
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, average_visit_referral_to_completion_time_ror_in_days]
     value_format_name: decimal_2
   }
 

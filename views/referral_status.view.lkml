@@ -521,7 +521,7 @@ view: referral_status {
   dimension: is_first_visit_scheduled_encounter {
     type: yesno
     description: "Whether or not this is the first scheduled visit encounter from a patient"
-    sql: ${TABLE}.is_first_visit_scheduled_encounter ;;
+    sql: coalesce(${TABLE}.is_first_visit_scheduled_encounter,true) ;;
   }
 
   dimension: is_first_visit_completed_no_ror_encounter {
@@ -679,5 +679,89 @@ view: referral_status {
       original_referral_date_date,
       date_of_service_date,
       referral_to_date_of_service_time]
+  }
+
+## To show visit booked vs no visit booked patients ##
+
+  dimension: referral_visit_status {
+    type: string
+    hidden: yes
+    sql: CASE WHEN ${visit_status} IN
+        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
+          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider')
+        THEN 'Cancelled'
+        WHEN ${visit_status} = 'no_show'
+        THEN 'NoShow'
+        WHEN ${visit_status} IN
+         ('completed','Completed','complete','booked','webinar_attended',
+          'webinar_recording_viewed')
+        THEN 'Scheduled'
+        ELSE 'Unknown'
+        END ;;
+  }
+
+  dimension: first_visit_schedule {
+    type: string
+    hidden: yes
+    sql: CASE WHEN ${is_first_visit_scheduled_encounter} THEN 'Yes' ELSE 'No' END ;;
+  }
+
+  dimension: referal_patient_visit_status {
+    type: string
+    sql: CASE WHEN ${first_visit_schedule} = 'Yes'
+        and ${referral_visit_status} = 'Scheduled'
+        THEN 'First Visit Successful'
+        WHEN ${first_visit_schedule} = 'No'
+        and ${referral_visit_status} = 'Scheduled'
+        THEN 'Other Successful Visits'
+        WHEN ${first_visit_schedule} = 'Yes'
+        and ${visit_status} = 'no_show'
+        THEN 'First Visit Not Booked'
+        WHEN ${first_visit_schedule} = 'Yes'
+        and ${referral_visit_status} = 'Cancelled'
+        THEN 'First Visit Cancelled'
+        WHEN ${first_visit_schedule} = 'No'
+        and ${referral_visit_status} = 'Cancelled'
+        THEN 'Other Visits Cancelled'
+        ELSE 'Status unknown'
+        END  ;;
+    drill_fields: [visit_provider,referral_channel,referral_program,visit_status]
+  }
+
+  measure: min_referral_to_scheduling_time_in_days {
+    type: min
+    #label: "Average time (in days) between the referral date and date 1st appointment was created"
+    filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
+    sql: ${referral_to_scheduling_time} ;;
+    drill_fields: [visit_provider, referral_program, min_referral_to_scheduling_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: max_referral_to_scheduling_time_in_days {
+    type: max
+    #label: "Average time (in days) between the referral date and date 1st appointment was created"
+    filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
+    sql: ${referral_to_scheduling_time} ;;
+    drill_fields: [visit_provider, referral_program, max_referral_to_scheduling_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: min_visit_referral_to_completion_time_with_ror_in_days {
+    type: min
+    description: "Min time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
+    #label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_with_ror_encounter: "Yes"]
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, min_visit_referral_to_completion_time_with_ror_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: max_visit_referral_to_completion_time_with_ror_in_days {
+    type: max
+    #label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
+    filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_with_ror_encounter: "Yes"]
+    sql: ${referral_to_date_of_service_time} ;;
+    drill_fields: [visit_provider, referral_program, max_visit_referral_to_completion_time_with_ror_in_days]
+    value_format_name: decimal_2
   }
 }

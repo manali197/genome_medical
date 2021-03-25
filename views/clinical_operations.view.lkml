@@ -89,7 +89,11 @@ view: clinical_operations {
           prt.data ->> 'display_name' AS referral_program,
           po.name AS referral_partner,
           rc.data ->> 'name'AS referral_channel,
-          ed.encounter_type AS encounter_type,
+          CASE
+            WHEN ed.encounter_type = 'scp' AND ed.encounter_subtype = 'partner_initiated/pre_test' THEN 'tro'
+            WHEN ed.encounter_type = 'scp' AND ed.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
+            ELSE ed.encounter_type
+          END AS encounter_type,
           ed.encounter_uuid AS encounter_uuid,
           ed.created_at AS created_at,
           ed.date_of_service AS date_of_service,

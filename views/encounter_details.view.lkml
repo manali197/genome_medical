@@ -102,7 +102,13 @@ view: encounter_details {
 
   dimension: encounter_type {
     type: string
-    sql: ${TABLE}."encounter_type" ;;
+    sql:
+      (CASE
+        WHEN ${TABLE}.encounter_type = 'scp' AND ${TABLE}.encounter_subtype = 'partner_initiated/pre_test' THEN 'tro'
+        WHEN ${TABLE}.encounter_type = 'scp' AND ${TABLE}.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
+        ELSE ${TABLE}.encounter_type
+      END)
+     ;;
   }
 
   dimension: encounter_uuid {

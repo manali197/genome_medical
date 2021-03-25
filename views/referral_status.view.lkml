@@ -61,7 +61,11 @@ view: referral_status {
           ref_pro.provider_name AS referring_provider,
           p.original_referral_date AS original_referral_date,
           etr.encounter_uuid AS encounter_uuid,
-          etr.encounter_type AS encounter_type,
+          CASE
+            WHEN etr.encounter_type = 'scp' AND etr.encounter_subtype = 'partner_initiated/pre_test' THEN 'tro'
+            WHEN etr.encounter_type = 'scp' AND etr.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
+            ELSE etr.encounter_type
+          END AS encounter_type,
           etr.visit_status AS visit_status,
           etr.date_of_service AS date_of_service,
           etr.created_at AS created_at,

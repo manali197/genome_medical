@@ -44,7 +44,11 @@ view: completed_encounters {
             p.original_referral_date AS original_referral_date,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
-            e.encounter_type AS encounter_type,
+            CASE
+              WHEN e.encounter_type = 'scp' AND e.encounter_subtype = 'partner_initiated/pre_test' THEN 'tro'
+              WHEN e.encounter_type = 'scp' AND e.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
+              ELSE e.encounter_type
+            END AS encounter_type,
             e.encounter_subtype AS encounter_subtype,
             e.consultation_type AS consultation_type,
             e.vsee_specialty AS vsee_specialty,

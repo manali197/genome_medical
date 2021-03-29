@@ -81,7 +81,7 @@ view: clinical_operations {
             e.followup_cap_completed_date is not null AND
             ((e.encounter_type = 'lab_test_authorization' and e.date_received_report IS NOT NULL) OR
               (e.encounter_type != 'lab_test_authorization' and gto.date_received_report IS NOT NULL))
-        GROUP BY e.encounter_uuid
+        GROUP BY e.encounter_uuid, e.encounter_type, e.date_received_report
       ),
       final AS (
         SELECT

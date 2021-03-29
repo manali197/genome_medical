@@ -5,12 +5,12 @@ view: completed_encounters {
     sql:
       WITH lp AS (
         SELECT
-            lp.data ->> 'first_name' AS first_name,
-            lp.data ->>  'last_name' AS last_name,
-            lp.data ->>  'email' AS patient_email,
-            lp.patient_uuid::text AS patient_uuid,
-            lp.data ->>  'state' AS patient_state,
-            lp.original_referral_date AS original_referral_date,
+            lab_patients.data ->> 'first_name' AS first_name,
+            lab_patients.data ->>  'last_name' AS last_name,
+            lab_patients.data ->>  'email' AS patient_email,
+            lab_patients.patient_uuid::text AS patient_uuid,
+            lab_patients.data ->>  'state' AS patient_state,
+            lab_patients.original_referral_date AS original_referral_date,
             e.date_of_service AS date_of_service,
             e.encounter_uuid AS encounter_uuid,
             e.encounter_type AS encounter_type,
@@ -30,10 +30,10 @@ view: completed_encounters {
             is_deleted AS is_deleted,
             original_referral_date AS original_referral_date
           FROM patient_encounter_summary
-        ) AS lp ON (lp.data ->> 'uuid')::uuid = e.lab_patient_uuid
+        ) AS lab_patients ON (lab_patients.data ->> 'uuid')::uuid = e.lab_patient_uuid
         WHERE e.encounter_type = 'lab_test_authorization' AND
         (e.order_request_status in ('approved', 'rejected')) AND
-        (lp.is_deleted is NULL OR lp.is_deleted = false)
+        (lab_patients.is_deleted is NULL OR lab_patients.is_deleted = false)
       ),
       nlp AS (
         SELECT

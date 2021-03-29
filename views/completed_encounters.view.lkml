@@ -32,7 +32,8 @@ view: completed_encounters {
           FROM patient_encounter_summary
         ) AS lp ON (lp.data ->> 'uuid')::uuid = e.lab_patient_uuid
         WHERE e.encounter_type = 'lab_test_authorization' AND
-        (e.order_request_status in ('approved', 'rejected')) AND lp.is_deleted = false
+        (e.order_request_status in ('approved', 'rejected')) AND
+        (lp.is_deleted is NULL OR lp.is_deleted = false)
       ),
       nlp AS (
         SELECT
@@ -65,7 +66,8 @@ view: completed_encounters {
             (e.encounter_type = 'cc-intake' and e.visit_status = 'completed') OR
             (e.encounter_type = 'group-session' and (e.visit_status in ('webinar_attended', 'webinar_recording_viewed'))) OR
             (e.encounter_type = 'research-data') OR
-            (e.encounter_type = 'scp')) AND p.is_deleted = false
+            (e.encounter_type = 'scp')) AND
+            (p.is_deleted is NULL OR p.is_deleted = false)
       ),
       mgr AS (
         SELECT

@@ -130,7 +130,7 @@ view: clinical_operations {
           JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
           GROUP BY p.data->'id'
         ) AS po ON prt.data->'id' = po.id
-        WHERE pes.is_deleted = 'false'
+        WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)
       )
       SELECT * from final ;;
   }

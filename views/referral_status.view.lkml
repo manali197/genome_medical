@@ -133,7 +133,8 @@ view: referral_status {
           JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
           GROUP BY p.data->'id'
         ) AS po ON prt.data->'id' = po.id
-        WHERE NOT (p.patient_email ILIKE '%+%test%@%') AND p.is_deleted = false
+        WHERE NOT (p.patient_email ILIKE '%+%test%@%') AND
+        (p.is_deleted is NULL OR p.is_deleted = false)
     ;;
   }
 

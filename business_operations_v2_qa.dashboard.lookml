@@ -405,7 +405,7 @@
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 6
-    col: 12
+    col: 6
     width: 6
     height: 4
   - title: Total Completed Encounters - YTD
@@ -437,7 +437,7 @@
       Referral Channel: completed_encounters.referral_channel
     row: 6
     col: 0
-    width: 12
+    width: 6
     height: 4
   - title: 2021 Completed Encounters by Referral Program
     name: 2021 Completed Encounters by Referral Program
@@ -614,8 +614,8 @@
     col: 0
     width: 12
     height: 6
-  - name: All-Time New Patients Seen (2018 - 2021)
-    title: All-Time New Patients Seen (2018 - 2021)
+  - title: All-Time New Patients Seen (2018 - 2021)
+    name: All-Time New Patients Seen (2018 - 2021)
     model: analytics_qa
     explore: completed_encounters
     type: single_value
@@ -675,8 +675,8 @@
     col: 12
     width: 12
     height: 2
-  - name: Total New Patients Seen - YTD
-    title: Total New Patients Seen - YTD
+  - title: Total New Patients Seen - YTD
+    name: Total New Patients Seen - YTD
     model: analytics_qa
     explore: completed_encounters
     type: single_value
@@ -887,6 +887,49 @@
     col: 0
     width: 24
     height: 2
+  - title: Avg Encounters Per Day - Previous Month
+    name: Avg Encounters Per Day - Previous Month
+    model: analytics_qa
+    explore: completed_encounters
+    type: single_value
+    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
+    fill_fields: [completed_encounters.date_of_service_month]
+    filters:
+      completed_encounters.referral_program: ''
+      completed_encounters.referral_channel: ''
+    sorts: [completed_encounters.date_of_service_month]
+    limit: 500
+    column_limit: 50
+    dynamic_fields: [{table_calculation: average_daily_encounters_per_month, label: Average
+          Daily Encounters per Month, expression: 'round(mean(${completed_encounters.count_completed_encounters}
+          / diff_days(${completed_encounters.date_of_service_month},now())), 2)',
+        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
+        _type_hint: number}]
+    filter_expression: extract_months(${completed_encounters.date_of_service_month})
+      = extract_months(add_months(-1, now())) AND extract_years(${completed_encounters.date_of_service_year})
+      = extract_years(now())
+    custom_color_enabled: true
+    show_single_value_title: true
+    show_comparison: false
+    comparison_type: change
+    comparison_reverse_colors: true
+    show_comparison_label: true
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    single_value_title: ''
+    comparison_label: ''
+    series_types: {}
+    defaults_version: 1
+    note_state: expanded
+    note_display: above
+    note_text: ''
+    hidden_fields: [completed_encounters.count_completed_encounters]
+    listen: {}
+    row: 6
+    col: 12
+    width: 6
+    height: 4
   filters:
   - name: Referral Program
     title: Referral Program
@@ -908,6 +951,9 @@
     default_value: ''
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: analytics_qa
     explore: completed_encounters
     listens_to_filters: []

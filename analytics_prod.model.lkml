@@ -76,12 +76,12 @@ explore: documents {
   }
   join: patient_encounter_summary {
     type: left_outer
-    sql_on: ${document_owners.document_owner_type_name} = 'patient' AND ${document_owners.document_owner_id} = ${patient_encounter_summary.patient_id};;
+    sql_on: ${document_owners.document_owner_type_name} = 'patient' AND ${document_owners.document_owner_id} = ${patient_encounter_summary.patient_uuid};;
     relationship: many_to_one
   }
   join: gene_test_orders {
     type: left_outer
-    sql_on: ${document_owners.document_owner_type_name} = 'gene_test_order' AND ${document_owners.document_owner_id} = ${gene_test_orders.id};;
+    sql_on: ${document_owners.document_owner_type_name} = 'gene_test_order' AND ${document_owners.document_owner_id} = ${gene_test_orders.order_uuid};;
     relationship: many_to_one
   }
 }

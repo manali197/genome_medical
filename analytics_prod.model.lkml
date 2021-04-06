@@ -63,6 +63,29 @@ explore: gene_test_orders {
   }
 }
 
+explore: documents {
+  join: document_activity {
+    type: left_outer
+    sql_on: ${documents.id} = ${document_activity.document_id} ;;
+    relationship: one_to_many
+  }
+  join: document_owners {
+    type: left_outer
+    sql_on: ${documents.id} = ${document_owners.document_id} ;;
+    relationship: one_to_many
+  }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${document_owners.document_owner_type_name} = 'patient' AND ${document_owners.document_owner_id} = ${patient_encounter_summary.patient_id};;
+    relationship: many_to_one
+  }
+  join: gene_test_orders {
+    type: left_outer
+    sql_on: ${document_owners.document_owner_type_name} = 'gene_test_order' AND ${document_owners.document_owner_id} = ${gene_test_orders.id};;
+    relationship: many_to_one
+  }
+}
+
 explore: completed_encounters {
 
 }

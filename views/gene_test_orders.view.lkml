@@ -120,6 +120,11 @@ view: gene_test_orders {
     sql: ${TABLE}."order_status" ;;
   }
 
+  dimension: id {
+    type: number
+    sql: ${TABLE}."id" ;;
+  }
+
   dimension: order_uuid {
     type: string
     primary_key: yes

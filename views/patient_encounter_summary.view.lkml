@@ -207,13 +207,13 @@ view: patient_encounter_summary {
     sql: ${TABLE}."referral_reason_ids" ;;
   }
 
-  dimension: top_referral_programs {
-    type: string
-    sql: CASE
-              WHEN ${referral_program} IN (${top_referral_programs.referral_program}) THEN ${referral_program}
-              ELSE 'Other'
-         END;;
-  }
+  #dimension: top_referral_programs {
+  #  type: string
+  #  sql: CASE
+  #            WHEN ${referral_program} IN (${top_referral_programs.referral_program}) THEN ${referral_program}
+  #            ELSE 'Other'
+  #       END;;
+  #}
 
   # Lab patient fields:
   dimension: lab_patient_first_name {

@@ -5,7 +5,7 @@
   elements:
   - title: Completed Encounter Trends - Monthly (Last 6 Months)
     name: Completed Encounter Trends - Monthly (Last 6 Months)
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_column
     fields: [completed_encounters.date_of_service_month, completed_encounters.referral_channel,
@@ -62,7 +62,7 @@
     height: 5
   - title: Completed Encounter Trends - Weekly
     name: Completed Encounter Trends - Weekly
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_line
     fields: [completed_encounters.date_of_service_week, completed_encounters.count_completed_encounters]
@@ -118,7 +118,7 @@
     height: 7
   - title: Completed Encounter - Quarterly Trend (Last 5 Quarters)
     name: Completed Encounter - Quarterly Trend (Last 5 Quarters)
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_column
     fields: [completed_encounters.date_of_service_quarter, completed_encounters.referral_channel,
@@ -176,7 +176,7 @@
     height: 5
   - title: New Patients Trends - Quarterly (Last 5 Quarters)
     name: New Patients Trends - Quarterly (Last 5 Quarters)
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_column
     fields: [completed_encounters.date_of_service_quarter, completed_encounters.referral_channel,
@@ -231,7 +231,7 @@
     height: 6
   - title: New Patients Trends - Monthly (Last 6 Months)
     name: New Patients Trends - Monthly (Last 6 Months)
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_column
     fields: [completed_encounters.date_of_service_month, completed_encounters.referral_channel,
@@ -288,7 +288,7 @@
     height: 6
   - title: New Patients Trends - Weekly
     name: New Patients Trends - Weekly
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_line
     fields: [completed_encounters.date_of_service_week, completed_encounters.count_new_patients]
@@ -344,7 +344,7 @@
     height: 6
   - title: All-Time Completed Encounters (2018 - 2021)
     name: All-Time Completed Encounters (2018 - 2021)
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters]
@@ -371,7 +371,7 @@
     height: 2
   - title: Total Completed Encounters - MTD
     name: Total Completed Encounters - MTD
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
@@ -410,7 +410,7 @@
     height: 4
   - title: Total Completed Encounters - YTD
     name: Total Completed Encounters - YTD
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_year]
@@ -441,7 +441,7 @@
     height: 4
   - title: 2021 Completed Encounters by Referral Program
     name: 2021 Completed Encounters by Referral Program
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_pie
     fields: [completed_encounters.referral_program, completed_encounters.count_completed_encounters]
@@ -485,7 +485,7 @@
     height: 7
   - title: Avg Encounters Per Day - MTD
     name: Avg Encounters Per Day - MTD
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
@@ -524,7 +524,7 @@
     height: 4
   - title: New Patients Seen in 2021 by US State
     name: New Patients Seen in 2021 by US State
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_grid
     fields: [completed_encounters.patient_state, completed_encounters.count_new_patients]
@@ -616,7 +616,7 @@
     height: 6
   - title: All-Time New Patients Seen (2018 - 2021)
     name: All-Time New Patients Seen (2018 - 2021)
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_new_patients]
@@ -677,7 +677,7 @@
     height: 2
   - title: Total New Patients Seen - YTD
     name: Total New Patients Seen - YTD
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_new_patients]
@@ -755,7 +755,7 @@
     height: 2
   - title: Total New Patients Seen - MTD
     name: Total New Patients Seen - MTD
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month,
@@ -790,7 +790,7 @@
     height: 2
   - title: 2021 Completed Encounters by Referral Channel
     name: 2021 Completed Encounters by Referral Channel
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: looker_pie
     fields: [completed_encounters.count_completed_encounters, completed_encounters.referral_channel]
@@ -889,7 +889,7 @@
     height: 2
   - title: Avg Encounters Per Day - Previous Month
     name: Avg Encounters Per Day - Previous Month
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
@@ -941,7 +941,7 @@
       type: tag_list
       display: popover
       options: []
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     listens_to_filters: []
     field: completed_encounters.referral_program
@@ -954,7 +954,7 @@
     ui_config:
       type: advanced
       display: popover
-    model: analytics_prod
+    model: biz_ops_prod
     explore: completed_encounters
     listens_to_filters: []
     field: completed_encounters.referral_channel

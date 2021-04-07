@@ -2,7 +2,6 @@ connection: "analytics_db"
 
 include: "/views/*.view.lkml"
 include: "/dashboards/*.dashboard"
-include: "business_operations_v2.dashboard"
 include: "referral_status_v2_prod.dashboard"
 
 # explore: patient_encounter_summary {

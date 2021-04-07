@@ -314,7 +314,7 @@ view: completed_encounters {
     type: duration
     label: "Time to Schedule from Referral"
     sql_start:  ${TABLE}.date_of_service;;
-    sql_end:  ${TABLE}.original_referral_raw;;
+    sql_end:  ${TABLE}.original_referral_date;;
   }
 
   measure: count {

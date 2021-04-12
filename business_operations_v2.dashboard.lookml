@@ -1,5 +1,5 @@
-- dashboard: business_operations_v2_prod
-  title: Business Operations v2 (Prod)
+- dashboard: business_operations_v2_prod__copy
+  title: Business Operations v2 (Prod) - copy
   layout: newspaper
   preferred_viewer: dashboards
   elements:
@@ -758,8 +758,7 @@
     model: biz_ops_prod
     explore: completed_encounters
     type: single_value
-    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month,
-      completed_encounters.count_new_patients]
+    fields: [completed_encounters.date_of_service_month, completed_encounters.count_new_patients]
     fill_fields: [completed_encounters.date_of_service_month]
     filters:
       completed_encounters.date_of_service_month: 1 months

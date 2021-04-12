@@ -74,6 +74,8 @@ view: referral_status {
           etr.provider_indicated_specialty AS provider_indicated_specialty,
           pos.enabled AS patient_outreach_setting_enabled,
           pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
+          pos.outreach_window_completed_date AS patient_outreach_setting_outreach_window_completed_date,
+          pot.outreaches AS patient_outreach_events,
           coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
           coalesce(etr.drug_interaction, '') AS drug_interaction,
           coalesce(etr.no_of_interactions, '') AS no_of_interactions,
@@ -347,9 +349,15 @@ view: referral_status {
     sql: ${TABLE}.patient_outreach_setting_enabled ;;
   }
 
-  dimension_group: patient_outreach_setting_outreach_window_completed {
-    type: time
+  dimension: patient_outreach_setting_outreach_window_completed {
     description: "Patient Outreach Window Completed"
+    type: yesno
+    sql: ${TABLE}.patient_outreach_setting_outreach_window_completed ;;
+  }
+
+  dimension_group: patient_outreach_setting_outreach_window_completed_date {
+    type: time
+    description: "Patient Outreach Window Completed Date"
     timeframes: [
       raw,
       time,
@@ -362,6 +370,13 @@ view: referral_status {
       year
     ]
     sql: ${TABLE}."patient_outreach_setting_outreach_window_completed" ;;
+  }
+
+  # nullif(jsonb_extract_path(${TABLE}.data, 'id')::text, '')::int ;;
+  dimension: patient_outreach_events {
+    description: "Patient Outreach Events - up to six"
+    type: string
+    sql: ${TABLE}.patient_outreach_events::text ;;
   }
 
   dimension: relationship_to_patient {
@@ -769,4 +784,7 @@ view: referral_status {
     drill_fields: [visit_provider, referral_program, max_visit_referral_to_completion_time_with_ror_in_days]
     value_format_name: decimal_2
   }
+
+  #is_first_visit_scheduled_encounter
+
 }

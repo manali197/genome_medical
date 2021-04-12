@@ -1,5 +1,5 @@
-- dashboard: business_operations_v2_prod__copy
-  title: Business Operations v2 (Prod) - copy
+- dashboard: business_operations_v2_qa
+  title: Business Operations v2 (QA)
   layout: newspaper
   preferred_viewer: dashboards
   elements:

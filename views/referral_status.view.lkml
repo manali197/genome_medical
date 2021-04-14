@@ -10,8 +10,7 @@ view: referral_status {
             GROUP BY c.patient_uuid
         ),
         patient_outreach AS (
-          SELECT patient_uuid,
-            array_to_json(array_agg('date: ' || outreach.outreach_date || ', outcome: ' || coalesce(outreach.outreach_outcome, ''))) AS outreaches
+          SELECT patient_uuid, jsonb_agg(outreach) AS outreaches
           FROM (
             SELECT patient_uuid AS patient_uuid,
               date_time AS outreach_date,
@@ -376,7 +375,7 @@ view: referral_status {
   dimension: patient_outreach_events {
     description: "Patient Outreach Events - up to six"
     type: string
-    sql: ${TABLE}.patient_outreach_events::text ;;
+    sql: ${TABLE}.patient_outreach_events ;;
   }
 
   dimension: relationship_to_patient {

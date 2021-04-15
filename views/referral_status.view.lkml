@@ -21,6 +21,20 @@ view: referral_status {
           WHERE rank <= 6
           GROUP BY patient_uuid
         ),
+        patient_outreach_before_encounter_creation AS (
+          SELECT e.encounter_uuid, jsonb_agg(outreach) AS outreaches
+          FROM (
+            SELECT patient_uuid AS patient_uuid,
+              date_time AS outreach_date,
+              communication_medium_subtype_name AS outreach_medium,
+              patient_communication_outcome_display_name AS outreach_outcome,
+              ROW_NUMBER() OVER (PARTITION BY patient_uuid ORDER BY date_time) AS rank
+            FROM patient_communication_details
+          ) outreach
+          LEFT JOIN encounter_details e ON e.user_uuid = patient_uuid AND outreach_date < e.created_at
+          WHERE rank <= 6
+          GROUP BY  e.encounter_uuid
+        ),
         test_orders AS (
           SELECT encounter_uuid AS encounter_uuid,
             string_agg(coalesce(nullif(status_reason, ''), order_status), ',' ORDER BY id ASC) AS order_status,
@@ -75,6 +89,7 @@ view: referral_status {
           pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
           pos.outreach_window_completed_date AS patient_outreach_setting_outreach_window_completed_date,
           pot.outreaches AS patient_outreach_events,
+          potec.outreaches AS patient_outreach_events_before_encounter,
           coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
           coalesce(etr.drug_interaction, '') AS drug_interaction,
           coalesce(etr.no_of_interactions, '') AS no_of_interactions,
@@ -112,6 +127,7 @@ view: referral_status {
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
         LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
+        LEFT JOIN patient_outreach_before_encounter_creation potec ON potec.encounter_uuid = etr.encounter_uuid
         LEFT JOIN first_visit_status_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
         LEFT JOIN first_visit_status_encounters fvc
           ON fvc.encounter_uuid = etr.encounter_uuid AND fvc.position = 1 AND fvc.visit_status = 'completed'
@@ -371,11 +387,16 @@ view: referral_status {
     sql: ${TABLE}."patient_outreach_setting_outreach_window_completed" ;;
   }
 
-  # nullif(jsonb_extract_path(${TABLE}.data, 'id')::text, '')::int ;;
   dimension: patient_outreach_events {
     description: "Patient Outreach Events - up to six"
     type: string
     sql: ${TABLE}.patient_outreach_events ;;
+  }
+
+  dimension: patient_outreach_events_before_encounter {
+    description: "Patient Outreach Events (before encounter creation)"
+    type: string
+    sql: ${TABLE}.patient_outreach_events_before_encounter ;;
   }
 
   dimension: relationship_to_patient {
@@ -592,29 +613,11 @@ view: referral_status {
     sql: jsonb_array_length(${TABLE}.patient_outreach_events) ;;
   }
 
-  ## SELECT *
-  ## FROM referral_status, jsonb_array_elements(referral_status.patient_outreach_events::jsonb) events
-  ## WHERE (events.value->>'outreach_date')::timestamp < referral_status.created_at
-  ## jsonb_array_length(
-  ##       jsonb_agg(
-  ##           SELECT events
-  ##           FROM ${TABLE}, jsonb_array_elements(${TABLE}.patient_outreach_events::jsonb) events
-  ##           WHERE (events.value->>'outreach_date')::timestamp < ${TABLE}.created_at
-  ##       )
-  ##     )
   dimension: number_of_outreaches_before_encounter_creation {
     type: number
     label: "Number of outreaches (max 6) before encounter creation"
-    sql: (SELECT count(*)
-      FROM (
-        SELECT patient_uuid AS patient_uuid,
-          date_time AS outreach_date,
-          patient_communication_outcome_display_name AS outreach_outcome
-        FROM patient_communication_details
-        WHERE patient_uuid = ${TABLE}.patient_uuid and date_time < ${TABLE}.created_at
-      ) outreach);;
+    sql: jsonb_array_length(${TABLE}.patient_outreach_events_before_encounter);;
   }
-
 
   set: boxplot_drill {
     fields: [patient_first_name,
@@ -818,7 +821,7 @@ view: referral_status {
   measure: average_number_of_outreaches_before_first_visit_scheduled {
     type: average
     description: "Average number of outreaches before first appointment was scheduled"
-    filters: [number_of_outreaches_before_encounter_creation: ">=0", is_first_visit_scheduled_encounter: "Yes"]
+    filters: [number_of_outreaches_before_encounter_creation: ">=0", is_first_visit_scheduled_encounter: "Yes", created_at_date: "-NULL"]
     sql: ${number_of_outreaches_before_encounter_creation} ;;
     drill_fields: [visit_provider, referral_program, average_number_of_outreaches_before_first_visit_scheduled]
     value_format_name: decimal_2

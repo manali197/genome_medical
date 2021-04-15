@@ -697,6 +697,14 @@ view: referral_status {
     drill_fields: [encounter_type, referral_program,consultation_type, count_encounters]
   }
 
+  measure: count_patients_with_encounters {
+    type: count_distinct
+    description: "Number of patients with at least one encounter"
+    sql: ${patient_uuid} ;;
+    filters: [encounter_uuid: "-NULL", encounter_type: "visit"]
+    drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
+  }
+
   measure: average_referral_to_scheduling_time_in_days {
     type: average
     label: "Average time (in days) between the referral date and date 1st appointment was created"

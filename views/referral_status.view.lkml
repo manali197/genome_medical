@@ -340,6 +340,17 @@ view: referral_status {
     sql: ${TABLE}.consultation_type ;;
   }
 
+  dimension: consultation_type_limited {
+    type: string
+   # sql: ${TABLE}.consultation_type ;;
+    sql: CASE WHEN TRIM(${TABLE}.consultation_type) in ('Get Started - No Results',
+                                                  'Get Started - w/Results',
+                                                  'Return of Results')
+              THEN TRIM(${TABLE}.consultation_type)
+              ELSE 'OTHERS'
+              END ;;
+  }
+
   dimension: requested_specialty {
     description: "Requested Specialty"
     type: string
@@ -683,7 +694,7 @@ view: referral_status {
   measure: count_encounters {
     type: count
     label: "Encounters Count"
-    drill_fields: [encounter_type, referral_program, count_encounters]
+    drill_fields: [encounter_type, referral_program,consultation_type, count_encounters]
   }
 
   measure: count_patients_with_encounters {

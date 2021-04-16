@@ -102,5 +102,10 @@ explore: clinical_operations {
 }
 
 explore: referral_status {
-
+  join: top_test {
+  type: left_outer
+  relationship: many_to_one
+  sql_on: ${referral_status.test_name} = ${top_test.test_name}
+          AND ${referral_status.testing_lab} = ${top_test.lab_name} ;;
+}
 }

@@ -85,6 +85,14 @@ explore: documents {
   }
 }
 
+explore: email_events {
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${email_events.recipient_type_name} = 'patient' AND ${email_events.recipient_uuid} = ${patient_encounter_summary.patient_uuid} ;;
+    relationship: many_to_one
+  }
+}
+
 explore: completed_encounters {
 
 }

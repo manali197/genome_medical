@@ -689,8 +689,8 @@ view: referral_status {
   measure: count_patients_with_encounters {
     type: count_distinct
     description: "Number of patients with at least one encounter"
+    filters: [encounter_uuid: "-NULL"]
     sql: ${patient_uuid} ;;
-    filters: [encounter_uuid: "-NULL", encounter_type: "visit"]
     drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
   }
 

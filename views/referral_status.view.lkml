@@ -705,6 +705,30 @@ view: referral_status {
     drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
   }
 
+  measure: total_patients_count {
+    type: count_distinct
+    sql: ${patient_uuid} ;;
+  }
+
+  dimension: dummy {
+    type: string
+    sql: 'abc' ;;
+  }
+
+  measure: count_patients_with_morethan_1_encounters {
+    type: count_distinct
+    description: "Number of patients with more than 1 encounter"
+    sql: ${patient_uuid} ;;
+    filters: [referral_visit_status: "Scheduled"]
+    drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
+  }
+
+  measure: percentage_patients_with_morethan1_encounter {
+    type: number
+    sql: 100* (${count}/${count_patients_with_encounters}) ;;
+    value_format_name: "percent_2"
+  }
+
   measure: average_referral_to_scheduling_time_in_days {
     type: average
     label: "Average time (in days) between the referral date and date 1st appointment was created"

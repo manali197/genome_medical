@@ -799,7 +799,7 @@ view: referral_status {
     type:  count_distinct
     description: "Number of patients with at least one outreach event"
     filters: [number_of_outreaches: ">=1"]
-    drill_fields: [referral_channel, referral_program, total_number_of_email_outreaches, total_number_of_phone_outreaches, count_patients_with_outreach]
+    drill_fields: [referral_channel, referral_program, number_of_email_outreaches, number_of_phone_outreaches, count_patients_with_outreach]
     sql: ${patient_uuid} ;;
   }
 

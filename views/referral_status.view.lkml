@@ -50,7 +50,9 @@ view: referral_status {
             string_agg(coalesce(nullif(status_reason, ''), order_status), ',' ORDER BY id ASC) AS order_status,
             string_agg(ordering_physician, ',' ORDER BY id ASC) AS ordering_physician,
             string_agg(gene_test_display_name, ',' ORDER BY id ASC) AS gene_test_display_name,
-            string_agg(lab_display_name, ',' ORDER BY id ASC) AS lab_display_name
+            string_agg(lab_display_name, ',' ORDER BY id ASC) AS lab_display_name,
+            min(created_at) AS created_at,
+            max(date_received_report) AS date_received_report
           FROM gene_test_orders
           GROUP BY encounter_uuid
         ),
@@ -110,6 +112,7 @@ view: referral_status {
           coalesce(etr.pharmd, '') AS pharmd,
           coalesce(etr.state_of_visit, '') AS state_of_visit,
           coalesce(p.patient_state, '') AS patient_state,
+          etr.test_recommended AS test_recommended,
           CASE
               WHEN etr.test_recommended IS NULL THEN 'Order Status Pending'
               WHEN lower(etr.test_recommended) = 'no' THEN 'Testing Not Recommended'
@@ -122,8 +125,10 @@ view: referral_status {
           CASE WHEN etr.encounter_type != 'lab_test_authorization' THEN gto.lab_display_name ELSE etr.lab END AS testing_lab,
           etr.type_of_test AS type_of_test,
           etr.date_test_ordered AS date_test_ordered,
-          etr.date_received_report AS date_received_report,
+          CASE WHEN etr.encounter_type = 'lab_test_authorization' THEN etr.date_received_report ELSE gto.date_received_report END AS date_received_report,
+          gto.created_at AS order_creation_date,
           etr.cap_sent_to_patient AS cap_sent_to_patient,
+          etr.ror_visit_status AS ror_visit_status,
           etr.ror_date_contacted AS ror_outreach_date,
           CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE coalesce(nullif(pa.status_reason, ''), pa.status) END AS preauth_form_status,
           CASE WHEN pa.encounter_uuid IS NULL THEN NULL ELSE pa.request_decision END AS preauth_decision,
@@ -465,6 +470,12 @@ view: referral_status {
     sql: ${TABLE}.state_of_visit ;;
   }
 
+  dimension: test_recommended {
+    description: "Was Test Recommended?"
+    type: string
+    sql: ${TABLE}.test_recommended ;;
+  }
+
   dimension: test_order_status {
     description: "Test Order Status"
     type: string
@@ -553,6 +564,23 @@ view: referral_status {
     sql: ${TABLE}."date_received_report" ;;
   }
 
+  dimension_group: order_creation_date {
+    type: time
+    description: "Date Order Created"
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_week,
+      week_of_year,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."order_creation_date" ;;
+  }
+
   dimension: cap_sent_to_patient {
     description: "Results/CAP Sent to Patient"
     type: string
@@ -574,6 +602,12 @@ view: referral_status {
       year
     ]
     sql: ${TABLE}."ror_outreach_date" ;;
+  }
+
+  dimension: ror_visit_status {
+    type: string
+    description: "RoR Visit Status"
+    sql: ${TABLE}.ror_visit_status ;;
   }
 
   dimension: is_first_visit_encounter {
@@ -736,22 +770,9 @@ view: referral_status {
     drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
   }
 
-  measure: total_number_of_email_outreaches {
-    type: sum
-    description: "Total number of outreaches by email"
-    sql: ${number_of_email_outreaches} ;;
-    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
-  }
-
-  measure: total_number_of_phone_outreaches {
-    type: sum
-    description: "Total number of outreaches by phone"
-    sql: ${number_of_phone_outreaches} ;;
-    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
-  }
-
   measure: total_patients_count {
     type: count_distinct
+    description: "Number of patients"
     sql: ${patient_uuid} ;;
   }
 
@@ -772,6 +793,60 @@ view: referral_status {
     type: number
     sql: 100* (${count}/${count_patients_with_encounters}) ;;
     value_format_name: "percent_2"
+  }
+
+  measure: count_patients_with_outreach {
+    type:  count_distinct
+    description: "Number of patients with at least one outreach event"
+    filters: [number_of_outreaches: ">=1"]
+    drill_fields: [referral_channel, referral_program, total_number_of_email_outreaches, total_number_of_phone_outreaches, count_patients_with_outreach]
+    sql: ${patient_uuid} ;;
+  }
+
+  measure: count_patients_with_appointment {
+    type:  count_distinct
+    description: "Number of patients with at least one appointment"
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled"]
+    drill_fields: [referral_channel, referral_program, visit_status, count_patients_with_appointment]
+    sql: ${patient_uuid} ;;
+  }
+
+  measure: count_patients_with_order {
+    type:  count_distinct
+    description: "Number of patients with test recommended"
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL"]
+    drill_fields: [referral_channel, referral_program, test_order_status, count_patients_with_order]
+    sql: ${patient_uuid} ;;
+  }
+
+  measure: count_patients_with_ror {
+    type:  count_distinct
+    description: "Number of patients with followup outreach done"
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", ror_outreach_date_date: "-NULL"]
+    drill_fields: [referral_channel, referral_program, ror_visit_status, count_patients_with_ror]
+    sql: ${patient_uuid} ;;
+  }
+
+  measure: count_patients_with_result_sent {
+    type:  count_distinct
+    description: "Number of patients with results sent"
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", ror_outreach_date_date: "-NULL", date_received_report_date: "-NULL"]
+    drill_fields: [referral_channel, referral_program, count_patients_with_result_sent]
+    sql: ${patient_uuid} ;;
+  }
+
+  measure: total_number_of_email_outreaches {
+    type: sum
+    description: "Total number of outreaches by email"
+    sql: ${number_of_email_outreaches} ;;
+    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
+  }
+
+  measure: total_number_of_phone_outreaches {
+    type: sum
+    description: "Total number of outreaches by phone"
+    sql: ${number_of_phone_outreaches} ;;
+    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
   }
 
   measure: average_referral_to_scheduling_time_in_days {

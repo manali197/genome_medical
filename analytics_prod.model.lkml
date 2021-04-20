@@ -106,5 +106,14 @@ explore: customer_satisfaction {
 }
 
 explore: referral_status {
-
+  join: top_test {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${referral_status.test_name} = ${top_test.test_name}  ;;
+  }
+  join: top_labs {
+    type: left_outer
+    relationship: many_to_one
+    sql_on:  ${referral_status.testing_lab} = ${top_labs.lab_name} ;;
+  }
 }

@@ -14,11 +14,22 @@ view: referral_status {
           FROM (
             SELECT patient_uuid AS patient_uuid,
               date_time AS outreach_date,
+              communication_medium_subtype_name AS outreach_medium,
               patient_communication_outcome_display_name AS outreach_outcome,
               ROW_NUMBER() OVER (PARTITION BY patient_uuid ORDER BY date_time) AS rank
             FROM patient_communication_details
           ) outreach
-          WHERE rank <= 6
+          GROUP BY patient_uuid
+        ),
+        patient_outreach_media AS (
+          SELECT patient_uuid, jsonb_object_agg(outreach.outreach_medium, outreach.outreach_count) AS outreaches
+          FROM (
+            SELECT patient_uuid AS patient_uuid,
+              communication_medium_subtype_name AS outreach_medium,
+              count(*) AS outreach_count
+            FROM patient_communication_details
+            GROUP BY patient_uuid, communication_medium_subtype_name
+          ) outreach
           GROUP BY patient_uuid
         ),
         patient_outreach_before_encounter_creation AS (
@@ -32,8 +43,7 @@ view: referral_status {
             FROM patient_communication_details
           ) outreach
           LEFT JOIN encounter_details e ON e.user_uuid = patient_uuid AND outreach_date < e.created_at
-          WHERE rank <= 6
-          GROUP BY  e.encounter_uuid
+          GROUP BY e.encounter_uuid
         ),
         test_orders AS (
           SELECT encounter_uuid AS encounter_uuid,
@@ -79,6 +89,7 @@ view: referral_status {
             WHEN etr.encounter_type = 'scp' AND etr.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
             ELSE etr.encounter_type
           END AS encounter_type,
+          etr.encounter_subtype AS encounter_subtype,
           etr.visit_status AS visit_status,
           etr.date_of_service AS date_of_service,
           etr.created_at AS created_at,
@@ -89,6 +100,7 @@ view: referral_status {
           pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
           pos.outreach_window_completed_date AS patient_outreach_setting_outreach_window_completed_date,
           pot.outreaches AS patient_outreach_events,
+          potm.outreaches AS patient_outreach_media,
           potec.outreaches AS patient_outreach_events_before_encounter,
           coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
           coalesce(etr.drug_interaction, '') AS drug_interaction,
@@ -126,6 +138,7 @@ view: referral_status {
         FROM patient_encounter_summary AS p
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
+        LEFT JOIN patient_outreach_media potm ON potm.patient_uuid = p.patient_uuid
         LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
         LEFT JOIN patient_outreach_before_encounter_creation potec ON potec.encounter_uuid = etr.encounter_uuid
         LEFT JOIN first_visit_status_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
@@ -293,6 +306,12 @@ view: referral_status {
     sql: ${TABLE}.encounter_type ;;
   }
 
+  dimension: encounter_subtype {
+    description: "Encounter Sub-type"
+    type: string
+    sql: ${TABLE}.encounter_subtype ;;
+  }
+
   dimension: visit_status {
     description: "Visit Status"
     type: string
@@ -326,12 +345,6 @@ view: referral_status {
     description: "Referral Channel"
     type: string
     sql: ${TABLE}.referral_channel ;;
-  }
-
-  dimension: encounter_subtype {
-    description: "Encounter Subtype"
-    type: string
-    sql: ${TABLE}.encounter_subtype ;;
   }
 
   dimension: consultation_type {
@@ -402,6 +415,12 @@ view: referral_status {
     description: "Patient Outreach Events - up to six"
     type: string
     sql: ${TABLE}.patient_outreach_events ;;
+  }
+
+  dimension: patient_outreach_media {
+    description: "Patient Outreach Media"
+    type: string
+    sql: ${TABLE}.patient_outreach_media ;;
   }
 
   dimension: patient_outreach_events_before_encounter {
@@ -620,13 +639,25 @@ view: referral_status {
 
   dimension: number_of_outreaches {
     type: number
-    label: "Number of outreaches (max 6)"
+    label: "Number of outreaches"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events) ;;
+  }
+
+  dimension: number_of_email_outreaches {
+    type: number
+    label: "Number of outreaches via email"
+    sql: coalesce(${TABLE}.patient_outreach_media->'email', '0'::jsonb)::int ;;
+  }
+
+  dimension: number_of_phone_outreaches {
+    type: number
+    label: "Number of outreaches via phone"
+    sql: coalesce(${TABLE}.patient_outreach_media->'phone', '0'::jsonb)::int ;;
   }
 
   dimension: number_of_outreaches_before_encounter_creation {
     type: number
-    label: "Number of outreaches (max 6) before encounter creation"
+    label: "Number of outreaches before encounter creation"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events_before_encounter);;
   }
 
@@ -704,6 +735,21 @@ view: referral_status {
     sql: ${patient_uuid} ;;
     drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
   }
+
+  measure: total_number_of_email_outreaches {
+    type: sum
+    description: "Total number of outreaches by email"
+    sql: ${number_of_email_outreaches} ;;
+    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
+  }
+
+  measure: total_number_of_phone_outreaches {
+    type: sum
+    description: "Total number of outreaches by phone"
+    sql: ${number_of_phone_outreaches} ;;
+    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
+  }
+
 
   measure: average_referral_to_scheduling_time_in_days {
     type: average

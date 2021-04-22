@@ -21,7 +21,6 @@ view: referral_status {
           ) outreach
           GROUP BY patient_uuid
         ),
-
         patient_outreach_before_encounter_creation AS (
           SELECT e.encounter_uuid, jsonb_agg(outreach) AS outreaches
           FROM (
@@ -410,12 +409,6 @@ view: referral_status {
     sql: ${TABLE}.patient_outreach_events ;;
   }
 
-  dimension: patient_outreach_media {
-    description: "Patient Outreach Media"
-    type: string
-    sql: ${TABLE}.patient_outreach_media ;;
-  }
-
   dimension: patient_outreach_events_before_encounter {
     description: "Patient Outreach Events (before encounter creation)"
     type: string
@@ -665,18 +658,6 @@ view: referral_status {
     sql: jsonb_array_length(${TABLE}.patient_outreach_events) ;;
   }
 
-  dimension: number_of_email_outreaches {
-    type: number
-    label: "Number of outreaches via email"
-    sql: coalesce(${TABLE}.patient_outreach_media->'email', '0'::jsonb)::int ;;
-  }
-
-  dimension: number_of_phone_outreaches {
-    type: number
-    label: "Number of outreaches via phone"
-    sql: coalesce(${TABLE}.patient_outreach_media->'phone', '0'::jsonb)::int ;;
-  }
-
   dimension: number_of_outreaches_before_encounter_creation {
     type: number
     label: "Number of outreaches before encounter creation"
@@ -795,7 +776,7 @@ view: referral_status {
     type:  count_distinct
     description: "Number of patients with at least one outreach event"
     filters: [number_of_outreaches: ">=1"]
-    drill_fields: [referral_channel, referral_program, number_of_email_outreaches, number_of_phone_outreaches, count_patients_with_outreach]
+    drill_fields: [referral_channel, referral_program, count_patients_with_outreach]
     sql: ${patient_uuid} ;;
   }
 
@@ -829,20 +810,6 @@ view: referral_status {
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", ror_outreach_date_date: "-NULL", date_received_report_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, count_patients_with_result_sent]
     sql: ${patient_uuid} ;;
-  }
-
-  measure: total_number_of_email_outreaches {
-    type: sum
-    description: "Total number of outreaches by email"
-    sql: ${number_of_email_outreaches} ;;
-    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
-  }
-
-  measure: total_number_of_phone_outreaches {
-    type: sum
-    description: "Total number of outreaches by phone"
-    sql: ${number_of_phone_outreaches} ;;
-    drill_fields: [referral_channel, referral_program, total_number_of_phone_outreaches]
   }
 
   measure: average_referral_to_scheduling_time_in_days {

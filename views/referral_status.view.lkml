@@ -779,6 +779,14 @@ view: referral_status {
     drill_fields: [referral_channel, referral_program, count_patients_with_scheduled_encounters]
   }
 
+  measure: count_patients_with_morethan_1_encounters {
+    type: count_distinct
+    description: "Number of patients with at least 1 visit scheduled"
+    sql: ${patient_uuid} ;;
+    filters: [referral_visit_status: "Scheduled"]
+    drill_fields: [referral_channel, referral_program, count_patients_with_morethan_1_encounters]
+  }
+
   measure: percentage_patients_with_morethan1_encounter {
     type: number
     sql: 100* (${count_patients_with_encounters}/${total_patients_count}) ;;

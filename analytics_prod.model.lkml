@@ -116,4 +116,9 @@ explore: referral_status {
     relationship: many_to_one
     sql_on:  ${referral_status.testing_lab} = ${top_labs.lab_name} ;;
   }
+  join: gene_test_orders {
+    type: left_outer
+    sql_on: ${referral_status.encounter_uuid} = ${gene_test_orders.encounter_uuid} ;;
+    relationship: one_to_many
+  }
 }

@@ -562,11 +562,24 @@ view: referral_status {
     sql: ${TABLE}."order_creation_date" ;;
   }
 
-  dimension: cap_sent_to_patient {
+
+  dimension_group: cap_sent_to_patient {
+    type: time
     description: "Results/CAP Sent to Patient"
-    type: string
-    sql: ${TABLE}.cap_sent_to_patient ;;
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_week,
+      week_of_year,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."cap_sent_to_patient" ;;
   }
+
 
   dimension_group: ror_outreach_date {
     type: time
@@ -799,7 +812,7 @@ view: referral_status {
   measure: count_patients_with_ror {
     type:  count_distinct
     description: "Number of patients with followup outreach done"
-    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", ror_outreach_date_date: "-NULL"]
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", consultation_type: "%return of result%"]
     drill_fields: [referral_channel, referral_program, ror_visit_status, count_patients_with_ror]
     sql: ${patient_uuid} ;;
   }
@@ -807,7 +820,7 @@ view: referral_status {
   measure: count_patients_with_result_sent {
     type:  count_distinct
     description: "Number of patients with results sent"
-    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", ror_outreach_date_date: "-NULL", date_received_report_date: "-NULL"]
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", consultation_type: "%return of result%", date_received_report_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, count_patients_with_result_sent]
     sql: ${patient_uuid} ;;
   }

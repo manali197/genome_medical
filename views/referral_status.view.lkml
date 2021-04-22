@@ -92,7 +92,6 @@ view: referral_status {
           pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
           pos.outreach_window_completed_date AS patient_outreach_setting_outreach_window_completed_date,
           pot.outreaches AS patient_outreach_events,
-          potm.outreaches AS patient_outreach_media,
           potec.outreaches AS patient_outreach_events_before_encounter,
           coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
           coalesce(etr.drug_interaction, '') AS drug_interaction,
@@ -133,7 +132,6 @@ view: referral_status {
         FROM patient_encounter_summary AS p
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
-        LEFT JOIN patient_outreach_media potm ON potm.patient_uuid = p.patient_uuid
         LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
         LEFT JOIN patient_outreach_before_encounter_creation potec ON potec.encounter_uuid = etr.encounter_uuid
         LEFT JOIN first_visit_status_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1

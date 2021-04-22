@@ -1044,14 +1044,14 @@
     - model: analytics_qa
       explore: referral_status
       type: single_value
-      fields: [referral_status.count_patients_with_morethan_1_encounters, referral_status.count,
+      fields: [referral_status.count_patients_with_scheduled_encounters, referral_status.count,
         referral_status.dummy, referral_status.patient_uuid]
       filters:
         referral_status.count: ">1"
-      sorts: [referral_status.count_patients_with_morethan_1_encounters desc]
+      sorts: [referral_status.count_patients_with_scheduled_encounters desc]
       limit: 5000
       dynamic_fields: [{table_calculation: more_than_1_encounters, label: More than
-            1 encounters, expression: 'sum(${referral_status.count_patients_with_morethan_1_encounters})',
+            1 encounters, expression: 'sum(${referral_status.count_patients_with_scheduled_encounters})',
           value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
           _type_hint: number}]
       custom_color_enabled: true
@@ -1075,7 +1075,7 @@
       header_text_alignment: left
       header_font_size: 12
       rows_font_size: 12
-      hidden_fields: [referral_status.count, referral_status.count_patients_with_morethan_1_encounters,
+      hidden_fields: [referral_status.count, referral_status.count_patients_with_scheduled_encounters,
         referral_status.dummy, referral_status.patient_uuid]
       x_axis_gridlines: false
       y_axis_gridlines: true
@@ -1113,7 +1113,7 @@
       join_fields:
       - field_name: referral_status.dummy
         source_field_name: referral_status.dummy
-    hidden_fields: [referral_status.patient_uuid, referral_status.dummy, referral_status.count_patients_with_morethan_1_encounters,
+    hidden_fields: [referral_status.patient_uuid, referral_status.dummy, referral_status.count_patients_with_scheduled_encounters,
       referral_status.count, more_than_1_encounters, referral_status.total_patients_count]
     type: single_value
     series_types: {}

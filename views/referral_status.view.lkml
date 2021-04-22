@@ -21,17 +21,7 @@ view: referral_status {
           ) outreach
           GROUP BY patient_uuid
         ),
-        patient_outreach_media AS (
-          SELECT patient_uuid, jsonb_object_agg(outreach.outreach_medium, outreach.outreach_count) AS outreaches
-          FROM (
-            SELECT patient_uuid AS patient_uuid,
-              communication_medium_subtype_name AS outreach_medium,
-              count(*) AS outreach_count
-            FROM patient_communication_details
-            GROUP BY patient_uuid, communication_medium_subtype_name
-          ) outreach
-          GROUP BY patient_uuid
-        ),
+
         patient_outreach_before_encounter_creation AS (
           SELECT e.encounter_uuid, jsonb_agg(outreach) AS outreaches
           FROM (
@@ -781,17 +771,17 @@ view: referral_status {
     sql: 'abc' ;;
   }
 
-  measure: count_patients_with_morethan_1_encounters {
+  measure: count_patients_with_scheduled_encounters {
     type: count_distinct
-    description: "Number of patients with more than 1 encounter"
+    description: "Number of patients with at least 1 visit scheduled"
     sql: ${patient_uuid} ;;
     filters: [referral_visit_status: "Scheduled"]
-    drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
+    drill_fields: [referral_channel, referral_program, count_patients_with_scheduled_encounters]
   }
 
   measure: percentage_patients_with_morethan1_encounter {
     type: number
-    sql: 100* (${count}/${count_patients_with_encounters}) ;;
+    sql: 100* (${count_patients_with_encounters}/${total_patients_count}) ;;
     value_format_name: "percent_2"
   }
 

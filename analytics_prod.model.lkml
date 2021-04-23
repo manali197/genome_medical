@@ -121,4 +121,9 @@ explore: referral_status {
     sql_on: ${referral_status.encounter_uuid} = ${gene_test_orders.encounter_uuid} ;;
     relationship: one_to_many
   }
+  join: patient_communication_details {
+    type: left_outer
+    sql_on: ${referral_status.patient_uuid} = ${patient_communication_details.patient_uuid} ;;
+    relationship: one_to_many
+  }
 }

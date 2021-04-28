@@ -135,7 +135,7 @@ view: gene_test_orders {
           WHEN ${TABLE}."order_status" = 'sample_not_submitted' THEN 'Sample Not Submitted'
           WHEN ${TABLE}."order_status" = 'results_ready' THEN 'Results Ready'
           WHEN ${TABLE}."order_status" = 'results_entered' THEN 'Results Entered'
-          ELSE NULL END ;;
+          ELSE ${TABLE}."order_status" END ;;
   }
 
   dimension: status_reason {
@@ -162,7 +162,7 @@ view: gene_test_orders {
     WHEN ${TABLE}."status_reason" = 'result_positive_no_genes' THEN 'Findings, Awaiting Entry'
     WHEN ${TABLE}."status_reason" = 'result_negative' THEN '-ve, No Findings'
     WHEN ${TABLE}."status_reason" = 'order_cancelled_by_lab' THEN 'Order Cancelled by Lab'
-    ELSE NULL END ;;
+    ELSE ${TABLE}."status_reason" END ;;
   }
 
   dimension: id {

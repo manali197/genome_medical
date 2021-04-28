@@ -137,6 +137,7 @@ view: gene_test_orders {
           WHEN ${TABLE}."order_status" = 'results_entered' THEN 'Results Entered'
           WHEN ${TABLE}."order_status" is null THEN 'N/A'
           ELSE ${TABLE}."order_status" END ;;
+    drill_fields: [status_reason_display_name]
   }
 
   dimension: status_reason {
@@ -147,24 +148,25 @@ view: gene_test_orders {
   dimension: status_reason_display_name {
     type: string
     sql: CASE WHEN ${TABLE}."status_reason" = 'declined_other' THEN 'Declined - other'
-    WHEN ${TABLE}."status_reason" = 'no_fu_from_patient' THEN 'No follow-up from patient'
-    WHEN ${TABLE}."status_reason" = 'iss_w_test_implications' THEN 'Iss w/ test implications'
-    WHEN ${TABLE}."status_reason" = 'ins_denied_cost' THEN 'Insurance denied/cost'
-    WHEN ${TABLE}."status_reason" = 'rejected_other' THEN 'Rejected - other'
-    WHEN ${TABLE}."status_reason" = 'no_test_available' THEN 'No test available'
-    WHEN ${TABLE}."status_reason" = 'awaiting_information_gc' THEN 'Awaiting Information (GC)'
-    WHEN ${TABLE}."status_reason" = 'awaiting_information_patient' THEN 'Awaiting Information (Patient)'
-    WHEN ${TABLE}."status_reason" = 'awaiting_benefits_investigation' THEN 'Awaiting Benefits Investigation'
-    WHEN ${TABLE}."status_reason" = 'awaiting_birth' THEN 'Awaiting Birth'
-    WHEN ${TABLE}."status_reason" = 'order_cancelled_by_patient' THEN 'Order Cancelled by Patient'
-    WHEN ${TABLE}."status_reason" = 'order_cancelled_by_provider' THEN 'Order Cancelled by Provider'
-    WHEN ${TABLE}."status_reason" = 'awaiting_cc_submission' THEN 'Awaiting CC Submission'
-    WHEN ${TABLE}."status_reason" = 'result_positive_with_genes' THEN 'Findings entered'
-    WHEN ${TABLE}."status_reason" = 'result_positive_no_genes' THEN 'Findings, Awaiting Entry'
-    WHEN ${TABLE}."status_reason" = 'result_negative' THEN '-ve, No Findings'
-    WHEN ${TABLE}."status_reason" = 'order_cancelled_by_lab' THEN 'Order Cancelled by Lab'
-    WHEN ${TABLE}."status_reason" is null THEN 'N/A'
-    ELSE ${TABLE}."status_reason" END ;;
+          WHEN ${TABLE}."status_reason" = 'no_fu_from_patient' THEN 'No follow-up from patient'
+          WHEN ${TABLE}."status_reason" = 'iss_w_test_implications' THEN 'Iss w/ test implications'
+          WHEN ${TABLE}."status_reason" = 'ins_denied_cost' THEN 'Insurance denied/cost'
+          WHEN ${TABLE}."status_reason" = 'rejected_other' THEN 'Rejected - other'
+          WHEN ${TABLE}."status_reason" = 'no_test_available' THEN 'No test available'
+          WHEN ${TABLE}."status_reason" = 'awaiting_information_gc' THEN 'Awaiting Information (GC)'
+          WHEN ${TABLE}."status_reason" = 'awaiting_information_patient' THEN 'Awaiting Information (Patient)'
+          WHEN ${TABLE}."status_reason" = 'awaiting_benefits_investigation' THEN 'Awaiting Benefits Investigation'
+          WHEN ${TABLE}."status_reason" = 'awaiting_birth' THEN 'Awaiting Birth'
+          WHEN ${TABLE}."status_reason" = 'order_cancelled_by_patient' THEN 'Order Cancelled by Patient'
+          WHEN ${TABLE}."status_reason" = 'order_cancelled_by_provider' THEN 'Order Cancelled by Provider'
+          WHEN ${TABLE}."status_reason" = 'awaiting_cc_submission' THEN 'Awaiting CC Submission'
+          WHEN ${TABLE}."status_reason" = 'result_positive_with_genes' THEN 'Findings entered'
+          WHEN ${TABLE}."status_reason" = 'result_positive_no_genes' THEN 'Findings, Awaiting Entry'
+          WHEN ${TABLE}."status_reason" = 'result_negative' THEN '-ve, No Findings'
+          WHEN ${TABLE}."status_reason" = 'order_cancelled_by_lab' THEN 'Order Cancelled by Lab'
+          WHEN ${TABLE}."status_reason" is null THEN 'N/A'
+          ELSE ${TABLE}."status_reason" END ;;
+    drill_fields: [order_status_display_name]
   }
 
   dimension: id {

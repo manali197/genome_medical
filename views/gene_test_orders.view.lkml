@@ -120,6 +120,51 @@ view: gene_test_orders {
     sql: ${TABLE}."order_status" ;;
   }
 
+  dimension: order_status_display_name {
+    type: string
+    sql: CASE WHEN ${TABLE}."order_status" = 'patient_undecided' THEN 'Patient Undecided'
+          WHEN ${TABLE}."order_status" = 'patient_declined' THEN 'Patient Declined'
+          WHEN ${TABLE}."order_status" = 'requested' THEN 'Requested'
+          WHEN ${TABLE}."order_status" = 'rejected' THEN 'Rejected'
+          WHEN ${TABLE}."order_status" = 'awaiting_external_approval' THEN 'Awaiting External Approval'
+          WHEN ${TABLE}."order_status" = 'approved' THEN 'Approved'
+          WHEN ${TABLE}."order_status" = 'waiting_to_submit' THEN 'Waiting to Submit'
+          WHEN ${TABLE}."order_status" = 'cancelled' THEN 'Cancelled'
+          WHEN ${TABLE}."order_status" = 'patient_not_responsive' THEN 'Patient Not Responsive'
+          WHEN ${TABLE}."order_status" = 'sent_to_lab' THEN 'Sent to Lab'
+          WHEN ${TABLE}."order_status" = 'sample_not_submitted' THEN 'Sample Not Submitted'
+          WHEN ${TABLE}."order_status" = 'results_ready' THEN 'Results Ready'
+          WHEN ${TABLE}."order_status" = 'results_entered' THEN 'Results Entered'
+          ELSE NULL END ;;
+  }
+
+  dimension: status_reason {
+    type: string
+    sql: ${TABLE}."status_reason" ;;
+  }
+
+  dimension: status_reason_display_name {
+    type: string
+    sql: CASE WHEN ${TABLE}."status_reason" = 'declined_other' THEN 'Declined - other'
+    WHEN ${TABLE}."status_reason" = 'no_fu_from_patient' THEN 'No follow-up from patient'
+    WHEN ${TABLE}."status_reason" = 'iss_w_test_implications' THEN 'Iss w/ test implications'
+    WHEN ${TABLE}."status_reason" = 'ins_denied_cost' THEN 'Insurance denied/cost'
+    WHEN ${TABLE}."status_reason" = 'rejected_other' THEN 'Rejected - other'
+    WHEN ${TABLE}."status_reason" = 'no_test_available' THEN 'No test available'
+    WHEN ${TABLE}."status_reason" = 'awaiting_information_gc' THEN 'Awaiting Information (GC)'
+    WHEN ${TABLE}."status_reason" = 'awaiting_information_patient' THEN 'Awaiting Information (Patient)'
+    WHEN ${TABLE}."status_reason" = 'awaiting_benefits_investigation' THEN 'Awaiting Benefits Investigation'
+    WHEN ${TABLE}."status_reason" = 'awaiting_birth' THEN 'Awaiting Birth'
+    WHEN ${TABLE}."status_reason" = 'order_cancelled_by_patient' THEN 'Order Cancelled by Patient'
+    WHEN ${TABLE}."status_reason" = 'order_cancelled_by_provider' THEN 'Order Cancelled by Provider'
+    WHEN ${TABLE}."status_reason" = 'awaiting_cc_submission' THEN 'Awaiting CC Submission'
+    WHEN ${TABLE}."status_reason" = 'result_positive_with_genes' THEN 'Findings entered'
+    WHEN ${TABLE}."status_reason" = 'result_positive_no_genes' THEN 'Findings, Awaiting Entry'
+    WHEN ${TABLE}."status_reason" = 'result_negative' THEN '-ve, No Findings'
+    WHEN ${TABLE}."status_reason" = 'order_cancelled_by_lab' THEN 'Order Cancelled by Lab'
+    ELSE NULL END ;;
+  }
+
   dimension: id {
     type: number
     sql: ${TABLE}."id" ;;
@@ -149,11 +194,6 @@ view: gene_test_orders {
   dimension: sample_type {
     type: string
     sql: ${TABLE}."sample_type" ;;
-  }
-
-  dimension: status_reason {
-    type: string
-    sql: ${TABLE}."status_reason" ;;
   }
 
   dimension: test_outreach_status {

@@ -162,7 +162,8 @@ view: referral_status {
 
   # Define your dimensions and measures here, like this:
   dimension_group: date_of_service {
-    description: "Encounter Date of Service (UTC)"
+    label: "Encounter date of service"
+    description: "The date (UTC timezone) when a service was provided"
     type: time
     drill_fields: [encounter_type, referral_program]
     timeframes: [
@@ -181,7 +182,8 @@ view: referral_status {
   }
 
   dimension_group: created_at {
-    description: "Encounter Creation Date (UTC)"
+    label: "Encounter creation date"
+    description: "The date (UTC timezone) when an encounter is created"
     type: time
     drill_fields: [encounter_type, referral_program]
     timeframes: [
@@ -200,6 +202,8 @@ view: referral_status {
   }
 
   dimension_group: current {
+    label: "Current date"
+    description: "Current date (used for reference)"
     type: time
     timeframes: [
       raw,
@@ -217,6 +221,7 @@ view: referral_status {
   }
 
   dimension: is_before_mtd {
+    description: "Whether given date of service is before month-to-date"
     # hidden: yes
     type: yesno
     sql:
@@ -232,93 +237,95 @@ view: referral_status {
   }
 
   dimension: patient_first_name {
-    description: "Patient First Name"
+    description: "Patient first name"
     type: string
     sql: ${TABLE}.patient_first_name ;;
   }
 
   dimension: patient_last_name {
-    description: "Patient Last Name"
+    description: "Patient last name"
     type: string
     sql: ${TABLE}.patient_last_name ;;
   }
 
   dimension: patient_dob {
-    description: "Patient DoB"
+    description: "Patient date of birth"
     type: string
     sql: ${TABLE}.patient_dob ;;
   }
 
   dimension: patient_email {
-    description: "Patient Email"
+    description: "Patient email"
     type: string
     sql: ${TABLE}.patient_email ;;
   }
 
   dimension: patient_external_id {
-    description: "Patient External Id"
+    description: "A patient identifier specified and provided by the partner"
     type: string
     sql: ${TABLE}.patient_external_id ;;
   }
 
   dimension: patient_uuid {
-    description: "Genome Medical Patient UUID"
+    description: "A randomized, globally unqiue identifier assigned to each registered patient"
     type: string
     sql: ${TABLE}.patient_uuid ;;
   }
 
   dimension: referral_program {
-    description: "Referral Program"
+    description: "An instance of GM's engagement with a client, which typically involves patient
+    referrals e.g. Invitae_FamilyVariant"
     type: string
     sql: ${TABLE}.referral_program ;;
   }
 
   dimension: referral_partner {
-    description: "Referral Partner"
+    description: "A GM client that is part of a referral program e.g. Invitae"
     type: string
     sql: ${TABLE}.referral_partner ;;
   }
 
   dimension: referring_provider {
-    description: "Referring Provider"
+    description: "A non-GM provider (e.g. PCP) who refers a patient to GM"
     type: string
     sql: ${TABLE}.referring_provider ;;
   }
 
   dimension: encounter_uuid {
     primary_key: yes
-    description: "Encounter UUID"
+    description: "A randomized, globally unique identifier for each encounter"
     type: string
     sql: ${TABLE}.encounter_uuid ;;
   }
 
   dimension: encounter_type {
-    description: "Encounter Type"
+    description: "A category for encounters, and so a category of GM services"
     type: string
     sql: ${TABLE}.encounter_type ;;
   }
 
   dimension: encounter_subtype {
-    description: "Encounter Sub-type"
+    description: "A category with encounter type, and so a sub-category of GM services"
     type: string
     sql: ${TABLE}.encounter_subtype ;;
   }
 
   dimension: visit_status {
-    description: "Visit Status"
+    description: "The status of a visit encounter during its execution e.g. booked, no-show, cancelled etc"
     type: string
     sql: ${TABLE}.visit_status ;;
   }
 
   dimension: patient_state {
     map_layer_name: us_states
-    description: "Patient State"
+    description: "The US state that the patient resides in."
     type: string
     sql: ${TABLE}.patient_state ;;
   }
 
   dimension_group: original_referral_date {
     type: time
+    description: "The date a patient was first referred to GM. It's associated with a referral program."
     timeframes: [
       raw,
       time,
@@ -334,18 +341,20 @@ view: referral_status {
   }
 
   dimension: referral_channel {
-    description: "Referral Channel"
+    description: "An over-arching sales-friendly category of GM's clients."
     type: string
     sql: ${TABLE}.referral_channel ;;
   }
 
   dimension: consultation_type {
-    description: "Consultation Type"
+    description: "A type of visit encounter that helps distinguish first visits from follow-ups."
     type: string
     sql: ${TABLE}.consultation_type ;;
   }
 
   dimension: consultation_type_limited {
+    description: "A type of visit encounter limited to four types:
+      new encounter without results, new encounter with results, follow-up, and others"
     type: string
    # sql: ${TABLE}.consultation_type ;;
     sql: CASE WHEN TRIM(${TABLE}.consultation_type) in ('Get Started - No Results',
@@ -357,38 +366,39 @@ view: referral_status {
   }
 
   dimension: requested_specialty {
-    description: "Requested Specialty"
+    description: "The provider specialty requested by the patient at the time of appointment scheduling.
+      It is constrained by VSee, the scheduling platform that we use."
     type: string
     sql: ${TABLE}.requested_specialty ;;
   }
 
   dimension: provider_indicated_specialty {
-    description: "Provider Indicated Specialty"
+    description: "The GM-determined provider specialty."
     type: string
     sql: ${TABLE}.provider_indicated_specialty ;;
   }
 
   dimension: visit_provider {
-    description: "Visit Provider"
+    description: "The provider who provided service during visit encounter."
     type: string
     sql: ${TABLE}.visit_provider ;;
   }
 
   dimension: patient_outreach_setting_enabled {
-    description: "Patient Outreach Enabled"
+    description: "A boolean flag that indicates whether or not we should attempt patient outreach."
     type: yesno
     sql: ${TABLE}.patient_outreach_setting_enabled ;;
   }
 
   dimension: patient_outreach_setting_outreach_window_completed {
-    description: "Patient Outreach Window Completed"
+    description: "A boolean flag that indicates whether or not we've completed outreach for a patient."
     type: yesno
     sql: ${TABLE}.patient_outreach_setting_outreach_window_completed ;;
   }
 
   dimension_group: patient_outreach_setting_outreach_window_completed_date {
     type: time
-    description: "Patient Outreach Window Completed Date"
+    description: "The date when patient outreach was completed."
     timeframes: [
       raw,
       time,
@@ -404,116 +414,116 @@ view: referral_status {
   }
 
   dimension: patient_outreach_events {
-    description: "Patient Outreach Events - up to six"
+    description: "A list of all patient outreach events"
     type: string
     sql: ${TABLE}.patient_outreach_events ;;
   }
 
   dimension: patient_outreach_events_before_encounter {
-    description: "Patient Outreach Events (before encounter creation)"
+    description: "A list of all patient outreach events that happened before encounter creation"
     type: string
     sql: ${TABLE}.patient_outreach_events_before_encounter ;;
   }
 
   dimension: relationship_to_patient {
-    description: "Relationship to Patient"
+    description: "Relationship to patient e.g. parent, child, sibling"
     type: string
     sql: ${TABLE}.relationship_to_patient ;;
   }
 
   dimension: drug_interaction {
-    description: "Drug Interaction"
+    description: "Notes on drug interaction for pharmacogenomics"
     type: string
     sql: ${TABLE}.drug_interaction ;;
   }
 
   dimension: drug_contraindications {
-    description: "Drug Contraindications"
+    description: "Notes on drug contraindications for pharmacogenomics"
     type: string
     sql: ${TABLE}.drug_contraindications ;;
   }
 
   dimension: drug_dosage_adjustment_recommended {
-    description: "Drug Dosage Adjustment Recommended"
+    description: "Notes on drug dosage adjustment recommendation for pharmacogenomics"
     type: string
     sql: ${TABLE}.drug_dosage_adjustment_recommended ;;
   }
 
   dimension: pharmd {
-    description: "PharmD"
+    description: "The PharmD overseeing for pharmacogenomics recommendations"
     type: string
     sql: ${TABLE}.pharmd ;;
   }
 
   dimension: state_of_visit {
-    description: "State of Visit"
+    description: "The US state where a visit happened."
     type: string
     sql: ${TABLE}.state_of_visit ;;
   }
 
   dimension: test_recommended {
-    description: "Was Test Recommended?"
+    description: "A boolean flag indicating whether genetic testing recommended."
     type: string
     sql: ${TABLE}.test_recommended ;;
   }
 
   dimension: test_order_status {
-    description: "Test Order Status"
+    description: "The status of the genetic test that was ordered, if at all."
     type: string
     sql: ${TABLE}.test_order_status ;;
   }
 
   dimension: preauth_form_status {
-    description: "Pre-Auth Form Status"
+    description: "The status of a pre-authorization form"
     type: string
     sql: ${TABLE}.test_name ;;
   }
 
   dimension: preauth_decision {
-    description: "Pre-Auth Decision"
+    description: "The decision on pre-authorization"
     type: string
     sql: ${TABLE}.preauth_decision ;;
   }
 
   dimension: alternate_lab {
-    description: "Alternate Lab (PA)"
+    description: "In case of pre-authorization, the gene testing lab name recommended as alternative."
     type: string
     sql: ${TABLE}.alternate_lab ;;
   }
 
   dimension: alternate_test {
-    description: "Alternate Test (PA)"
+    description: "In case of pre-authorization, the gene test name recommended as alternative."
     type: string
     sql: ${TABLE}.alternate_test ;;
   }
 
   dimension: type_of_test {
-    description: "Type of Test Ordered (Legacy)"
+    description: "Type of genetic test that was ordered (legacy field, and not used anymore)."
     type: string
     sql: ${TABLE}.type_of_test ;;
   }
 
   dimension: ordering_physician {
-    description: "Ordering Physician"
+    description: "The provider who ordered the genetic test."
     type: string
     sql: ${TABLE}.ordering_physician ;;
   }
 
   dimension: test_name {
-    description: "Gene Test Name"
+    description: "The name of the genetic test if any was ordered"
     type: string
     sql: ${TABLE}.test_name ;;
   }
 
   dimension: testing_lab {
-    description: "Test Lab Name"
+    description: "The name of the genetic testing lab with which an order may have been placed."
     type: string
     sql: ${TABLE}.testing_lab ;;
   }
 
   dimension_group: date_test_ordered {
     type: time
-    description: "Date Test Ordered"
+    description: "The date when a genetic test was ordered"
     timeframes: [
       raw,
       time,
@@ -530,7 +540,7 @@ view: referral_status {
 
   dimension_group: date_received_report {
     type: time
-    description: "Test Results Received Date"
+    description: "The date when genetic test results were received by the provider for a ptient from a lab."
     timeframes: [
       raw,
       time,
@@ -547,7 +557,7 @@ view: referral_status {
 
   dimension_group: order_creation_date {
     type: time
-    description: "Date Order Created"
+    description: "The date when a genetic test order was created in the GM app"
     timeframes: [
       raw,
       time,
@@ -565,7 +575,7 @@ view: referral_status {
 
   dimension_group: cap_sent_to_patient {
     type: time
-    description: "Results/CAP Sent to Patient"
+    description: "The date when results/CAP was sent to patient by the provider."
     timeframes: [
       raw,
       time,
@@ -583,7 +593,7 @@ view: referral_status {
 
   dimension_group: ror_outreach_date {
     type: time
-    description: "RoR Outreach Date"
+    description: "The date when patient outreach was done on the return of genetic test results"
     timeframes: [
       raw,
       time,
@@ -600,7 +610,7 @@ view: referral_status {
 
   dimension: ror_visit_status {
     type: string
-    description: "RoR Visit Status"
+    description: "The status of the visit encounter that may be scheduled on the return of genetic test results."
     sql: ${TABLE}.ror_visit_status ;;
   }
 

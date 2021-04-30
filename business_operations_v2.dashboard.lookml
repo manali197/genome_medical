@@ -225,7 +225,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 26
+    row: 24
     col: 0
     width: 12
     height: 6
@@ -362,6 +362,9 @@
     single_value_title: ''
     series_types: {}
     defaults_version: 1
+    note_state: collapsed
+    note_display: hover
+    note_text: ''
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
@@ -400,13 +403,13 @@
     defaults_version: 1
     note_state: expanded
     note_display: above
-    note_text: ''
+    note_text: Current Day of Month vs Current Day of Past Month
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 6
-    col: 6
-    width: 6
+    col: 8
+    width: 8
     height: 4
   - title: Total Completed Encounters - YTD
     name: Total Completed Encounters - YTD
@@ -432,12 +435,15 @@
     comparison_label: Encounters vs Previous YTD
     series_types: {}
     defaults_version: 1
+    note_state: collapsed
+    note_display: hover
+    note_text: ''
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 6
     col: 0
-    width: 6
+    width: 8
     height: 4
   - title: 2021 Completed Encounters by Referral Program
     name: 2021 Completed Encounters by Referral Program
@@ -466,7 +472,7 @@
     label_type: labPer
     color_application:
       collection_id: d754397b-2c05-4470-bbbb-05eb4c2b15cd
-      palette_id: 4dadd4d2-40af-451b-bcdd-1dfaedf76163
+      palette_id: a0f97728-49ea-4123-b57e-ec4c57803f8b
       options:
         steps: 5
     series_colors: {}
@@ -494,10 +500,14 @@
       completed_encounters.date_of_service_month: 1 months
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
-    dynamic_fields: [{table_calculation: days_in_month, label: Days In Month, expression: 'round(mean(${completed_encounters.count_completed_encounters}
-          / diff_days(${completed_encounters.date_of_service_month},now())), 2)',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
-        _type_hint: number}]
+    dynamic_fields: [{_kind_hint: measure, table_calculation: days_in_month, _type_hint: number,
+        category: table_calculation, expression: 'round(mean(${completed_encounters.count_completed_encounters}
+          / ${days_in_date_of_service_month}), 2)', label: Days In Month, value_format: !!null '',
+        value_format_name: !!null ''}, {_kind_hint: dimension, table_calculation: days_in_date_of_service_month,
+        _type_hint: number, category: table_calculation, expression: 'extract_days(add_days(-1,
+          date(extract_years(add_months(1, ${completed_encounters.date_of_service_month})),
+          extract_months(add_months(1, ${completed_encounters.date_of_service_month})),
+          1)))', label: Days in Date-of-Service Month, value_format: !!null '', value_format_name: !!null ''}]
     custom_color_enabled: true
     show_single_value_title: true
     show_comparison: false
@@ -519,9 +529,9 @@
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
     row: 6
-    col: 18
-    width: 6
-    height: 4
+    col: 16
+    width: 8
+    height: 2
   - title: New Patients Seen in 2021 by US State
     name: New Patients Seen in 2021 by US State
     model: biz_ops_prod
@@ -668,6 +678,9 @@
     defaults_version: 1
     hidden_fields: []
     series_types: {}
+    note_state: collapsed
+    note_display: hover
+    note_text: ''
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
@@ -730,10 +743,13 @@
     defaults_version: 1
     hidden_fields: []
     series_types: {}
+    note_state: collapsed
+    note_display: hover
+    note_text: definition of Total New Patients Seen
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 24
+    row: 30
     col: 0
     width: 12
     height: 2
@@ -899,11 +915,14 @@
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
     column_limit: 50
-    dynamic_fields: [{table_calculation: average_daily_encounters_per_month, label: Average
-          Daily Encounters per Month, expression: 'round(mean(${completed_encounters.count_completed_encounters}
-          / diff_days(${completed_encounters.date_of_service_month},now())), 2)',
-        value_format: !!null '', value_format_name: !!null '', _kind_hint: measure,
-        _type_hint: number}]
+    dynamic_fields: [{_kind_hint: measure, table_calculation: average_daily_encounters_per_month,
+        _type_hint: number, category: table_calculation, expression: 'round(mean(${completed_encounters.count_completed_encounters}
+          / ${days_in_date_of_service_month}), 2)', label: Average Daily Encounters
+          per Month, value_format: !!null '', value_format_name: !!null ''}, {_kind_hint: dimension,
+        table_calculation: days_in_date_of_service_month, _type_hint: number, category: table_calculation,
+        expression: 'extract_days(add_days(-1, date(extract_years(add_months(1, ${completed_encounters.date_of_service_month})),
+          extract_months(add_months(1, ${completed_encounters.date_of_service_month})),
+          1)))', label: Days in Date-of-Service Month, value_format: !!null '', value_format_name: !!null ''}]
     filter_expression: extract_months(${completed_encounters.date_of_service_month})
       = extract_months(add_months(-1, now())) AND extract_years(${completed_encounters.date_of_service_year})
       = extract_years(now())
@@ -923,12 +942,58 @@
     note_state: expanded
     note_display: above
     note_text: ''
-    hidden_fields: [completed_encounters.count_completed_encounters]
+    hidden_fields: [completed_encounters.count_completed_encounters, days_in_date_of_service_month]
     listen: {}
-    row: 6
-    col: 12
+    row: 8
+    col: 16
+    width: 8
+    height: 2
+  - name: 'DEFINITION: Encounter'
+    type: text
+    title_text: 'DEFINITION: Encounter'
+    subtitle_text: ''
+    body_text: "**An ENCOUNTER is defined as an interaction between a patient and\
+      \ Genome Medical healthcare provider(s)/or services for the purpose of improving\
+      \ healthcare or assessing the health status of\_patient.** \n\nThe encounter\
+      \ serves as a focal point linking clinical, administrative and financial information\
+      \ (assets)."
+    row: 38
+    col: 0
     width: 6
-    height: 4
+    height: 7
+  - name: 'DEFINITION: Completed Encounter'
+    type: text
+    title_text: 'DEFINITION: Completed Encounter'
+    body_text: "**A\_COMPLETED encounter\_means that the service(s) provided have\
+      \ been completed, indicated by the Date Of Service (date).** \n\nDifferent types\
+      \ of encounters have different definitions of “completed”:\n\n- Visit encounter\
+      \ —> Patient has completed the Genetic Counselor visit session.\n- Lab/TRO encounter\
+      \ —> Genome Medical has reviewed and authorized (either approved or rejected)\
+      \ the patient initiated test order request.\n- Group Session —> Patient has\
+      \ attended a webinar or watched the Specialty Care Pathways (SCP) —> Patient\
+      \ has completed the entire education module."
+    row: 38
+    col: 6
+    width: 9
+    height: 7
+  - name: 'DEFINITION: New Patient Seen'
+    type: text
+    title_text: 'DEFINITION: New Patient Seen'
+    body_text: "**A NEW PATIENT SEEN is seen in a certain date range, means that a\
+      \ patient has COMPLETED their FIRST encounter in the specific date range.**\
+      \ \n\n_If a patient registers in Jan, and completes their first visit in Feb\
+      \ and another in March, they will be counted as a new patient seen for Feb ONLY._\_\
+      \n\nAdditional Considerations:\n- Patients are NOT double counted. These are\
+      \ unique patient counts, an individual can only be counted ONCE as a New Patient\
+      \ Seen. \n- If a registered patient has cancelled their appointment, or the\
+      \ visit has been scheduled and has not occurred or completed yet (I.e. we still\
+      \ haven’t provided service to this patient), they will NOT be counted as new\
+      \ patient seen until their first encounter has completed.\n- New patient seen\
+      \ is NOT the same as newly registered patients."
+    row: 38
+    col: 15
+    width: 9
+    height: 7
   filters:
   - name: Referral Program
     title: Referral Program

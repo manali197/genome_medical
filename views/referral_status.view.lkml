@@ -677,13 +677,13 @@ view: referral_status {
 
   dimension: number_of_outreaches {
     type: number
-    label: "Number of outreaches"
+    label: "The total number of outreaches that have happended for each patient"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events) ;;
   }
 
   dimension: number_of_outreaches_before_encounter_creation {
     type: number
-    label: "Number of outreaches before encounter creation"
+    label: "The total number of outreaches that have happended for each patient before an encounter creation"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events_before_encounter);;
   }
 
@@ -717,6 +717,7 @@ view: referral_status {
   }
 
   dimension: first_visit_schedule {
+    description: "A yes/no flag that indicates whether this encounter is the first visit scheduled for a patient."
     type: string
     hidden: yes
     sql: CASE WHEN ${is_first_visit_scheduled_encounter} THEN 'Yes' ELSE 'No' END ;;
@@ -749,8 +750,10 @@ view: referral_status {
   }
 
   measure: count_encounters {
-    type: count
-    label: "Encounters Count"
+    type: count_distinct
+    label: "Number of encounters"
+    filters: [encounter_uuid: "-NULL"]
+    sql: ${encounter_uuid} ;;
     drill_fields: [encounter_type, referral_program,consultation_type, count_encounters]
   }
 
@@ -764,7 +767,7 @@ view: referral_status {
 
   measure: total_patients_count {
     type: count_distinct
-    description: "Number of patients"
+    description: "Number of registered patients"
     sql: ${patient_uuid} ;;
   }
 
@@ -837,7 +840,7 @@ view: referral_status {
 
   measure: average_referral_to_scheduling_time_in_days {
     type: average
-    label: "Average time (in days) between the referral date and date 1st appointment was created"
+    description: "Average time (in days) between the referral date and date 1st appointment was created"
     filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
     sql: ${referral_to_scheduling_time} ;;
     drill_fields: [visit_provider, referral_program, average_referral_to_scheduling_time_in_days]
@@ -846,7 +849,7 @@ view: referral_status {
 
   measure: average_referral_to_visit_completion_time_in_days {
     type: average
-    label: "Average time (in days) from the referral date to the first appointment completed date"
+    description: "Average time (in days) from the referral date to the first appointment completed date"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_encounter: "Yes"]
     sql: ${referral_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_referral_to_visit_completion_time_in_days]
@@ -855,7 +858,7 @@ view: referral_status {
 
   measure: average_visit_created_to_completion_time_in_days {
     type: average
-    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = booked or completed)"
+    description: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = booked or completed)"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_scheduled_encounter: "Yes"]
     sql: ${creation_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_created_to_completion_time_in_days]
@@ -864,7 +867,7 @@ view: referral_status {
 
   measure: average_visit_referral_to_completion_time_no_ror_in_days {
     type: average
-    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, no RoR)"
+    description: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, no RoR)"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_no_ror_encounter: "Yes"]
     sql: ${referral_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_referral_to_completion_time_no_ror_in_days]
@@ -873,7 +876,7 @@ view: referral_status {
 
   measure: average_visit_referral_to_completion_time_with_ror_in_days {
     type: average
-    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
+    description: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_with_ror_encounter: "Yes"]
     sql: ${referral_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_referral_to_completion_time_with_ror_in_days]
@@ -882,7 +885,7 @@ view: referral_status {
 
   measure: average_visit_referral_to_completion_time_ror_in_days {
     type: average
-    label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, RoR)"
+    description: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, RoR)"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_ror_encounter: "Yes"]
     sql: ${referral_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_referral_to_completion_time_ror_in_days]
@@ -892,6 +895,7 @@ view: referral_status {
   ### To show in box plot ###
 
   measure: min_visit_completion_time {
+    description: "Minimum time to complete a visit encounter"
     type: min
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
@@ -900,6 +904,7 @@ view: referral_status {
   }
 
   measure: first_percentile_visit_completion_time {
+    description: "First percentile time to complete a visit encounter"
     type: percentile
     percentile: 25
     group_label: "Boxplot"
@@ -908,6 +913,7 @@ view: referral_status {
   }
 
   measure: median_visit_completion_time {
+    description: "Median time to complete a visit encounter"
     type: median
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
@@ -915,6 +921,7 @@ view: referral_status {
   }
 
   measure: second_percentile_visit_completion_time {
+    description: "Second percentile time to complete a visit encounter"
     type: percentile
     percentile: 75
     group_label: "Boxplot"
@@ -923,6 +930,7 @@ view: referral_status {
   }
 
   measure: max_visit_completion_time {
+    description: "Max time to complete a visit encounter"
     type: max
     group_label: "Boxplot"
     sql: ${referral_to_date_of_service_time} ;;
@@ -931,7 +939,7 @@ view: referral_status {
 
   measure: min_referral_to_scheduling_time_in_days {
     type: min
-    #label: "Average time (in days) between the referral date and date 1st appointment was created"
+    description: "Max average time (in days) between the referral date and date 1st appointment was created"
     filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
     sql: ${referral_to_scheduling_time} ;;
     drill_fields: [visit_provider, referral_program, min_referral_to_scheduling_time_in_days]
@@ -940,7 +948,7 @@ view: referral_status {
 
   measure: max_referral_to_scheduling_time_in_days {
     type: max
-    #label: "Average time (in days) between the referral date and date 1st appointment was created"
+    description: "Max time (in days) between the referral date and date 1st appointment was created"
     filters: [referral_to_scheduling_time: ">=0", is_first_visit_encounter: "Yes"]
     sql: ${referral_to_scheduling_time} ;;
     drill_fields: [visit_provider, referral_program, max_referral_to_scheduling_time_in_days]
@@ -950,7 +958,6 @@ view: referral_status {
   measure: min_visit_referral_to_completion_time_with_ror_in_days {
     type: min
     description: "Min time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
-    #label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_with_ror_encounter: "Yes"]
     sql: ${referral_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, min_visit_referral_to_completion_time_with_ror_in_days]
@@ -959,7 +966,7 @@ view: referral_status {
 
   measure: max_visit_referral_to_completion_time_with_ror_in_days {
     type: max
-    #label: "Average time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
+    description: "Max time (in days) between the date the appointment was scheduled to the date of the appointment (w/status = completed, with RoR)"
     filters: [referral_to_date_of_service_time: ">=0", is_first_visit_completed_with_ror_encounter: "Yes"]
     sql: ${referral_to_date_of_service_time} ;;
     drill_fields: [visit_provider, referral_program, max_visit_referral_to_completion_time_with_ror_in_days]

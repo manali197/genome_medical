@@ -774,7 +774,8 @@ view: referral_status {
     type: count_distinct
     description: "Number of registered patients"
     sql: ${patient_uuid} ;;
-  }
+    drill_fields: [referral_channel, referral_program, total_patients_count]
+    }
 
   dimension: dummy {
     type: string

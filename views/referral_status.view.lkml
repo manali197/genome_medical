@@ -668,18 +668,21 @@ view: referral_status {
     type: number
     description: "Time between the referral date and date of service was created"
     sql: count_business_days(${original_referral_date_date}, ${date_of_service_date}) ;;
+    drill_fields: [referral_program, referral_partner, referral_channel]
   }
 
   dimension: creation_to_date_of_service_time {
     type: number
     description: "Time between the encounter creation and date of service"
     sql: count_business_days(${created_at_date}, ${date_of_service_date}) ;;
+    drill_fields: [referral_program, referral_partner, referral_channel]
   }
 
   dimension: number_of_outreaches {
     type: number
     description: "The total number of outreaches that have happended for each patient"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events) ;;
+    drill_fields: [referral_program, referral_partner, referral_channel]
   }
 
   dimension: number_of_outreaches_before_encounter_creation {

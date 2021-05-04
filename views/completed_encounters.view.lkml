@@ -341,4 +341,36 @@ view: completed_encounters {
     drill_fields: [average_referral_to_completion_time_time_in_days]
     value_format_name: decimal_2
   }
+
+  ## Liquid filters for date of service month ##
+  filter: date_filter {
+    type: date
+  }
+
+  dimension: is_current_month {
+    type: yesno
+    #hidden: yes
+    sql: ${date_of_service_date} >= cast({% date_start date_filter %} as date)
+      AND ${date_of_service_date} < cast({% date_end date_filter %} as date);;
+  }
+  dimension: is_previous_month {
+    type: yesno
+    #hidden: yes
+    sql: ${date_of_service_date} > ((({% date_start date_filter %})::date)+ '-1 MONTH'::INTERVAL + '-1 day' ::INTERVAL)::date
+      AND ${date_of_service_date} < ((({% date_end date_filter %}):: date)+ '-1 MONTH'::INTERVAL)::date ;;
+      }
+
+      measure: count_completed_encounters_current_month {
+        type: count
+        filters: [is_current_month: "yes"]
+        drill_fields: [encounter_type, referral_program, count_completed_encounters]
+      }
+
+      measure: count_completed_encounters_previous_month {
+        type: count
+        filters: [is_previous_month: "yes"]
+        drill_fields: [encounter_type, referral_program, count_completed_encounters]
+      }
+
+
 }

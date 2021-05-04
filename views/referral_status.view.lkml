@@ -661,29 +661,30 @@ view: referral_status {
     type: number
     label: "Time between the referral date and the date an encounter was created"
     sql: count_business_days(${original_referral_date_date}, ${created_at_date}) ;;
+    drill_fields: [referral_program, referral_partner, referral_channel]
   }
 
   dimension: referral_to_date_of_service_time {
     type: number
-    label: "Time between the referral date and date of service was created"
+    description: "Time between the referral date and date of service was created"
     sql: count_business_days(${original_referral_date_date}, ${date_of_service_date}) ;;
   }
 
   dimension: creation_to_date_of_service_time {
     type: number
-    label: "Time between the encounter creation and date of service"
+    description: "Time between the encounter creation and date of service"
     sql: count_business_days(${created_at_date}, ${date_of_service_date}) ;;
   }
 
   dimension: number_of_outreaches {
     type: number
-    label: "The total number of outreaches that have happended for each patient"
+    description: "The total number of outreaches that have happended for each patient"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events) ;;
   }
 
   dimension: number_of_outreaches_before_encounter_creation {
     type: number
-    label: "The total number of outreaches that have happended for each patient before an encounter creation"
+    description: "The total number of outreaches that have happended for each patient before an encounter creation"
     sql: jsonb_array_length(${TABLE}.patient_outreach_events_before_encounter);;
   }
 
@@ -751,7 +752,7 @@ view: referral_status {
 
   measure: count_encounters {
     type: count_distinct
-    label: "Number of encounters"
+    description: "Number of encounters"
     filters: [encounter_uuid: "-NULL"]
     sql: ${encounter_uuid} ;;
     drill_fields: [encounter_type, referral_program,consultation_type, count_encounters]

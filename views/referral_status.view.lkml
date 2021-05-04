@@ -338,6 +338,7 @@ view: referral_status {
       year
     ]
     sql: ${TABLE}."original_referral_date" ;;
+    drill_fields: [referral_program, referral_partner, referral_channel]
   }
 
   dimension: referral_channel {

@@ -179,42 +179,42 @@ view: customer_satisfaction {
   }
 
   dimension: q180822923 {
-    description: "All of my questions were answered by my genetic counselor."
+    label: "All of my questions were answered by my genetic counselor."
     type: string
     drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
     sql: ${TABLE}.q180822923 ;;
   }
 
   dimension: q180823390 {
-    description: "The information I learned from my genetic counseling session was valuable to me."
+    label: "The information I learned from my genetic counseling session was valuable to me."
     type: string
     drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
     sql: ${TABLE}.q180823390 ;;
   }
 
   dimension: q180826659 {
-    description: "I would recommend my genetic counselor to a friend or family member who needed genetic counseling."
+    label: "I would recommend my genetic counselor to a friend or family member who needed genetic counseling."
     type: string
     drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
     sql: ${TABLE}.q180826659 ;;
   }
 
   dimension: q180810987 {
-    description: "How likely is it that you would recommend Genome Medical to a friend or colleague?"
+    label: "How likely is it that you would recommend Genome Medical to a friend or colleague?"
     type: string
     drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
     sql: ${TABLE}.q180810987 ;;
   }
 
   dimension: q180825910 {
-    description: "Additional comments or suggestions for improving our service."
+    label: "Additional comments or suggestions for improving our service."
     type: string
     drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
     sql: ${TABLE}.q180825910 ;;
   }
 
   dimension: q300495377 {
-    description: "Would you be willing to tell others about your experience with Genome Medical?"
+    label: "Would you be willing to tell others about your experience with Genome Medical?"
     type: string
     drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
     sql: ${TABLE}.q300495377 ;;

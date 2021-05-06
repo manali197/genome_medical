@@ -236,6 +236,22 @@ view: referral_status {
     );;
   }
 
+  dimension: is_original_referral_date_before_mtd {
+    description: "Whether given original referral date is before month-to-date"
+    # hidden: yes
+    type: yesno
+    sql:
+    (EXTRACT(DAY FROM ${TABLE}."original_referral_date") < EXTRACT(DAY FROM CURRENT_TIMESTAMP))
+    OR
+    (EXTRACT(DAY FROM ${TABLE}."original_referral_date") = EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND
+    EXTRACT(HOUR FROM ${TABLE}."original_referral_date") < EXTRACT(HOUR FROM CURRENT_TIMESTAMP))
+    OR
+    (EXTRACT(DAY FROM ${TABLE}."original_referral_date") = EXTRACT(DAY FROM CURRENT_TIMESTAMP) AND
+    EXTRACT(HOUR FROM ${TABLE}."original_referral_date") <= EXTRACT(HOUR FROM CURRENT_TIMESTAMP) AND
+    EXTRACT(MINUTE FROM ${TABLE}."original_referral_date") < EXTRACT(MINUTE FROM CURRENT_TIMESTAMP)
+    );;
+  }
+
   dimension: patient_first_name {
     description: "Patient first name"
     type: string

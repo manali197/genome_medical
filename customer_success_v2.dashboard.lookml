@@ -1,5 +1,5 @@
 - dashboard: cs_referral_status__partner_dashboard_v2_prod
-  title: CS Referral Status / Partner Dashboard v2 (Prod)
+  title: CS Partner Dashboard v2 (Prod)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:

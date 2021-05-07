@@ -56,6 +56,12 @@ view: referral_status {
             request_decision
           FROM preauthorizations
         ),
+        partner_orgs AS (
+          SELECT p.data->>'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
+          FROM partners p
+          JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
+          GROUP BY p.data->>'id'
+        ),
         first_visit_status_encounters AS (
           SELECT encounter_uuid, visit_status, consultation_type,
             rank() over (PARTITION BY user_uuid ORDER BY date_of_service asc, created_at asc) AS position
@@ -70,8 +76,8 @@ view: referral_status {
           coalesce(initcap(p.external_patient_id), '') AS external_patient_id,
           p.patient_uuid AS patient_uuid,
           p.referral_program AS referral_program,
-          coalesce(po.name, 'N/A') AS referral_partner,
-          coalesce(rc.data ->> 'name', 'N/A') AS referral_channel,
+          coalesce(po.name, patient_level_po.name, 'N/A') AS referral_partner,
+          coalesce(rc.data->>'name', patient_level_rc.data->>'name', 'N/A') AS referral_channel,
           ref_pro.provider_name AS referring_provider,
           p.original_referral_date AS original_referral_date,
           etr.encounter_uuid AS encounter_uuid,
@@ -148,13 +154,11 @@ view: referral_status {
         LEFT JOIN preauthorizations AS pa ON pa.encounter_uuid = etr.encounter_uuid
         LEFT JOIN referring_providers as ref_pro ON p.patient_uuid = ref_pro.patient_uuid
         LEFT JOIN partners AS prt ON etr.partner_uuid = prt.uuid
-        LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
-        LEFT JOIN (
-          SELECT p.data->'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
-          FROM partners p
-          JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
-          GROUP BY p.data->'id'
-        ) AS po ON prt.data->'id' = po.id
+        LEFT JOIN partners AS patient_level_prt ON p.partner_id::text = patient_level_prt.data->>'id'
+        LEFT JOIN partner_orgs AS po ON prt.data->>'id' = po.id
+        LEFT JOIN partner_orgs AS patient_level_po ON p.partner_id::text = patient_level_po.id
+        LEFT JOIN referral_channels AS rc ON prt.data->>'referral_channel_id' = rc.data ->> 'id'
+        LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
         WHERE NOT (p.patient_email ILIKE '%+%test%@%') AND
         (p.is_deleted is NULL OR p.is_deleted = false)
     ;;

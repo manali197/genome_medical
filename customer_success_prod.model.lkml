@@ -4,6 +4,7 @@ include: "/views/*.view.lkml"
 include: "customer_success_v2.dashboard"
 
 explore: completed_encounters {
+  persist_for: "5 minutes"
   join: patient_encounter_summary {
     type: left_outer
     sql_on: ${patient_encounter_summary.patient_email} = ${completed_encounters.patient_email} ;;
@@ -22,6 +23,7 @@ explore: completed_encounters {
 }
 
 explore: referral_status {
+  persist_for: "5 minutes"
   join: top_test {
     type: left_outer
     relationship: many_to_one

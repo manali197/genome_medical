@@ -4,6 +4,7 @@ include: "/views/*.view.lkml"
 include: "business_operations_v2.dashboard"
 
 explore: completed_encounters {
+  persist_for: "5 minutes"
   join: patient_encounter_summary {
     type: left_outer
     sql_on: ${patient_encounter_summary.patient_email} = ${completed_encounters.patient_email} ;;

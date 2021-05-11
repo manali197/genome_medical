@@ -101,6 +101,10 @@ explore: clinical_operations {
 
 }
 
+explore: tickets {
+
+}
+
 explore: referral_status {
   join: top_test {
   type: left_outer

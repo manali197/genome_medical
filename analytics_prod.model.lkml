@@ -105,6 +105,10 @@ explore: customer_satisfaction {
 
 }
 
+explore: tickets {
+
+}
+
 explore: referral_status {
   join: top_test {
     type: left_outer

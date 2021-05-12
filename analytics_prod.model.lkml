@@ -106,7 +106,16 @@ explore: customer_satisfaction {
 }
 
 explore: tickets {
-
+  join: patient_encounter_summary {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${patient_encounter_summary.patient_uuid} = ANY(${tickets.ticket_patient_uuids});;
+  }
+  join: users {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${users.id} = ANY(${tickets.ticket_user_ids});;
+  }
 }
 
 explore: referral_status {

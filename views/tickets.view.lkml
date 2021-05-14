@@ -100,27 +100,39 @@ view: tickets {
   # Derived dimensions
   # See https://developer.zendesk.com/rest_api/docs/support/tickets
 
+  dimension: recipient {
+    type: string
+    description: "The original recipient e-mail address of the ticket."
+    sql: ${TABLE}."ticket_data"->'ticket'->>'recipient' ;;
+  }
+
+  dimension: external_id {
+    type: string
+    description: "An id you can use to link Zendesk Support tickets to local records."
+    sql: ${TABLE}."ticket_data"->'ticket'->>'external_id' ;;
+  }
+
+  dimension: organization_id {
+    type: string
+    description: "The organization of the requester. You can only specify the ID of an organization associated with the requester."
+    sql: ${TABLE}."ticket_data"->'ticket'->>'organization_id' ;;
+  }
+
   dimension: raw_subject {
     type: string
     description: "The dynamic content placeholder, if present, or the 'subject' value, if not."
     sql: ${TABLE}."ticket_data"->'ticket'->>'raw_subject' ;;
   }
 
-  dimension: recipient {
-    type: string
-    description: "The original recipient e-mail address of the ticket"
-    sql: ${TABLE}."ticket_data"->'ticket'->>'recipient' ;;
-  }
-
   dimension: satisfaction_rating {
     type: string
-    description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
+    description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT."
     sql: ${TABLE}."ticket_data"->'ticket'->>'satisfaction_rating' ;;
   }
 
   dimension: satisfaction_rating_score {
     type: string
-    description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
+    description: "The satisfaction score of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT."
     sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>'score' ;;
   }
 
@@ -140,6 +152,12 @@ view: tickets {
     type: string
     description: "The type of this ticket. Allowed values are 'problem', 'incident', 'question', or 'task'."
     sql: ${TABLE}."ticket_data"->'ticket'->>'type' ;;
+  }
+
+  dimension: priority {
+    type: string
+    description: "The urgency with which the ticket should be addressed. Allowed values are 'urgent', 'high', 'normal', or 'low'."
+    sql: ${TABLE}."ticket_data"->'ticket'->>'priority' ;;
   }
 
   dimension: subject {

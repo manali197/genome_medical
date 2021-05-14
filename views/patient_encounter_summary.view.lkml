@@ -41,7 +41,7 @@ view: patient_encounter_summary {
 
   dimension: is_deleted {
     type: yesno
-    sql: coalesce( ${TABLE}."is_deleted", true) ;;
+    sql: coalesce( ${TABLE}."is_deleted", false) ;;
   }
 
   dimension: lab_patients {

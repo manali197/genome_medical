@@ -121,19 +121,19 @@ view: tickets {
   dimension: satisfaction_rating_score {
     type: string
     description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
-    sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>score ;;
+    sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>'score' ;;
   }
 
   dimension: satisfaction_rating_score_reason {
     type: string
     description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
-    sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>reason ;;
+    sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>'reason' ;;
   }
 
   dimension: satisfaction_rating_score_comment {
     type: string
     description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
-    sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>comment ;;
+    sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>'comment' ;;
   }
 
   dimension: type {

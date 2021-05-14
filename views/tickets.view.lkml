@@ -126,13 +126,13 @@ view: tickets {
 
   dimension: satisfaction_rating_score_reason {
     type: string
-    description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
+    description: "Reason for the satisfaction rating."
     sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>'reason' ;;
   }
 
   dimension: satisfaction_rating_score_comment {
     type: string
-    description: "The satisfaction rating of the ticket, if it exists, or the state of satisfaction, 'offered' or 'unoffered'. The value is null for plan types that don't support CSAT"
+    description: "Comment explaining the satisfaction rating."
     sql: ${TABLE}."ticket_data"->'ticket'->'satisfaction_rating'->>'comment' ;;
   }
 
@@ -144,32 +144,38 @@ view: tickets {
 
   dimension: subject {
     type: string
-    description: "The value of the subject field for this ticket"
+    description: "The value of the subject field for this ticket."
     sql: ${TABLE}."ticket_data"->'ticket'->>'subject' ;;
   }
 
   dimension: via_channel {
     type: string
-    description: "This tells you how the ticket or event was created. Examples: 'web', 'mobile', 'rule', 'system'"
+    description: "This tells you how the ticket or event was created. Examples: 'web', 'mobile', 'rule', 'system'."
     sql: ${TABLE}."ticket_data"->'ticket'->'via'->>'channel' ;;
   }
 
   dimension: via_channel_source_from_name {
     type: string
-    description: "This tells you who created a ticket or event"
+    description: "This tells you who created a ticket or event."
     sql: ${TABLE}."ticket_data"->'ticket'->'via'->'source'->'from'->>'name' ;;
   }
 
   dimension: via_channel_source_from_address {
     type: string
-    description: "This tells you which address created a ticket or event"
+    description: "This tells you which address created a ticket or event."
     sql: ${TABLE}."ticket_data"->'ticket'->'via'->'source'->'from'->>'address' ;;
   }
 
   dimension: url {
     type: string
-    description: "The API url of this ticket"
+    description: "The API url of this ticket."
     sql: ${TABLE}."ticket_data"->'ticket'->>'url' ;;
+  }
+
+  dimension: tags {
+    type: string
+    description: "The array of tags applied to this ticket."
+    sql: ${TABLE}."ticket_data"->'ticket'->>'tags' ;;
   }
 
   measure: count {

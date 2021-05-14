@@ -9,6 +9,11 @@ explore: encounter_details {
     sql_on: ${patient_encounter_summary.patient_uuid} = ${encounter_details.user_uuid} ;;
     relationship: many_to_one
   }
+  join: partner_organizations {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${partner_organizations.id} = ANY(${patient_encounter_summary.partner_organization_ids});;
+  }
   join: gene_test_orders {
     type: left_outer
     sql_on: ${encounter_details.encounter_uuid} = ${gene_test_orders.encounter_uuid} ;;

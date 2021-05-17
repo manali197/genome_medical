@@ -500,14 +500,13 @@
       completed_encounters.date_of_service_month: 1 months
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
-    dynamic_fields: [{_kind_hint: measure, table_calculation: days_in_month, _type_hint: number,
-        category: table_calculation, expression: 'round(mean(${completed_encounters.count_completed_encounters}
-          / ${days_in_date_of_service_month}), 2)', label: Days In Month, value_format: !!null '',
-        value_format_name: !!null ''}, {_kind_hint: dimension, table_calculation: days_in_date_of_service_month,
-        _type_hint: number, category: table_calculation, expression: 'extract_days(add_days(-1,
-          date(extract_years(add_months(1, ${completed_encounters.date_of_service_month})),
-          extract_months(add_months(1, ${completed_encounters.date_of_service_month})),
-          1)))', label: Days in Date-of-Service Month, value_format: !!null '', value_format_name: !!null ''}]
+    dynamic_fields: [{_kind_hint: measure, table_calculation: encounter_rate_per_day,
+        _type_hint: number, category: table_calculation, expression: 'round(mean(${completed_encounters.count_completed_encounters}
+          / ${days_in_date_of_service_month}), 2)', label: Encounter rate per day,
+        value_format: !!null '', value_format_name: !!null ''}, {_kind_hint: dimension,
+        table_calculation: days_in_date_of_service_month, _type_hint: number, category: table_calculation,
+        expression: extract_days(now()), label: Days in Date-of-Service Month, value_format: !!null '',
+        value_format_name: !!null ''}]
     custom_color_enabled: true
     show_single_value_title: true
     show_comparison: false

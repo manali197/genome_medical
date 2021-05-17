@@ -25,22 +25,22 @@ explore: encounter_details {
   join: gene_test_orders {
     type: left_outer
     sql_on: ${encounter_details.encounter_uuid} = ${gene_test_orders.encounter_uuid} ;;
-    relationship: many_to_one
+    relationship: one_to_many
   }
   join: gene_test_results {
     type: left_outer
     sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
-    relationship: many_to_one
+    relationship: one_to_many
   }
   join: partners {
     type: left_outer
     sql_on: ${patient_encounter_summary.partner_id} = ${partners.id} ;;
-    relationship: many_to_one
+    relationship: one_to_one
   }
   join: referral_channels {
     type: left_outer
     sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
-    relationship: many_to_one
+    relationship: one_to_one
   }
   join: high_priority_patients {
     type: left_outer
@@ -58,7 +58,7 @@ explore: gene_test_orders {
   join: gene_test_results {
     type: left_outer
     sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
-    relationship: many_to_one
+    relationship: one_to_many
   }
 }
 

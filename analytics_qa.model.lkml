@@ -33,6 +33,16 @@ explore: encounter_details {
     sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
     relationship: many_to_one
   }
+  join: encounter_medical_codes {
+    type: left_outer
+    sql_on: ${encounter_medical_codes.encounter_uuid} = ${encounter_details.encounter_uuid} ;;
+    relationship: one_to_many
+  }
+  join: medical_codes {
+    type: left_outer
+    sql_on: ${encounter_medical_codes.medical_code_uuid} = ${medical_codes.uuid} ;;
+    relationship: one_to_one
+  }
   join: partners {
     type: left_outer
     sql_on: ${patient_encounter_summary.partner_id} = ${partners.id} ;;
@@ -59,7 +69,12 @@ explore: gene_test_orders {
   join: gene_test_results {
     type: left_outer
     sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
-    relationship: many_to_one
+    relationship: one_to_many
+  }
+  join: gene_test_orders_medical_codes {
+    type: left_outer
+    sql_on: ${gene_test_orders_medical_codes.gene_test_order_id} = ${gene_test_orders.id} ;;
+    relationship: one_to_many
   }
 }
 

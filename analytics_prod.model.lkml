@@ -64,6 +64,19 @@ explore: encounter_details {
   }
 }
 
+explore: partners {
+  join: partner_organizations {
+    type: left_outer
+    sql_on: ${partners.partner_organization_ids}::jsonb @> ${partner_organizations.id}::text::jsonb ;;
+    relationship: one_to_many
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: one_to_one
+  }
+}
+
 explore: gene_test_orders {
   join: gene_test_results {
     type: left_outer
@@ -74,6 +87,11 @@ explore: gene_test_orders {
     type: left_outer
     sql_on: ${gene_test_orders_medical_codes.gene_test_order_id} = ${gene_test_orders.id} ;;
     relationship: one_to_many
+  }
+  join: medical_codes {
+    type: left_outer
+    sql_on: ${gene_test_orders_medical_codes.medical_code_uuid} = ${medical_codes.uuid} ;;
+    relationship: one_to_one
   }
 }
 
@@ -135,6 +153,11 @@ explore: tickets {
 }
 
 explore: referral_status {
+  join: partners {
+    type: left_outer
+    sql_on: ${referral_status.partner_id} = ${partners.id} ;;
+    relationship: one_to_one
+  }
   join: top_test {
     type: left_outer
     relationship: many_to_one

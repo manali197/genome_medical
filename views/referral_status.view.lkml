@@ -75,6 +75,7 @@ view: referral_status {
           p.patient_email AS patient_email,
           coalesce(initcap(p.external_patient_id), '') AS external_patient_id,
           p.patient_uuid AS patient_uuid,
+          p.partner_id AS partner_id,
           p.referral_program AS referral_program,
           coalesce(po.name, patient_level_po.name, 'N/A') AS referral_partner,
           coalesce(rc.data->>'name', patient_level_rc.data->>'name', 'N/A') AS referral_channel,
@@ -290,6 +291,12 @@ view: referral_status {
     description: "A randomized, globally unqiue identifier assigned to each registered patient"
     type: string
     sql: ${TABLE}.patient_uuid ;;
+  }
+
+  dimension: partner_id {
+    description: "Internal identifier for a referral program"
+    type: number
+    sql: ${TABLE}.partner_id ;;
   }
 
   dimension: referral_program {

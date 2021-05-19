@@ -155,6 +155,13 @@ view: patient_encounter_summary {
     sql: ${TABLE}."patient_dob" ;;
   }
 
+  dimension: age_tier {
+    type: tier
+    tiers: [0, 10, 20, 30, 40, 50, 60, 70, 80]
+    style: integer
+    sql: ((date(now()) - patient_dob)::decimal / 365.25) ;;
+  }
+
   dimension: patient_email {
     type: string
     sql: ${TABLE}."patient_email" ;;

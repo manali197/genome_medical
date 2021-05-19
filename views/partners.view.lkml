@@ -1,14 +1,24 @@
 view: partners {
   sql_table_name: public.partners ;;
 
+  dimension: uuid {
+    primary_key: yes
+    type: string
+    sql: ${TABLE}."uuid" ;;
+  }
+
   dimension: data {
     type: string
     sql: ${TABLE}."data" ;;
   }
 
+  dimension: test {
+    type: yesno
+    sql: ${TABLE}."test" ;;
+  }
+
   dimension: id {
     type: string
-    primary_key: yes
     sql: nullif(jsonb_extract_path(${TABLE}.data, 'id')::text, '')::int ;;
   }
 
@@ -119,16 +129,6 @@ view: partners {
   dimension: release_result_cap_upon_result_receipt {
     type: string
     sql: jsonb_extract_path(${TABLE}.data, 'release_result_cap_upon_result_receipt')::text ;;
-  }
-
-  dimension: test {
-    type: yesno
-    sql: ${TABLE}."test" ;;
-  }
-
-  dimension: uuid {
-    type: string
-    sql: ${TABLE}."uuid" ;;
   }
 
   measure: count {

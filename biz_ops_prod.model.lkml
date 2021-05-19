@@ -25,9 +25,21 @@ explore: completed_encounters {
     sql_on: ${encounter_medical_codes.encounter_uuid} = ${completed_encounters.encounter_uuid} ;;
     relationship: one_to_many
   }
-  join: medical_codes {
+  join: encounter_medical_code_details {
+    from: medical_codes
     type: left_outer
-    sql_on: ${encounter_medical_codes.medical_code_uuid} = ${medical_codes.uuid} ;;
+    sql_on: ${encounter_medical_codes.medical_code_uuid} = ${encounter_medical_code_details.uuid} ;;
+    relationship: one_to_one
+  }
+  join: gene_test_orders_medical_codes {
+    type: left_outer
+    sql_on: ${gene_test_orders_medical_codes.gene_test_order_id} = ${gene_test_orders.id} ;;
+    relationship: one_to_many
+  }
+  join: gene_test_orders_medical_code_details {
+    from: medical_codes
+    type: left_outer
+    sql_on: ${gene_test_orders_medical_codes.medical_code_uuid} = ${gene_test_orders_medical_code_details.uuid} ;;
     relationship: one_to_one
   }
 }

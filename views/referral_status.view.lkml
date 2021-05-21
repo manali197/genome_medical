@@ -340,7 +340,7 @@ view: referral_status {
   dimension: visit_status {
     description: "The status of a visit encounter during its execution e.g. booked, no-show, cancelled etc"
     type: string
-    sql: ${TABLE}.visit_status ;;
+    sql: INITCAP(REPLACE(${TABLE}.visit_status, '_', ' ')) ;;
   }
 
   dimension: patient_state {

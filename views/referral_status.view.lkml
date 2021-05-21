@@ -748,6 +748,24 @@ view: referral_status {
         END ;;
   }
 
+  dimension: visit_status_grouped {
+    description: "Patient visit status group into at most four buckets: cancelled/no-show, completed, scheduled, and
+      unknown"
+    type: string
+    sql: CASE WHEN ${visit_status} IN
+        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
+          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider', 'no_show')
+        THEN 'Cancelled/No-show'
+        WHEN ${visit_status} IN
+         ('completed','Completed','complete','webinar_attended',
+          'webinar_recording_viewed')
+        THEN 'Completed'
+        WHEN ${visit_status} IN ('booked')
+        THEN 'Scheduled'
+        ELSE 'Unknown'
+        END ;;
+  }
+
   dimension: first_visit_schedule {
     description: "A yes/no flag that indicates whether this encounter is the first visit scheduled for a patient."
     type: string

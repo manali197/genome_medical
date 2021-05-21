@@ -337,10 +337,52 @@ view: referral_status {
     sql: ${TABLE}.encounter_subtype ;;
   }
 
+  dimension: visit_status_raw {
+    description: "The status of a visit encounter during its execution e.g. booked, no-show, cancelled etc"
+    hidden: yes
+    type: string
+    sql: ${TABLE}.visit_status ;;
+  }
+
   dimension: visit_status {
     description: "The status of a visit encounter during its execution e.g. booked, no-show, cancelled etc"
     type: string
     sql: INITCAP(REPLACE(${TABLE}.visit_status, '_', ' ')) ;;
+  }
+
+  dimension: referral_visit_status {
+    type: string
+    hidden: yes
+    sql: CASE WHEN ${visit_status_raw} IN
+        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
+          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider')
+        THEN 'Cancelled'
+        WHEN ${visit_status_raw} = 'no_show'
+        THEN 'NoShow'
+        WHEN ${visit_status_raw} IN
+         ('completed','Completed','complete','booked','webinar_attended',
+          'webinar_recording_viewed')
+        THEN 'Scheduled'
+        ELSE 'Unknown'
+        END ;;
+  }
+
+  dimension: visit_status_grouped {
+    description: "Patient visit status group into at most four buckets: cancelled/no-show, completed, scheduled, and
+    unknown"
+    type: string
+    sql: CASE WHEN ${visit_status_raw} IN
+        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
+          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider', 'no_show')
+        THEN 'Cancelled/No-show'
+        WHEN ${visit_status_raw} IN
+         ('completed','Completed','complete','webinar_attended',
+          'webinar_recording_viewed')
+        THEN 'Completed'
+        WHEN ${visit_status_raw} IN ('booked')
+        THEN 'Scheduled'
+        ELSE 'Unknown'
+        END ;;
   }
 
   dimension: patient_state {
@@ -731,40 +773,6 @@ view: referral_status {
 
 ## To show visit booked vs no visit booked patients ##
 
-  dimension: referral_visit_status {
-    type: string
-    hidden: yes
-    sql: CASE WHEN ${visit_status} IN
-        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
-          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider')
-        THEN 'Cancelled'
-        WHEN ${visit_status} = 'no_show'
-        THEN 'NoShow'
-        WHEN ${visit_status} IN
-         ('completed','Completed','complete','booked','webinar_attended',
-          'webinar_recording_viewed')
-        THEN 'Scheduled'
-        ELSE 'Unknown'
-        END ;;
-  }
-
-  dimension: visit_status_grouped {
-    description: "Patient visit status group into at most four buckets: cancelled/no-show, completed, scheduled, and
-      unknown"
-    type: string
-    sql: CASE WHEN ${visit_status} IN
-        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
-          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider', 'no_show')
-        THEN 'Cancelled/No-show'
-        WHEN ${visit_status} IN
-         ('completed','Completed','complete','webinar_attended',
-          'webinar_recording_viewed')
-        THEN 'Completed'
-        WHEN ${visit_status} IN ('booked')
-        THEN 'Scheduled'
-        ELSE 'Unknown'
-        END ;;
-  }
 
   dimension: first_visit_schedule {
     description: "A yes/no flag that indicates whether this encounter is the first visit scheduled for a patient."

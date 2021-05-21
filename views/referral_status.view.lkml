@@ -372,15 +372,13 @@ view: referral_status {
     unknown"
     type: string
     sql: CASE WHEN ${visit_status_raw} IN
-        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider',
-          'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider', 'no_show')
+        ('cancelled','cancelled_by_care_coordinator','cancelled_by_patient','cancelled_by_provider', 'no_show')
         THEN 'Cancelled/No-show'
         WHEN ${visit_status_raw} IN
-         ('completed','Completed','complete','webinar_attended',
-          'webinar_recording_viewed')
+         ('completed','Completed','complete','webinar_attended', 'webinar_recording_viewed')
         THEN 'Completed'
-        WHEN ${visit_status_raw} IN ('booked')
-        THEN 'Scheduled'
+        WHEN ${visit_status_raw} IN ('booked', 'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider')
+        THEN 'Scheduled/Rescheduled'
         ELSE 'Unknown'
         END ;;
   }

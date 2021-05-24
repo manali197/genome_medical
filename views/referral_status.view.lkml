@@ -379,7 +379,7 @@ view: referral_status {
         THEN 'Completed'
         WHEN ${visit_status_raw} IN ('booked', 'cancelled_rescheduled_by_patient','cancelled_rescheduled_by_provider')
         THEN 'Scheduled/Rescheduled'
-        ELSE 'Unknown'
+        ELSE 'Did not schedule'
         END ;;
   }
 

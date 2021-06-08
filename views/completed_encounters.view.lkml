@@ -317,6 +317,33 @@ view: completed_encounters {
     sql_end:  ${TABLE}.original_referral_date;;
   }
 
+
+  dimension: is_current_month {
+    type: yesno
+    #hidden: yes
+    sql: ${date_of_service_date} >= cast({% date_start date_filter %} as date)
+      AND ${date_of_service_date} < cast({% date_end date_filter %} as date);;
+  }
+
+  dimension: is_previous_month {
+    type: yesno
+    #hidden: yes
+    sql: ${date_of_service_date} > ((({% date_start date_filter %})::date)+ '-1 MONTH'::INTERVAL + '-1 day' ::INTERVAL)::date
+      AND ${date_of_service_date} < ((({% date_end date_filter %}):: date)+ '-1 MONTH'::INTERVAL)::date ;;
+  }
+
+  dimension: count_business_day_in_current_month {
+    type: number
+    label: "Number of completed business days in the current month"
+    sql: count_business_days(date_trunc('MONTH',now())::date, now()::date) ;;
+  }
+
+  dimension: count_business_day_in_previous_month {
+    type: number
+    label: "Number of completed business days in the previous month"
+    sql: count_business_days(date_trunc('month', current_date - interval '1' month)::date, date_trunc('month', current_date)::date) ;;
+  }
+
   measure: count {
     type: count
   }
@@ -347,30 +374,17 @@ view: completed_encounters {
     type: date
   }
 
-  dimension: is_current_month {
-    type: yesno
-    #hidden: yes
-    sql: ${date_of_service_date} >= cast({% date_start date_filter %} as date)
-      AND ${date_of_service_date} < cast({% date_end date_filter %} as date);;
+  measure: count_completed_encounters_current_month {
+    type: count
+    filters: [is_current_month: "yes"]
+    drill_fields: [encounter_type, referral_program, count_completed_encounters]
   }
-  dimension: is_previous_month {
-    type: yesno
-    #hidden: yes
-    sql: ${date_of_service_date} > ((({% date_start date_filter %})::date)+ '-1 MONTH'::INTERVAL + '-1 day' ::INTERVAL)::date
-      AND ${date_of_service_date} < ((({% date_end date_filter %}):: date)+ '-1 MONTH'::INTERVAL)::date ;;
-      }
 
-      measure: count_completed_encounters_current_month {
-        type: count
-        filters: [is_current_month: "yes"]
-        drill_fields: [encounter_type, referral_program, count_completed_encounters]
-      }
-
-      measure: count_completed_encounters_previous_month {
-        type: count
-        filters: [is_previous_month: "yes"]
-        drill_fields: [encounter_type, referral_program, count_completed_encounters]
-      }
+  measure: count_completed_encounters_previous_month {
+    type: count
+    filters: [is_previous_month: "yes"]
+    drill_fields: [encounter_type, referral_program, count_completed_encounters]
+  }
 
 
 }

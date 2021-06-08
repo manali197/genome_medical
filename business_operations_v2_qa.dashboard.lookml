@@ -56,6 +56,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 10
     col: 12
     width: 12
@@ -112,6 +113,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 15
     col: 16
     width: 8
@@ -170,6 +172,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 10
     col: 0
     width: 12
@@ -225,6 +228,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 24
     col: 0
     width: 12
@@ -282,6 +286,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 26
     col: 12
     width: 12
@@ -338,6 +343,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 32
     col: 12
     width: 12
@@ -368,6 +374,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 2
     col: 0
     width: 12
@@ -407,6 +414,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 6
     col: 8
     width: 8
@@ -441,6 +449,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 6
     col: 0
     width: 8
@@ -485,6 +494,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 15
     col: 0
     width: 8
@@ -494,8 +504,8 @@
     model: analytics_qa
     explore: completed_encounters
     type: single_value
-    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
-    fill_fields: [completed_encounters.date_of_service_month]
+    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month,
+      completed_encounters.count_business_day_in_current_month]
     filters:
       completed_encounters.date_of_service_month: 1 months
     sorts: [completed_encounters.date_of_service_month]
@@ -505,8 +515,8 @@
           / ${days_in_date_of_service_month}), 2)', label: Encounter rate per day,
         value_format: !!null '', value_format_name: !!null ''}, {_kind_hint: dimension,
         table_calculation: days_in_date_of_service_month, _type_hint: number, category: table_calculation,
-        expression: extract_days(now()), label: Days in Date-of-Service Month, value_format: !!null '',
-        value_format_name: !!null ''}]
+        expression: "${completed_encounters.count_business_day_in_current_month}",
+        label: Days in Date-of-Service Month, value_format: !!null '', value_format_name: !!null ''}]
     custom_color_enabled: true
     show_single_value_title: true
     show_comparison: false
@@ -523,10 +533,11 @@
     note_state: expanded
     note_display: above
     note_text: ''
-    hidden_fields: [completed_encounters.count_completed_encounters]
+    hidden_fields: [completed_encounters.count_completed_encounters, completed_encounters.count_business_day_in_current_month]
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 6
     col: 16
     width: 8
@@ -619,6 +630,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 32
     col: 0
     width: 12
@@ -683,6 +695,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 2
     col: 12
     width: 12
@@ -748,6 +761,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 30
     col: 0
     width: 12
@@ -798,6 +812,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 24
     col: 12
     width: 12
@@ -888,6 +903,7 @@
     listen:
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 15
     col: 8
     width: 8
@@ -906,11 +922,9 @@
     model: analytics_qa
     explore: completed_encounters
     type: single_value
-    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month]
-    fill_fields: [completed_encounters.date_of_service_month]
-    filters:
-      completed_encounters.referral_program: ''
-      completed_encounters.referral_channel: ''
+    fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month,
+      completed_encounters.count_business_day_in_previous_month]
+    filters: {}
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
     column_limit: 50
@@ -919,9 +933,8 @@
           / ${days_in_date_of_service_month}), 2)', label: Average Daily Encounters
           per Month, value_format: !!null '', value_format_name: !!null ''}, {_kind_hint: dimension,
         table_calculation: days_in_date_of_service_month, _type_hint: number, category: table_calculation,
-        expression: 'extract_days(add_days(-1, date(extract_years(add_months(1, ${completed_encounters.date_of_service_month})),
-          extract_months(add_months(1, ${completed_encounters.date_of_service_month})),
-          1)))', label: Days in Date-of-Service Month, value_format: !!null '', value_format_name: !!null ''}]
+        expression: "${completed_encounters.count_business_day_in_previous_month}",
+        label: Days in Date-of-Service Month, value_format: !!null '', value_format_name: !!null ''}]
     filter_expression: extract_months(${completed_encounters.date_of_service_month})
       = extract_months(add_months(-1, now())) AND extract_years(${completed_encounters.date_of_service_year})
       = extract_years(now())
@@ -941,8 +954,12 @@
     note_state: expanded
     note_display: above
     note_text: ''
-    hidden_fields: [completed_encounters.count_completed_encounters, days_in_date_of_service_month]
-    listen: {}
+    hidden_fields: [completed_encounters.count_completed_encounters, days_in_date_of_service_month,
+      completed_encounters.count_business_day_in_previous_month]
+    listen:
+      Referral Program: completed_encounters.referral_program
+      Referral Channel: completed_encounters.referral_channel
+      Encounter Type: completed_encounters.encounter_type
     row: 8
     col: 16
     width: 8
@@ -1021,3 +1038,13 @@
     explore: completed_encounters
     listens_to_filters: []
     field: completed_encounters.referral_channel
+  - name: Encounter Type
+    title: Encounter Type
+    type: field_filter
+    default_value: "-scp"
+    allow_multiple_values: true
+    required: false
+    model: analytics_qa
+    explore: completed_encounters
+    listens_to_filters: []
+    field: completed_encounters.encounter_type

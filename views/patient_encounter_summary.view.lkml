@@ -200,7 +200,7 @@ view: patient_encounter_summary {
   }
 
   dimension: patient_zipcode {
-    type: string
+    type: zipcode
     sql: ${TABLE}."patient_zipcode" ;;
   }
 

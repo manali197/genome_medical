@@ -75,7 +75,7 @@ view: referral_status {
           p.patient_email AS patient_email,
           coalesce(initcap(p.external_patient_id), '') AS external_patient_id,
           p.patient_uuid AS patient_uuid,
-          coalesce(prt.data->>'id', patient_level_prt.data->>'id', '')::int AS partner_id,
+          nullif(coalesce(prt.data->>'id', patient_level_prt.data->>'id', ''), '')::int AS partner_id,
           coalesce(prt.data->>'display_name', patient_level_prt.data->>'display_name', 'N/A') AS referral_program,
           coalesce(po.name, patient_level_po.name, 'N/A') AS referral_partner,
           coalesce(rc.data->>'name', patient_level_rc.data->>'name', 'N/A') AS referral_channel,

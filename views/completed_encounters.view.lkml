@@ -312,7 +312,7 @@ view: completed_encounters {
 
   dimension_group: referral_to_completion_time {
     type: duration
-    label: "Time to Schedule from Referral"
+    description: "Time to Schedule from Referral"
     sql_start:  ${TABLE}.date_of_service;;
     sql_end:  ${TABLE}.original_referral_date;;
   }
@@ -334,14 +334,22 @@ view: completed_encounters {
 
   dimension: count_business_day_in_current_month {
     type: number
-    label: "Number of completed business days in the current month"
+    description: "Number of completed business days in the current month"
     sql: count_business_days(date_trunc('MONTH',now())::date, now()::date) ;;
   }
 
   dimension: count_business_day_in_previous_month {
     type: number
-    label: "Number of completed business days in the previous month"
-    sql: count_business_days(date_trunc('month', current_date - interval '1' month)::date, date_trunc('month', current_date)::date) ;;
+    description: "Number of completed business days in the previous month"
+    sql: count_business_days(date_trunc('month', current_date - interval '1' month)::date,
+            date_trunc('month', current_date)::date) ;;
+  }
+
+  dimension: count_business_day_in_dos_month {
+    type: number
+    description: "Number of completed business days in the given date of service month"
+    sql: count_business_days(date_trunc('MONTH',${date_of_service_date})::date,
+            date_trunc('month', ${date_of_service_date} + interval '1' month)::date) ;;
   }
 
   measure: count {
@@ -350,13 +358,13 @@ view: completed_encounters {
 
   measure: count_completed_encounters {
     type: count
-    label: "Completed Encounters Count"
+    description: "Completed Encounters Count"
     drill_fields: [encounter_type, referral_program, count_completed_encounters]
   }
 
   measure: count_new_patients {
     type: count
-    label: "New Patients Count"
+    description: "New Patients Count"
     filters: [is_first_completed_encounter: "Yes"]
     drill_fields: [patient_email, date_of_service_date, visit_provider, referral_program, referral_channel, count_new_patients]
   }

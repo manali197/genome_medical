@@ -353,19 +353,20 @@ view: completed_encounters {
   }
 
   measure: count {
+    description: "Simple row count (this may NOT be the same as the actual completed encounter count)"
     type: count
   }
 
   measure: count_completed_encounters {
     type: count
     filters: [encounter_uuid: "-NULL"]
-    description: "Completed Encounters Count"
+    description: "Number of completed encounters"
     drill_fields: [encounter_type, referral_program, count_completed_encounters]
   }
 
   measure: count_new_patients {
     type: count
-    description: "New Patients Count"
+    description: "Number of new patients"
     filters: [is_first_completed_encounter: "Yes"]
     drill_fields: [patient_email, date_of_service_date, visit_provider, referral_program, referral_channel, count_new_patients]
   }

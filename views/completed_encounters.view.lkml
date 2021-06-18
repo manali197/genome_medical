@@ -358,6 +358,7 @@ view: completed_encounters {
 
   measure: count_completed_encounters {
     type: count
+    filters: [encounter_uuid: "-NULL"]
     description: "Completed Encounters Count"
     drill_fields: [encounter_type, referral_program, count_completed_encounters]
   }

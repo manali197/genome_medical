@@ -1030,7 +1030,6 @@ view: referral_status {
     value_format_name: decimal_2
   }
 
-  #is_first_visit_scheduled_encounter
   measure: average_number_of_outreaches_before_first_visit_scheduled {
     type: average
     description: "Average number of outreaches before first appointment was scheduled"
@@ -1038,5 +1037,13 @@ view: referral_status {
     sql: ${number_of_outreaches_before_encounter_creation} ;;
     drill_fields: [visit_provider, referral_program, average_number_of_outreaches_before_first_visit_scheduled]
     value_format_name: decimal_2
+  }
+
+  measure: total_number_of_outreaches {
+    type: sum
+    description: "Total number of outreaches"
+    filters: [created_at_date: "-NULL"]
+    sql: ${number_of_outreaches} ;;
+    drill_fields: [visit_provider, referral_program, total_number_of_outreaches]
   }
 }

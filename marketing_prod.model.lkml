@@ -1,6 +1,7 @@
 connection: "analytics_db"
 
 include: "/views/*.view.lkml"
+include: "customer_satisfaction.dashboard"
 
 explore: encounter_details {
   persist_for: "5 minutes"

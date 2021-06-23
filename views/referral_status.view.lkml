@@ -106,6 +106,7 @@ view: referral_status {
           etr.drug_dosage_adjustment_recommended AS drug_dosage_adjustment_recommended,
           coalesce(etr.pharmd, '') AS pharmd,
           coalesce(etr.state_of_visit, '') AS state_of_visit,
+          etr.visit_provider AS visit_provider,
           coalesce(p.patient_state, '') AS patient_state,
           etr.test_recommended AS test_recommended,
           CASE

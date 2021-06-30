@@ -156,8 +156,7 @@ view: document_activity {
   }
 
   measure: latest_activity_timestamp {
-    type: max
-    sql:  ${TABLE}."activity_timestamp" ;;
+    sql:  max(coalesce(${activity_timestamp_raw}, ${created_raw})) ;;
   }
 
   # ----- Sets of fields for drilling ------

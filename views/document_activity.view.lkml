@@ -22,6 +22,20 @@ view: document_activity {
     sql: ${TABLE}."activity_timestamp" ;;
   }
 
+  dimension_group: latest_activity_timestamp {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: max(${activity_timestamp_raw}) ;;
+  }
+
   dimension: activity_type_display_name {
     type: string
     sql: ${TABLE}."activity_type_display_name" ;;

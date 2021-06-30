@@ -95,7 +95,6 @@ explore: gene_test_orders {
   }
 }
 
-
 explore: documents {
   join: document_activity {
     type: left_outer

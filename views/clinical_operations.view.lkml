@@ -172,6 +172,7 @@ view: clinical_operations {
   dimension: encounter_uuid {
     description: "Encounter UUID"
     type: string
+    primary_key: yes
     sql: ${TABLE}.encounter_uuid ;;
   }
 

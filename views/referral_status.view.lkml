@@ -161,10 +161,10 @@ view: referral_status {
         LEFT JOIN partner_orgs AS patient_level_po ON p.partner_id::text = patient_level_po.id
         LEFT JOIN referral_channels AS rc ON prt.data->>'referral_channel_id' = rc.data ->> 'id'
         LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
-        WHERE NOT (p.patient_email ILIKE '%+%test%@%') AND
-        (p.is_deleted is NULL OR p.is_deleted = false)
+        WHERE (p.is_deleted is NULL OR p.is_deleted = false)
     ;;
   }
+  # # NOT (p.patient_email ILIKE '%+%test%@%') AND
 
   # Define your dimensions and measures here, like this:
   dimension_group: date_of_service {

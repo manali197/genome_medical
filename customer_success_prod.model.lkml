@@ -49,6 +49,11 @@ explore: referral_status {
     sql_on: ${referral_status.patient_uuid} = ${patient_communication_details.patient_uuid} ;;
     relationship: one_to_many
   }
+  join: partners {
+    type: left_outer
+    sql_on: ${referral_status.partner_id} = ${partners.id} ;;
+    relationship: one_to_one
+  }
 }
 
 explore: tickets {
@@ -84,5 +89,18 @@ explore: documents {
     type: left_outer
     sql_on: ${document_owners.document_owner_type_name} = 'gene_test_order' AND ${document_owners.document_owner_id} = ${gene_test_orders.order_uuid};;
     relationship: many_to_one
+  }
+}
+
+explore: partners {
+  join: partner_organizations {
+    type: left_outer
+    sql_on: ${partners.partner_organization_ids}::jsonb @> ${partner_organizations.id}::text::jsonb ;;
+    relationship: one_to_many
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: one_to_one
   }
 }

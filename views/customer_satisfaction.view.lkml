@@ -214,6 +214,17 @@ view: customer_satisfaction {
     sql: ${TABLE}.q180810987 ;;
   }
 
+  dimension: q180810987_numeric {
+    label: "How likely is it that you would recommend Genome Medical to a friend or colleague?"
+    description: "This is the numeric value"
+    type: number
+    drill_fields: [latest_visit_provider, provider_indicated_specialty, referral_program]
+    sql: CASE
+      WHEN ${TABLE}.q180810987 = 'Not at all likely - 0' THEN 0
+      ELSE CAST(NULLIF(${TABLE}.q180810987, '') AS INTEGER)
+      END ;;
+  }
+
   dimension: q180825910 {
     label: "Additional comments or suggestions for improving our service."
     type: string

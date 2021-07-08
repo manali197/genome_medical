@@ -27,15 +27,19 @@ view: clinical_operations {
         )
       ),
       total_and_cc_order_sent_by_cc AS (
-        SELECT e.encounter_uuid AS encounter_uuid,
-         coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
-         rank() over (partition by gto.id order by gtoh.created_at desc) as pos
-        FROM encounter_details AS e
-        LEFT JOIN gene_test_orders AS gto ON e.encounter_uuid=gto.encounter_uuid
-        LEFT JOIN gene_test_orders_history AS gtoh ON gto.id=gtoh.gene_test_orders_id
-        LEFT JOIN users AS u ON gtoh.user_uuid = u.uuid
-        WHERE e.encounter_type in ('visit', 'cc-intake', 'group-session') AND
-          gtoh.order_status ='sent_to_lab'
+        SELECT encounter_uuid, user_name, pos, count(*) AS order_count
+        FROM (
+          SELECT e.encounter_uuid AS encounter_uuid,
+           coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
+           rank() over (partition by gto.id order by gtoh.created_at desc) as pos
+          FROM encounter_details AS e
+          LEFT JOIN gene_test_orders AS gto ON e.encounter_uuid=gto.encounter_uuid
+          LEFT JOIN gene_test_orders_history AS gtoh ON gto.id=gtoh.gene_test_orders_id
+          LEFT JOIN users AS u ON gtoh.user_uuid = u.uuid
+          WHERE e.encounter_type in ('visit', 'cc-intake', 'group-session') AND
+            gtoh.order_status ='sent_to_lab'
+        ) AS encounter_orders
+        GROUP BY encounter_uuid, user_name, pos
       ),
       pa_forms_sent_by_cc AS (
         SELECT e.encounter_uuid AS encounter_uuid,

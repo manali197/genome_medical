@@ -11,6 +11,12 @@ view: gmi_provider_details {
     sql: ${TABLE}."clinical_time_percentage" ;;
   }
 
+  dimension: clinical_time {
+    type: number
+    sql: (${TABLE}."clinical_time_percentage" * ${TABLE}."total_hours_per_week") / 100 ;;
+    value_format_name: decimal_2
+  }
+
   dimension_group: effective {
     type: time
     timeframes: [
@@ -68,6 +74,12 @@ view: gmi_provider_details {
 
   measure: count {
     type: count
+    drill_fields: [name, manager_name]
+  }
+
+  measure: total_clinical_time {
+    type: sum
+    sql: ${clinical_time} ;;
     drill_fields: [name, manager_name]
   }
 }

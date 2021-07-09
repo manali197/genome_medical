@@ -56,12 +56,18 @@ explore: documents {
   }
 }
 
-explore: completed_encounters {
-
+explore: providers {
+  join: gmi_provider_details {
+    type: left_outer
+    sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid} ;;
+    relationship: one_to_many
+  }
 }
 
-explore: clinical_operations {
+explore: completed_encounters {}
 
-}
 
 explore: referral_status {}
+
+
+explore: clinical_operations {}

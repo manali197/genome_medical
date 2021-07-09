@@ -67,7 +67,28 @@ explore: providers {
 explore: completed_encounters {}
 
 
-explore: referral_status {}
+explore: referral_status {
+  join: partners {
+    type: left_outer
+    sql_on: ${referral_status.partner_id} = ${partners.id} ;;
+    relationship: one_to_one
+  }
+  join: care_team {
+    type: left_outer
+    sql_on: ${care_team.patient_uuid} = ${referral_status.patient_uuid} ;;
+    relationship: one_to_one
+  }
+  join: providers {
+    type: left_outer
+    sql_on: ${care_team.provider_uuid} = ${providers.uuid} ;;
+    relationship: one_to_one
+  }
+  join: gmi_provider_details {
+    type: left_outer
+    sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid} ;;
+    relationship: one_to_one
+  }
+}
 
 
 explore: clinical_operations {}

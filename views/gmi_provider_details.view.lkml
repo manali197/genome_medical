@@ -3,7 +3,7 @@ view: gmi_provider_details {
 
   dimension: primary_key {
     primary_key: yes
-    sql: CONCAT(${TABLE}.name, ${TABLE}.effective) ;;
+    sql: CONCAT(${TABLE}.name, ${TABLE}.effective_date) ;;
   }
 
   dimension: clinical_time_percentage {

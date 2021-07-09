@@ -1,7 +1,6 @@
 connection: "qa_analytics_db"
 
 include: "/views/*.view.lkml"
-include: "/dashboards/*.dashboard"
 
 explore: partners {
   join: partner_organizations {
@@ -64,3 +63,5 @@ explore: completed_encounters {
 explore: clinical_operations {
 
 }
+
+explore: referral_status {}

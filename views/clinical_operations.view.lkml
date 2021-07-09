@@ -440,10 +440,16 @@ view: clinical_operations {
     sql: ${TABLE}.pa_forms_cc_user_name ;;
   }
 
-  dimension: visit_completion_time {
+  dimension: visit_cap_completion_time {
     type: number
     label: "Visit CAP completion time (visit encounters) from date of visit"
     sql: count_business_days(${date_of_service_date}, ${initial_cap_completed_date_date}) ;;
+  }
+
+  dimension: visit_cap_release_time {
+    type: number
+    label: "Visit CAP Release time (visit encounters) from CAP completion date"
+    sql: count_business_days(${initial_cap_completed_date_date}, ${initial_visit_summary_sent_date}) ;;
   }
 
   dimension: result_cap_completed_time {
@@ -452,10 +458,37 @@ view: clinical_operations {
     sql: count_business_days(${date_received_report_date}, ${followup_cap_completed_date_date}) ;;
   }
 
+  dimension: result_cap_release_time {
+    type: number
+    label: "Results CAP Release time from CAP completion date"
+    sql: count_business_days(${followup_cap_completed_date_date}, ${cap_sent_to_patient_date}) ;;
+  }
+
   dimension: order_request_update_time {
     type: number
     label: "Order-request update time from date of visit"
     sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
+  }
+
+  # TODO
+  dimension: order_placement_time {
+    type: number
+    label: "Test order placement time from date visit CAP Completed (DO NOT USE)"
+    sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
+  }
+
+  dimension: pa_form_sent_time {
+    type: number
+    label: "PA form submission time (DO NOT USE)"
+    sql:
+      SELECT count_business_days(pa.dispatch_date, MIN(pah.created_at))
+      FROM ${TABLE} AS te
+      JOIN preauthorizations AS pa ON te.encounter_uuid = pa.encounter_uuid
+      JOIN preauthorizations_history AS pah ON  pah.preauthorizations_id = pa.id
+      WHERE te.encounter_type in ('visit', 'cc-intake', 'group-session') and
+          pa.dispatch_status = 'pa_form_sent' AND
+          pah.dispatch_status = 'waiting_to_submit' AND pah.dispatch_reason = 'awaiting_cc_submission'
+      GROUP BY pa.id, pa.dispatch_date;;
   }
 
   measure: count {
@@ -465,8 +498,8 @@ view: clinical_operations {
   measure: average_visit_completion_time_in_days {
     type: average
     label: "Average visit CAP completion time from date of visit"
-    filters: [visit_completion_time: ">=0"]
-    sql: ${visit_completion_time} ;;
+    filters: [visit_cap_completion_time: ">=0"]
+    sql: ${visit_cap_completion_time} ;;
     drill_fields: [visit_provider, average_visit_completion_time_in_days]
     value_format_name: decimal_2
   }
@@ -486,6 +519,70 @@ view: clinical_operations {
     filters: [order_request_update_time: ">=0"]
     sql: ${order_request_update_time} ;;
     drill_fields: [visit_provider, average_order_request_update_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: count_visit_caps {
+    type: count
+    label: "Total number of visit CAPs sent by CCs"
+    filters: [visit_cap_cc_user_name: "-NULL"]
+    drill_fields: [visit_cap_cc_user_name]
+  }
+
+  measure: count_result_caps {
+    type: count
+    label: "Total number of result CAPs sent by CCs"
+    filters: [result_cap_cc_user_name: "-NULL"]
+    drill_fields: [result_cap_cc_user_name]
+  }
+
+  measure: count_orders_sent {
+    type: count
+    label: "Total number of orders sent by CCs"
+    filters: [total_and_cc_order_cc_user_name: "-NULL"]
+    drill_fields: [total_and_cc_order_cc_user_name]
+  }
+
+  measure: count_pa_forms_sent {
+    type: count
+    label: "Total number of PA forms sent by CCs"
+    filters: [pa_forms_cc_user_name: "-NULL"]
+    drill_fields: [pa_forms_cc_user_name]
+  }
+
+  measure: average_visit_cap_release_time_in_days {
+    type: average
+    label: "Average visit CAP Release time (visit encounters) from CAP completion date"
+    filters: [visit_cap_release_time: ">=0"]
+    sql: ${visit_cap_completion_time} ;;
+    drill_fields: [visit_cap_cc_user_name, average_visit_cap_release_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_result_cap_release_time_in_days {
+    type: average
+    label: "Average results CAP Release time from CAP completion date"
+    filters: [result_cap_release_time: ">=0"]
+    sql: ${visit_cap_completion_time} ;;
+    drill_fields: [result_cap_cc_user_name, average_result_cap_release_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_order_placement_time_in_days {
+    type: average
+    label: "Average test order placement time from date visit CAP completed"
+    filters: [order_placement_time: ">=0"]
+    sql: ${order_placement_time} ;;
+    drill_fields: [total_and_cc_order_cc_user_name, average_order_placement_time_in_days]
+    value_format_name: decimal_2
+  }
+
+  measure: average_pa_form_sent_time_in_days {
+    type: average
+    label: "Average PA form submission time"
+    filters: [pa_form_sent_time: ">=0"]
+    sql: ${pa_form_sent_time} ;;
+    drill_fields: [pa_forms_cc_user_name, average_pa_form_sent_time_in_days]
     value_format_name: decimal_2
   }
 }

@@ -185,6 +185,43 @@ view: clinical_operations {
     sql: ${TABLE}.encounter_uuid ;;
   }
 
+  dimension: patient_name {
+    description: "Patient Name"
+    type: string
+    sql: ${TABLE}.patient_name ;;
+  }
+
+  dimension: patient_email {
+    description: "Patient Email"
+    type: string
+    sql: ${TABLE}.patient_email ;;
+  }
+
+  dimension: external_patient_id {
+    description: "External Patient Id"
+    type: string
+    sql: ${TABLE}.external_patient_id ;;
+  }
+
+  dimension_group: patient_dob {
+    description: "Patient Date of Birth"
+    type: time
+    drill_fields: [encounter_type, referral_program]
+    timeframes: [
+      raw,
+      time,
+      date,
+      day_of_week,
+      week_of_year,
+      week,
+      month,
+      month_name,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."patient_dob" ;;
+  }
+
   dimension_group: created_at {
     description: "Encounter Creation Date (UTC)"
     type: time

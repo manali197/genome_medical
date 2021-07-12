@@ -568,7 +568,7 @@ view: clinical_operations {
     type: count
     label: "Total number of visit CAPs sent by CCs"
     filters: [visit_cap_cc_user_name: "-NULL"]
-    drill_fields: [visit_cap_cc_user_name]
+    drill_fields: [visit_cap_cc_user_name,patient_name]
   }
 
   measure: count_result_caps {

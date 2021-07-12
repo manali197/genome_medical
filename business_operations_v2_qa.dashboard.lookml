@@ -911,7 +911,6 @@
   - name: ALL TIME METRICS
     type: text
     title_text: ALL TIME METRICS
-    subtitle_text: ''
     body_text: ''
     row: 0
     col: 0
@@ -924,7 +923,6 @@
     type: single_value
     fields: [completed_encounters.count_completed_encounters, completed_encounters.date_of_service_month,
       completed_encounters.count_business_day_in_previous_month]
-    filters: {}
     sorts: [completed_encounters.date_of_service_month]
     limit: 500
     column_limit: 50
@@ -967,7 +965,6 @@
   - name: 'DEFINITION: Encounter'
     type: text
     title_text: 'DEFINITION: Encounter'
-    subtitle_text: ''
     body_text: "**An ENCOUNTER is defined as an interaction between a patient and\
       \ Genome Medical healthcare provider(s)/or services for the purpose of improving\
       \ healthcare or assessing the health status of\_patient.** \n\nThe encounter\
@@ -1041,9 +1038,12 @@
   - name: Encounter Type
     title: Encounter Type
     type: field_filter
-    default_value: "-scp"
+    default_value: "-scp,-cc-intake"
     allow_multiple_values: true
     required: false
+    ui_config:
+      type: advanced
+      display: popover
     model: analytics_qa
     explore: completed_encounters
     listens_to_filters: []

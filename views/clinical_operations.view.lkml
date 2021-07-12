@@ -89,6 +89,11 @@ view: clinical_operations {
       ),
       final AS (
         SELECT
+          coalesce(initcap(pes.patient_first_name), '') || ' ' || coalesce(initcap(pes.patient_last_name), '') AS patient_name,
+          pes.patient_dob AS patient_dob,
+          pes.patient_email AS patient_email,
+          coalesce(initcap(pes.external_patient_id), '') AS external_patient_id,
+          pes.patient_uuid AS patient_uuid,
           pes.patient_state::text AS patient_state,
           prt.data ->> 'display_name' AS referral_program,
           po.name AS referral_partner,

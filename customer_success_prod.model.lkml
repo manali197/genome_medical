@@ -2,6 +2,7 @@ connection: "analytics_db"
 
 include: "/views/*.view.lkml"
 include: "customer_success_v2.dashboard"
+include: "customer_success_partners.dashboard"
 
 explore: completed_encounters {
   persist_for: "5 minutes"

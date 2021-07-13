@@ -861,13 +861,13 @@
     col: 17
     width: 7
     height: 6
-  - title: Monthly Encounters
-    name: Monthly Encounters
+  - title: Monthly Completed Encounters
+    name: Monthly Completed Encounters
     model: customer_success_prod
     explore: referral_status
     type: looker_column
-    fields: [referral_status.count_encounters, referral_status.consultation_type_limited,
-      referral_status.date_of_service_month]
+    fields: [referral_status.consultation_type_limited, referral_status.date_of_service_month,
+      completed_encounters.count_completed_encounters]
     pivots: [referral_status.consultation_type_limited]
     fill_fields: [referral_status.date_of_service_month]
     filters:
@@ -1169,17 +1169,15 @@
     col: 0
     width: 12
     height: 7
-  - title: Patients Referred vs Completed Encounters
-    name: Patients Referred vs Completed Encounters
+  - title: Number of Unique Patients Referred
+    name: Number of Unique Patients Referred
     model: customer_success_prod
     explore: referral_status
     type: looker_column
-    fields: [referral_status.original_referral_date_month, referral_status.count,
-      completed_encounters.count_completed_encounters]
+    fields: [referral_status.original_referral_date_month, referral_status.total_patients_count]
     fill_fields: [referral_status.original_referral_date_month]
     filters:
       referral_status.original_referral_date_month: 6 months
-      referral_status.encounter_uuid: "-NULL"
     sorts: [referral_status.original_referral_date_month]
     limit: 500
     x_axis_gridlines: false
@@ -1214,7 +1212,11 @@
       palette_id: ca5bc734-c8e2-489d-a00e-48c321885a14
       options:
         steps: 5
-    x_axis_label: Referral Month
+    y_axes: [{label: Unique Patients Count, orientation: left, series: [{axisId: referral_status.total_patients_count,
+            id: referral_status.total_patients_count, name: Total Patients Count}],
+        showLabels: true, showValues: true, unpinAxis: false, tickDensity: default,
+        tickDensityCustom: 5, type: linear}]
+    x_axis_label: Original Referral Date Month
     series_types:
       referral_status.count_patients_with_encounters: line
       completed_encounters.count_completed_encounters: line

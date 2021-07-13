@@ -29,7 +29,7 @@
       Referral Partner: completed_encounters.referral_partner
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 2
+    row: 0
     col: 12
     width: 12
     height: 3
@@ -70,19 +70,10 @@
       Referral Partner: completed_encounters.referral_partner
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 5
+    row: 3
     col: 12
     width: 12
     height: 3
-  - name: DASHBOARD 1
-    type: text
-    title_text: DASHBOARD 1
-    subtitle_text: ''
-    body_text: ''
-    row: 0
-    col: 0
-    width: 24
-    height: 2
   - title: "% of Appts Booked"
     name: "% of Appts Booked"
     model: customer_success_prod
@@ -167,7 +158,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 42
+    row: 40
     col: 0
     width: 12
     height: 7
@@ -236,7 +227,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 51
+    row: 49
     col: 10
     width: 7
     height: 6
@@ -295,7 +286,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 2
+    row: 0
     col: 0
     width: 12
     height: 3
@@ -366,7 +357,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 5
+    row: 3
     col: 0
     width: 12
     height: 3
@@ -455,7 +446,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 36
+    row: 34
     col: 0
     width: 24
     height: 6
@@ -544,7 +535,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 42
+    row: 40
     col: 12
     width: 12
     height: 7
@@ -627,7 +618,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 57
+    row: 55
     col: 10
     width: 14
     height: 6
@@ -690,7 +681,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 29
+    row: 27
     col: 12
     width: 12
     height: 7
@@ -792,7 +783,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 15
+    row: 13
     col: 12
     width: 12
     height: 7
@@ -866,7 +857,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 51
+    row: 49
     col: 17
     width: 7
     height: 6
@@ -978,7 +969,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 8
+    row: 6
     col: 12
     width: 12
     height: 7
@@ -1050,7 +1041,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 29
+    row: 27
     col: 0
     width: 12
     height: 7
@@ -1119,7 +1110,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 22
+    row: 20
     col: 12
     width: 12
     height: 7
@@ -1174,7 +1165,7 @@
       Referral Partner: completed_encounters.referral_partner
       Referral Program: completed_encounters.referral_program
       Referral Channel: completed_encounters.referral_channel
-    row: 22
+    row: 20
     col: 0
     width: 12
     height: 7
@@ -1241,7 +1232,7 @@
       Referral Partner: completed_encounters.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 8
+    row: 6
     col: 0
     width: 12
     height: 7
@@ -1323,7 +1314,7 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 51
+    row: 49
     col: 0
     width: 10
     height: 12
@@ -1390,16 +1381,16 @@
       Referral Partner: referral_status.referral_partner
       Referral Program: referral_status.referral_program
       Referral Channel: referral_status.referral_channel
-    row: 15
+    row: 13
     col: 0
     width: 12
     height: 7
-  - name: DASHBOARD 1 - PART 2 (outreach)
+  - name: OUTREACH
     type: text
-    title_text: DASHBOARD 1 - PART 2 (outreach)
+    title_text: OUTREACH
     subtitle_text: ''
     body_text: ''
-    row: 49
+    row: 47
     col: 0
     width: 24
     height: 2

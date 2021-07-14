@@ -181,3 +181,7 @@ explore: referral_status {
     relationship: one_to_many
   }
 }
+
+explore: scp_users {
+
+}

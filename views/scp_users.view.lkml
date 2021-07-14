@@ -114,4 +114,9 @@ view: scp_users {
     type: count
     drill_fields: [id, first_name, last_name]
   }
+
+  measure: count_unique_tree_ids{
+    type: count_distinct
+    sql: ${TABLE}."tree_id" ;;
+  }
 }

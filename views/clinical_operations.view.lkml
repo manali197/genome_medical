@@ -345,6 +345,7 @@ view: clinical_operations {
   dimension_group: date_test_ordered {
     description: "Date Test Ordered (UTC)"
     type: time
+    hidden: yes
     drill_fields: [encounter_type, referral_program]
     timeframes: [
       raw,
@@ -521,7 +522,7 @@ view: clinical_operations {
 
   dimension: pa_form_sent_time {
     type: number
-    label: "PA form submission time (DO NOT USE)"
+    label: "PA form submission time"
     sql:
       SELECT count_business_days(pa.dispatch_date, MIN(pah.created_at))
       FROM ${TABLE} AS te

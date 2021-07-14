@@ -91,4 +91,20 @@ explore: referral_status {
 }
 
 
-explore: clinical_operations {}
+explore: clinical_operations {
+  join: care_team {
+    type: left_outer
+    sql_on: ${care_team.patient_uuid} = ${clinical_operations.user_uuid} ;;
+    relationship: one_to_one
+  }
+  join: providers {
+    type: left_outer
+    sql_on: ${care_team.provider_uuid} = ${providers.uuid} ;;
+    relationship: one_to_one
+  }
+  join: gmi_provider_details {
+    type: left_outer
+    sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid} ;;
+    relationship: one_to_one
+  }
+}

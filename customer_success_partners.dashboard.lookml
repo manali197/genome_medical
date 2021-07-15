@@ -236,8 +236,7 @@
     model: customer_success_prod
     explore: referral_status
     type: single_value
-    fields: [referral_status.count_encounters]
-    sorts: [referral_status.count_encounters desc]
+    fields: [referral_status.count]
     limit: 500
     total: true
     custom_color_enabled: true
@@ -794,7 +793,6 @@
     type: looker_pie
     fields: [referral_status.count, referral_status.patient_outreach_setting_enabled]
     fill_fields: [referral_status.patient_outreach_setting_enabled]
-    filters: {}
     sorts: [referral_status.patient_outreach_setting_enabled desc]
     limit: 13
     column_limit: 50
@@ -1390,7 +1388,6 @@
   - name: OUTREACH
     type: text
     title_text: OUTREACH
-    subtitle_text: ''
     body_text: ''
     row: 47
     col: 0

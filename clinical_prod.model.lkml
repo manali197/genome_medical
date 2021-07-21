@@ -108,3 +108,11 @@ explore: clinical_operations {
     relationship: one_to_one
   }
 }
+
+explore: clinical_operations_outreach {
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${patient_encounter_summary.patient_uuid} = ${clinical_operations_outreach.patient_uuid} ;;
+    relationship: one_to_one
+  }
+}

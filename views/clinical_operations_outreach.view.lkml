@@ -94,11 +94,11 @@ view: clinical_operations_outreach {
           SELECT patient_uuid, ARRAY_AGG(date_time order by date_time) AS outreaches,
             ARRAY_AGG(sender_uuid order by date_time) AS senders
           FROM patient_communication_details pcd
-          WHERE communication_type_name ='referral_outreach' AND AND communication_medium_subtype_name= 'phone'
+          WHERE communication_type_name ='referral_outreach' AND communication_medium_subtype_name= 'phone'
           GROUP BY patient_uuid HAVING count(date_time) >= 1) outreachs
         JOIN patient_encounter_summary pes on pes.patient_uuid = outreachs.patient_uuid
         WHERE pes.is_deleted = 'false'
-      )
+      ),
       phone_outreaches_2 AS (
         SELECT
             outreachs.patient_uuid AS patient_uuid,
@@ -108,11 +108,11 @@ view: clinical_operations_outreach {
           SELECT patient_uuid, ARRAY_AGG(date_time order by date_time) AS outreaches,
             ARRAY_AGG(sender_uuid order by date_time) AS senders
           FROM patient_communication_details pcd
-          WHERE communication_type_name ='referral_outreach' AND AND communication_medium_subtype_name= 'phone'
+          WHERE communication_type_name ='referral_outreach' AND communication_medium_subtype_name= 'phone'
           GROUP BY patient_uuid HAVING count(date_time) >= 2) outreachs
         JOIN patient_encounter_summary pes on pes.patient_uuid = outreachs.patient_uuid
         WHERE pes.is_deleted = 'false'
-      )
+      ),
       phone_outreaches_3 AS (
         SELECT
             outreachs.patient_uuid AS patient_uuid,
@@ -122,7 +122,7 @@ view: clinical_operations_outreach {
           SELECT patient_uuid, ARRAY_AGG(date_time order by date_time) AS outreaches,
             ARRAY_AGG(sender_uuid order by date_time) AS senders
           FROM patient_communication_details pcd
-          WHERE communication_type_name ='referral_outreach' AND AND communication_medium_subtype_name= 'phone'
+          WHERE communication_type_name ='referral_outreach' AND communication_medium_subtype_name= 'phone'
           GROUP BY patient_uuid HAVING count(date_time) >= 3) outreachs
         JOIN patient_encounter_summary pes on pes.patient_uuid = outreachs.patient_uuid
         WHERE pes.is_deleted = 'false'

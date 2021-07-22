@@ -520,20 +520,6 @@ view: clinical_operations {
     sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
   }
 
-  dimension: pa_form_sent_time {
-    type: number
-    label: "PA form submission time"
-    sql:
-      SELECT count_business_days(pa.dispatch_date, MIN(pah.created_at))
-      FROM ${TABLE} AS te
-      JOIN preauthorizations AS pa ON te.encounter_uuid = pa.encounter_uuid
-      JOIN preauthorizations_history AS pah ON  pah.preauthorizations_id = pa.id
-      WHERE te.encounter_type in ('visit', 'cc-intake', 'group-session') and
-          pa.dispatch_status = 'pa_form_sent' AND
-          pah.dispatch_status = 'waiting_to_submit' AND pah.dispatch_reason = 'awaiting_cc_submission'
-      GROUP BY pa.id, pa.dispatch_date;;
-  }
-
   measure: count {
     type: count
   }
@@ -617,15 +603,6 @@ view: clinical_operations {
     filters: [order_placement_time: ">=0"]
     sql: ${order_placement_time} ;;
     drill_fields: [total_and_cc_order_cc_user_name, average_order_placement_time_in_days]
-    value_format_name: decimal_2
-  }
-
-  measure: average_pa_form_sent_time_in_days {
-    type: average
-    label: "Average PA form submission time"
-    filters: [pa_form_sent_time: ">=0"]
-    sql: ${pa_form_sent_time} ;;
-    drill_fields: [pa_forms_cc_user_name, average_pa_form_sent_time_in_days]
     value_format_name: decimal_2
   }
 }

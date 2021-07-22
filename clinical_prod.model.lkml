@@ -110,9 +110,17 @@ explore: clinical_operations {
 }
 
 explore: clinical_operations_outreach {
-  join: patient_encounter_summary {
+  join: clinical_operations {
     type: left_outer
-    sql_on: ${patient_encounter_summary.patient_uuid} = ${clinical_operations_outreach.patient_uuid} ;;
+    sql_on: ${clinical_operations.user_uuid} = ${clinical_operations_outreach.patient_uuid} ;;
+    relationship: one_to_one
+  }
+}
+
+explore: clinical_operations_preauths {
+  join: clinical_operations {
+    type: left_outer
+    sql_on: ${clinical_operations_preauths.encounter_uuid} = ${clinical_operations.encounter_uuid} ;;
     relationship: one_to_one
   }
 }

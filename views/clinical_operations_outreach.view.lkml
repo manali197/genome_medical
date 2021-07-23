@@ -128,6 +128,7 @@ view: clinical_operations_outreach {
         WHERE pes.is_deleted = 'false'
       )
       SELECT outreaches_1.patient_uuid AS patient_uuid,
+        outreaches_1.created_at,
         outreaches_1.outreach1,
         outreaches_2.outreach2,
         outreaches_3.outreach3,

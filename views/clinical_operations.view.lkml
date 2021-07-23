@@ -92,7 +92,7 @@ view: clinical_operations {
         FROM partners p
         JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
         GROUP BY p.data->>'id'
-      ),
+      )
       SELECT
         coalesce(initcap(pes.patient_first_name), '') || ' ' || coalesce(initcap(pes.patient_last_name), '') AS patient_name,
         pes.patient_dob AS patient_dob,
@@ -138,7 +138,7 @@ view: clinical_operations {
       LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
       LEFT JOIN partners AS patient_level_prt ON pes.partner_id::text = patient_level_prt.data->>'id'
       LEFT JOIN partner_orgs AS po ON prt.data->>'id' = po.id
-      LEFT JOIN partner_orgs AS patient_level_po ON p.partner_id::text = patient_level_po.id
+      LEFT JOIN partner_orgs AS patient_level_po ON pes.partner_id::text = patient_level_po.id
       LEFT JOIN referral_channels AS rc ON prt.data->>'referral_channel_id' = rc.data ->> 'id'
       LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
       WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)

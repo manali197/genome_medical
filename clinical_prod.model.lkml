@@ -109,6 +109,14 @@ explore: clinical_operations {
   }
 }
 
+explore: clinical_operations_orders {
+  join: clinical_operations {
+    type: left_outer
+    sql_on: ${clinical_operations.encounter_uuid} = ${clinical_operations_orders.encounter_uuid} ;;
+    relationship: many_to_one
+  }
+}
+
 explore: clinical_operations_outreach {
   join: clinical_operations {
     type: left_outer
@@ -121,6 +129,6 @@ explore: clinical_operations_preauths {
   join: clinical_operations {
     type: left_outer
     sql_on: ${clinical_operations_preauths.encounter_uuid} = ${clinical_operations.encounter_uuid} ;;
-    relationship: one_to_one
+    relationship: many_to_one
   }
 }

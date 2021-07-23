@@ -513,13 +513,6 @@ view: clinical_operations {
     sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
   }
 
-  # TODO
-  dimension: order_placement_time {
-    type: number
-    label: "Test order placement time from date visit CAP Completed (DO NOT USE)"
-    sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
-  }
-
   measure: count {
     type: count
   }
@@ -594,15 +587,6 @@ view: clinical_operations {
     filters: [result_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
     drill_fields: [result_cap_cc_user_name, average_result_cap_release_time_in_days]
-    value_format_name: decimal_2
-  }
-
-  measure: average_order_placement_time_in_days {
-    type: average
-    label: "Average test order placement time from date visit CAP completed"
-    filters: [order_placement_time: ">=0"]
-    sql: ${order_placement_time} ;;
-    drill_fields: [total_and_cc_order_cc_user_name, average_order_placement_time_in_days]
     value_format_name: decimal_2
   }
 }

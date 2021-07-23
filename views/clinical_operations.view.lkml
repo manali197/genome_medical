@@ -87,61 +87,62 @@ view: clinical_operations {
               (e.encounter_type != 'lab_test_authorization' and gto.date_received_report IS NOT NULL))
         GROUP BY e.encounter_uuid, e.encounter_type, e.date_received_report
       ),
-      final AS (
-        SELECT
-          coalesce(initcap(pes.patient_first_name), '') || ' ' || coalesce(initcap(pes.patient_last_name), '') AS patient_name,
-          pes.patient_dob AS patient_dob,
-          pes.patient_email AS patient_email,
-          coalesce(initcap(pes.external_patient_id), '') AS external_patient_id,
-          pes.patient_uuid AS patient_uuid,
-          pes.patient_state::text AS patient_state,
-          prt.data ->> 'display_name' AS referral_program,
-          po.name AS referral_partner,
-          rc.data ->> 'name'AS referral_channel,
-          CASE
-            WHEN ed.encounter_type = 'scp' AND ed.encounter_subtype = 'partner_initiated/pre_test' THEN 'tro'
-            WHEN ed.encounter_type = 'scp' AND ed.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
-            ELSE ed.encounter_type
-          END AS encounter_type,
-          ed.encounter_uuid AS encounter_uuid,
-          ed.created_at AS created_at,
-          ed.date_of_service AS date_of_service,
-          ed.initial_visit_summary_sent AS initial_visit_summary_sent,
-          ed.initial_cap_completed_date AS initial_cap_completed_date,
-          ed.cap_sent_to_patient AS cap_sent_to_patient,
-          ed.followup_cap_completed_date AS followup_cap_completed_date,
-          ed.user_uuid AS user_uuid,
-          ed.date_test_ordered AS date_test_ordered,
-          ed.ror_visit_status AS ror_visit_status,
-          ed.ror_date_contacted AS ror_date_contacted,
-          ed.order_status AS order_status,
-          ed.visit_status AS visit_status,
-          INITCAP(REPLACE(ed.visit_provider, '_', ' ')) AS visit_provider,
-          ed.date_test_recommended AS date_test_recommended,
-          ed.test_recommended AS test_recommended,
-          oi.date_received_report AS date_received_report,
-          cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
-          cm.result_cap_cc_user_name AS result_cap_cc_user_name,
-          cm.total_and_cc_order_cc_user_name AS total_and_cc_order_cc_user_name,
-          cm.pa_forms_cc_user_name AS pa_forms_cc_user_name,
-          CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
-        FROM encounter_details ed
-        LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
-        LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
-        LEFT JOIN order_info oi ON oi.encounter_uuid = ed.encounter_uuid
-        LEFT JOIN cc_metrics AS cm ON cm.encounter_uuid = ed.encounter_uuid
-        LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
-        LEFT JOIN referral_channels AS rc ON prt.data ->> 'referral_channel_id' = rc.data ->> 'id'
-        LEFT JOIN
-        (
-          SELECT p.data->'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
-          FROM partners p
-          JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
-          GROUP BY p.data->'id'
-        ) AS po ON prt.data->'id' = po.id
-        WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)
-      )
-      SELECT * from final ;;
+      partner_orgs AS (
+        SELECT p.data->>'id' AS "id", array_to_string(array_agg(po.name), ', ') AS "name"
+        FROM partners p
+        JOIN partner_organizations po ON (p.data->'partner_organization_ids')::jsonb @> po.id::text::jsonb
+        GROUP BY p.data->>'id'
+      ),
+      SELECT
+        coalesce(initcap(pes.patient_first_name), '') || ' ' || coalesce(initcap(pes.patient_last_name), '') AS patient_name,
+        pes.patient_dob AS patient_dob,
+        pes.patient_email AS patient_email,
+        coalesce(initcap(pes.external_patient_id), '') AS external_patient_id,
+        pes.patient_uuid AS patient_uuid,
+        pes.patient_state::text AS patient_state,
+        coalesce(prt.data->>'display_name', patient_level_prt.data->>'display_name', 'N/A') AS referral_program,
+        coalesce(po.name, patient_level_po.name, 'N/A') AS referral_partner,
+        coalesce(rc.data->>'name', patient_level_rc.data->>'name', 'N/A') AS referral_channel,
+        CASE
+          WHEN ed.encounter_type = 'scp' AND ed.encounter_subtype = 'partner_initiated/pre_test' THEN 'tro'
+          WHEN ed.encounter_type = 'scp' AND ed.encounter_subtype != 'partner_initiated/pre_test' THEN 'scp'
+          ELSE ed.encounter_type
+        END AS encounter_type,
+        ed.encounter_uuid AS encounter_uuid,
+        ed.created_at AS created_at,
+        ed.date_of_service AS date_of_service,
+        ed.initial_visit_summary_sent AS initial_visit_summary_sent,
+        ed.initial_cap_completed_date AS initial_cap_completed_date,
+        ed.cap_sent_to_patient AS cap_sent_to_patient,
+        ed.followup_cap_completed_date AS followup_cap_completed_date,
+        ed.user_uuid AS user_uuid,
+        ed.date_test_ordered AS date_test_ordered,
+        ed.ror_visit_status AS ror_visit_status,
+        ed.ror_date_contacted AS ror_date_contacted,
+        ed.order_status AS order_status,
+        ed.visit_status AS visit_status,
+        INITCAP(REPLACE(ed.visit_provider, '_', ' ')) AS visit_provider,
+        ed.date_test_recommended AS date_test_recommended,
+        ed.test_recommended AS test_recommended,
+        oi.date_received_report AS date_received_report,
+        cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
+        cm.result_cap_cc_user_name AS result_cap_cc_user_name,
+        cm.total_and_cc_order_cc_user_name AS total_and_cc_order_cc_user_name,
+        cm.pa_forms_cc_user_name AS pa_forms_cc_user_name,
+        CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
+      FROM encounter_details ed
+      LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
+      LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
+      LEFT JOIN order_info oi ON oi.encounter_uuid = ed.encounter_uuid
+      LEFT JOIN cc_metrics AS cm ON cm.encounter_uuid = ed.encounter_uuid
+      LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
+      LEFT JOIN partners AS patient_level_prt ON pes.partner_id::text = patient_level_prt.data->>'id'
+      LEFT JOIN partner_orgs AS po ON prt.data->>'id' = po.id
+      LEFT JOIN partner_orgs AS patient_level_po ON p.partner_id::text = patient_level_po.id
+      LEFT JOIN referral_channels AS rc ON prt.data->>'referral_channel_id' = rc.data ->> 'id'
+      LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
+      WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)
+    ;;
   }
 
   # Define your dimensions and measures here, like this:
@@ -207,18 +208,7 @@ view: clinical_operations {
     description: "Patient Date of Birth"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."patient_dob" ;;
   }
 
@@ -226,18 +216,7 @@ view: clinical_operations {
     description: "Encounter Creation Date (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."created_at" ;;
   }
 
@@ -245,18 +224,7 @@ view: clinical_operations {
     description: "Encounter Date of Service (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_of_service" ;;
   }
 
@@ -264,18 +232,7 @@ view: clinical_operations {
     description: "Initial Visit Summary Sent Date (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."initial_visit_summary_sent" ;;
   }
 
@@ -283,18 +240,7 @@ view: clinical_operations {
     description: "Initial CAP Completed Date (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."initial_cap_completed_date" ;;
   }
 
@@ -302,18 +248,7 @@ view: clinical_operations {
     description: "CAP Sent to Patient Date (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."cap_sent_to_patient" ;;
   }
 
@@ -321,18 +256,7 @@ view: clinical_operations {
     description: "Followup CAP Completed Date (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."followup_cap_completed_date" ;;
   }
 
@@ -347,18 +271,7 @@ view: clinical_operations {
     type: time
     hidden: yes
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_test_ordered" ;;
   }
 
@@ -372,18 +285,7 @@ view: clinical_operations {
     description: "RoR Date Contacted (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."ror_date_contacted" ;;
   }
 
@@ -391,18 +293,7 @@ view: clinical_operations {
     description: "Date Received Report (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_received_report" ;;
   }
 
@@ -428,18 +319,7 @@ view: clinical_operations {
     description: "Date Test Recommended (UTC)"
     type: time
     drill_fields: [encounter_type, referral_program]
-    timeframes: [
-      raw,
-      time,
-      date,
-      day_of_week,
-      week_of_year,
-      week,
-      month,
-      month_name,
-      quarter,
-      year
-    ]
+    timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_test_recommended" ;;
   }
 
@@ -454,10 +334,6 @@ view: clinical_operations {
     type: yesno
     sql: ${TABLE}.is_high_priority_patient ;;
   }
-  # cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
-  # cm.result_cap_cc_user_name AS result_cap_cc_user_name,
-  # cm.total_and_cc_order_cc_user_name AS total_and_cc_order_cc_user_name,
-  # cm.pa_forms_cc_user_name AS pa_forms_cc_user_name
 
   dimension: visit_cap_cc_user_name {
     description: "Visit CAP Sending CC"
@@ -474,12 +350,14 @@ view: clinical_operations {
   dimension: total_and_cc_order_cc_user_name {
     description: "Total and Order Sending CC"
     type: string
+    hidden: yes
     sql: ${TABLE}.total_and_cc_order_cc_user_name ;;
   }
 
   dimension: pa_forms_cc_user_name {
     description: "PA Forms Sending CC"
     type: string
+    hidden: yes
     sql: ${TABLE}.pa_forms_cc_user_name ;;
   }
 
@@ -522,7 +400,8 @@ view: clinical_operations {
     label: "Average visit CAP completion time from date of visit"
     filters: [visit_cap_completion_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [visit_provider, average_visit_completion_time_in_days]
+    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email, average_visit_completion_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -531,7 +410,8 @@ view: clinical_operations {
     label: "Average results CAP completion time from date report was received"
     filters: [result_cap_completed_time: ">=0"]
     sql: ${result_cap_completed_time} ;;
-    drill_fields: [visit_provider, average_result_cap_completed_time_in_days]
+    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email, average_result_cap_completed_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -540,7 +420,8 @@ view: clinical_operations {
     label: "Average order-request update time from date of visit"
     filters: [order_request_update_time: ">=0"]
     sql: ${order_request_update_time} ;;
-    drill_fields: [visit_provider, average_order_request_update_time_in_days]
+    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email, average_order_request_update_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -548,28 +429,34 @@ view: clinical_operations {
     type: count
     label: "Total number of visit CAPs sent by CCs"
     filters: [visit_cap_cc_user_name: "-NULL"]
-    drill_fields: [visit_cap_cc_user_name,patient_name]
+    drill_fields: [visit_cap_cc_user_name, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email]
   }
 
   measure: count_result_caps {
     type: count
     label: "Total number of result CAPs sent by CCs"
     filters: [result_cap_cc_user_name: "-NULL"]
-    drill_fields: [result_cap_cc_user_name]
+    drill_fields: [result_cap_cc_user_name, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email]
   }
 
   measure: count_orders_sent {
     type: count
     label: "Total number of orders sent by CCs"
+    hidden: yes
     filters: [total_and_cc_order_cc_user_name: "-NULL"]
-    drill_fields: [total_and_cc_order_cc_user_name]
+    drill_fields: [total_and_cc_order_cc_user_name, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email]
   }
 
   measure: count_pa_forms_sent {
     type: count
     label: "Total number of PA forms sent by CCs"
+    hidden: yes
     filters: [pa_forms_cc_user_name: "-NULL"]
-    drill_fields: [pa_forms_cc_user_name]
+    drill_fields: [pa_forms_cc_user_name, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email]
   }
 
   measure: average_visit_cap_release_time_in_days {
@@ -577,7 +464,8 @@ view: clinical_operations {
     label: "Average visit CAP Release time (visit encounters) from CAP completion date"
     filters: [visit_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [visit_cap_cc_user_name, average_visit_cap_release_time_in_days]
+    drill_fields: [visit_cap_cc_user_name, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email, average_visit_cap_release_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -586,7 +474,8 @@ view: clinical_operations {
     label: "Average results CAP Release time from CAP completion date"
     filters: [result_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [result_cap_cc_user_name, average_result_cap_release_time_in_days]
+    drill_fields: [result_cap_cc_user_name, referral_program, referral_partner, referral_channel,
+      patient_name, patient_email, average_result_cap_release_time_in_days]
     value_format_name: decimal_2
   }
 }

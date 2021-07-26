@@ -19,6 +19,7 @@ view: clinical_operations_outreach {
           rank() over (partition by pcd.patient_uuid order by pcd.date_time) AS outreach_rank,
           rank() over (partition by pcd.patient_uuid, medium_subtype_id order by pcd.date_time) AS outreach_medium_rank
         FROM patient_communication_details pcd
+        WHERE pcd.communication_type_name ='referral_outreach'
       )
       SELECT pcd.patient_uuid AS patient_uuid,
         pes.created_at AS created_at,

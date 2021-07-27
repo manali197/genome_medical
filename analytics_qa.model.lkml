@@ -157,3 +157,8 @@ explore: referral_status {
     relationship: one_to_many
   }
 }
+
+
+explore:  copper_people {
+
+}

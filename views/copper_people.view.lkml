@@ -61,13 +61,14 @@ view: copper_people {
     sql: ${TABLE}."name" ;;
   }
 
-  measure: count_of_distinct_company_by_id {
-    type: count_distinct
+  measure: count_of_company_by_id {
+    type: count
     drill_fields: [company_id]
   }
 
   measure: count_of_distinct_company_by_name {
     type: count_distinct
+    sql: ${TABLE}."company_name" ;;
     drill_fields: [company_name]
   }
 }

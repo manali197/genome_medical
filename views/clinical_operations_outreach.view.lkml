@@ -5,12 +5,12 @@ view: clinical_operations_outreach {
         pes.created_at AS created_at,
         pcd.communication_medium_subtype_name AS outreach_medium,
         pcd.date_time AS outreach_date,
-        LEAD(pcd.date_time, 1) OVER (ORDER BY pcd.date_time) AS next_outreach_date,
-        LEAD(pcd.date_time, 1) OVER (ORDER BY pcd.medium_subtype_id, pcd.date_time) AS next_outreach_medium_date,
+        LEAD(pcd.date_time, 1) OVER (PARTITION BY pcd.patient_uuid ORDER BY pcd.date_time) AS next_outreach_date,
+        LEAD(pcd.date_time, 1) OVER (PARTITION BY pcd.patient_uuid, pcd.medium_subtype_id ORDER BY pcd.date_time) AS next_outreach_medium_date,
         pcd.sender_uuid AS sender_uuid,
-        LEAD(pcd.sender_uuid, 1) OVER (ORDER BY pcd.date_time) AS next_sender_uuid,
-        rank() over (partition by pcd.patient_uuid order by pcd.date_time) AS outreach_rank,
-        rank() over (partition by pcd.patient_uuid, pcd.medium_subtype_id order by pcd.date_time) AS outreach_medium_rank,
+        LEAD(pcd.sender_uuid, 1) OVER (PARTITION BY pcd.patient_uuid ORDER BY pcd.date_time) AS next_sender_uuid,
+        rank() over (PARTITION BY pcd.patient_uuid order by pcd.date_time) AS outreach_rank,
+        rank() over (PARTITION BY pcd.patient_uuid, pcd.medium_subtype_id order by pcd.date_time) AS outreach_medium_rank,
         CONCAT(u.first_name, ' ', u.last_name) AS sender_name
       FROM patient_communication_details pcd
       JOIN patient_encounter_summary pes on pes.patient_uuid = pcd.patient_uuid

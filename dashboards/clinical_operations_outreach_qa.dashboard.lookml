@@ -1,5 +1,5 @@
-- dashboard: clinical_operations_report_outreach_metrics
-  title: Clinical_Operations_Report (Outreach Metrics)
+- dashboard: clinical_operations_report_outreach_metrics_qa
+  title: Clinical_Operations_Report (Outreach Metrics) (QA)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:

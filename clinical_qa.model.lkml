@@ -115,6 +115,16 @@ explore: clinical_operations_orders {
     sql_on: ${clinical_operations.encounter_uuid} = ${clinical_operations_orders.encounter_uuid} ;;
     relationship: many_to_one
   }
+  join: encounter_details {
+    type: left_outer
+    sql_on: ${clinical_operations_orders.encounter_uuid} = ${encounter_details.encounter_uuid};;
+    relationship: many_to_one
+  }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${encounter_details.user_uuid} = ${patient_encounter_summary.patient_uuid};;
+    relationship: many_to_one
+  }
 }
 
 explore: clinical_operations_outreach {
@@ -123,12 +133,27 @@ explore: clinical_operations_outreach {
     sql_on: ${clinical_operations.user_uuid} = ${clinical_operations_outreach.patient_uuid} ;;
     relationship: one_to_one
   }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${clinical_operations_outreach.patient_uuid} = ${patient_encounter_summary.patient_uuid};;
+    relationship: many_to_one
+  }
 }
 
 explore: clinical_operations_preauths {
   join: clinical_operations {
     type: left_outer
     sql_on: ${clinical_operations_preauths.encounter_uuid} = ${clinical_operations.encounter_uuid} ;;
+    relationship: many_to_one
+  }
+  join: encounter_details {
+    type: left_outer
+    sql_on: ${clinical_operations_preauths.encounter_uuid} = ${encounter_details.encounter_uuid};;
+    relationship: many_to_one
+  }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${encounter_details.user_uuid} = ${patient_encounter_summary.patient_uuid};;
     relationship: many_to_one
   }
 }

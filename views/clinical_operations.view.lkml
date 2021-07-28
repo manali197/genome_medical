@@ -145,9 +145,6 @@ view: clinical_operations {
     ;;
   }
 
-  # Define your dimensions and measures here, like this:
-
-
   dimension: patient_state {
     map_layer_name: us_states
     description: "Patient State"

@@ -388,6 +388,10 @@ view: clinical_operations {
     sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
   }
 
+  set: patient_level_fields {
+    fields: [patient_name, patient_email]
+  }
+
   measure: count {
     type: count
   }
@@ -397,9 +401,12 @@ view: clinical_operations {
     label: "Average visit CAP completion time from date of visit"
     filters: [visit_cap_completion_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_visit_completion_time_in_days]
+    drill_fields: [visit_provider, referral_program, average_visit_completion_time_in_days]
     value_format_name: decimal_2
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_visit_completion_time_in_days"
+    }
   }
 
   measure: average_result_cap_completed_time_in_days {
@@ -407,9 +414,12 @@ view: clinical_operations {
     label: "Average results CAP completion time from date report was received"
     filters: [result_cap_completed_time: ">=0"]
     sql: ${result_cap_completed_time} ;;
-    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_result_cap_completed_time_in_days]
+    drill_fields: [visit_provider, referral_program, average_result_cap_completed_time_in_days]
     value_format_name: decimal_2
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_result_cap_completed_time_in_days"
+    }
   }
 
   measure: average_order_request_update_time_in_days {
@@ -417,25 +427,34 @@ view: clinical_operations {
     label: "Average order-request update time from date of visit"
     filters: [order_request_update_time: ">=0"]
     sql: ${order_request_update_time} ;;
-    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_order_request_update_time_in_days]
+    drill_fields: [visit_provider, referral_program, average_order_request_update_time_in_days]
     value_format_name: decimal_2
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_order_request_update_time_in_days"
+    }
   }
 
   measure: count_visit_caps {
     type: count
     label: "Total number of visit CAPs sent by CCs"
     filters: [visit_cap_cc_user_name: "-NULL"]
-    drill_fields: [visit_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+    drill_fields: [visit_cap_cc_user_name, referral_program, count_visit_caps]
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_visit_caps"
+    }
   }
 
   measure: count_result_caps {
     type: count
     label: "Total number of result CAPs sent by CCs"
     filters: [result_cap_cc_user_name: "-NULL"]
-    drill_fields: [result_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+    drill_fields: [result_cap_cc_user_name, referral_program, count_result_caps]
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_result_caps"
+    }
   }
 
   measure: count_orders_sent {
@@ -443,17 +462,11 @@ view: clinical_operations {
     label: "Total number of orders sent by CCs"
     hidden: yes
     filters: [total_and_cc_order_cc_user_name: "-NULL"]
-    drill_fields: [total_and_cc_order_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
-  }
-
-  measure: count_pa_forms_sent {
-    type: count
-    label: "Total number of PA forms sent by CCs"
-    hidden: yes
-    filters: [pa_forms_cc_user_name: "-NULL"]
-    drill_fields: [pa_forms_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+    drill_fields: [total_and_cc_order_cc_user_name, referral_program, count_orders_sent]
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_orders_sent"
+    }
   }
 
   measure: average_visit_cap_release_time_in_days {
@@ -461,9 +474,12 @@ view: clinical_operations {
     label: "Average visit CAP Release time (visit encounters) from CAP completion date"
     filters: [visit_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [visit_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_visit_cap_release_time_in_days]
+    drill_fields: [visit_cap_cc_user_name, referral_program, average_visit_cap_release_time_in_days]
     value_format_name: decimal_2
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_visit_cap_release_time_in_days"
+    }
   }
 
   measure: average_result_cap_release_time_in_days {
@@ -471,8 +487,11 @@ view: clinical_operations {
     label: "Average results CAP Release time from CAP completion date"
     filters: [result_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [result_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_result_cap_release_time_in_days]
+    drill_fields: [result_cap_cc_user_name, referral_program, average_result_cap_release_time_in_days]
     value_format_name: decimal_2
+    link: {
+      label: "Explore Results by Patient"
+      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_result_cap_release_time_in_days"
+    }
   }
 }

@@ -404,7 +404,7 @@ view: clinical_operations {
     drill_fields: [visit_provider, referral_program, average_visit_completion_time_in_days]
     value_format_name: decimal_2
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_visit_completion_time_in_days"
     }
   }
@@ -417,7 +417,7 @@ view: clinical_operations {
     drill_fields: [visit_provider, referral_program, average_result_cap_completed_time_in_days]
     value_format_name: decimal_2
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_result_cap_completed_time_in_days"
     }
   }
@@ -430,7 +430,7 @@ view: clinical_operations {
     drill_fields: [visit_provider, referral_program, average_order_request_update_time_in_days]
     value_format_name: decimal_2
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_order_request_update_time_in_days"
     }
   }
@@ -441,7 +441,7 @@ view: clinical_operations {
     filters: [visit_cap_cc_user_name: "-NULL"]
     drill_fields: [visit_cap_cc_user_name, referral_program, count_visit_caps]
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_visit_caps"
     }
   }
@@ -452,7 +452,7 @@ view: clinical_operations {
     filters: [result_cap_cc_user_name: "-NULL"]
     drill_fields: [result_cap_cc_user_name, referral_program, count_result_caps]
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_result_caps"
     }
   }
@@ -464,7 +464,7 @@ view: clinical_operations {
     filters: [total_and_cc_order_cc_user_name: "-NULL"]
     drill_fields: [total_and_cc_order_cc_user_name, referral_program, count_orders_sent]
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_orders_sent"
     }
   }
@@ -477,7 +477,7 @@ view: clinical_operations {
     drill_fields: [visit_cap_cc_user_name, referral_program, average_visit_cap_release_time_in_days]
     value_format_name: decimal_2
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_visit_cap_release_time_in_days"
     }
   }
@@ -490,7 +490,7 @@ view: clinical_operations {
     drill_fields: [result_cap_cc_user_name, referral_program, average_result_cap_release_time_in_days]
     value_format_name: decimal_2
     link: {
-      label: "Explore Results by Patient"
+      label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.average_result_cap_release_time_in_days"
     }
   }

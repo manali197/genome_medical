@@ -66,6 +66,12 @@ view: clinical_operations_outreach {
     sql: ${TABLE}.outreach_rank ;;
   }
 
+  dimension: outreach_medium_rank {
+    type: string
+    label: "Outreach rank within the same medium"
+    sql: ${TABLE}.outreach_medium_rank ;;
+  }
+
   dimension: sender_uuid {
     type: string
     label: "Outreach agent UUID"
@@ -120,7 +126,7 @@ view: clinical_operations_outreach {
     label: "Average time (in days) between second and third outreach"
     filters: [outreach_time: ">=0", outreach_date_date: "-NULL", next_outreach_date_date: "-NULL", outreach_rank: "2"]
     sql: ${outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_2_3_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -129,7 +135,7 @@ view: clinical_operations_outreach {
     label: "Average time (in days) between third and fourth outreach"
     filters: [outreach_time: ">=0", outreach_date_date: "-NULL", next_outreach_date_date: "-NULL", outreach_rank: "3"]
     sql: ${outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_3_4_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -138,7 +144,7 @@ view: clinical_operations_outreach {
     label: "Average time (in days) between fourth and fifth outreach"
     filters: [outreach_time: ">=0", outreach_date_date: "-NULL", next_outreach_date_date: "-NULL", outreach_rank: "4"]
     sql: ${outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_4_5_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -147,7 +153,7 @@ view: clinical_operations_outreach {
     label: "Average time (in days) between fifth and sixth outreach"
     filters: [outreach_time: ">=0", outreach_date_date: "-NULL", next_outreach_date_date: "-NULL", outreach_rank: "5"]
     sql: ${outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, outreach_medium, average_outreach_5_6_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -155,9 +161,9 @@ view: clinical_operations_outreach {
     type: average
     label: "Average time (in days) between patient creation and first phone outreach"
     filters: [creation_outreach_time: ">=0", outreach_date_date: "-NULL", created_at_date: "-NULL",
-      outreach_rank: "1", outreach_medium: "phone"]
+      outreach_medium_rank: "1", outreach_medium: "phone"]
     sql: ${creation_outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, average_phone_outreach_0_1_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -165,9 +171,9 @@ view: clinical_operations_outreach {
     type: average
     label: "Average time (in days) between first and second phone outreach"
     filters: [outreach_medium_time: ">=0", outreach_date_date: "-NULL", next_outreach_medium_date_date: "-NULL",
-      outreach_rank: "1", outreach_medium: "phone"]
+      outreach_medium_rank: "1", outreach_medium: "phone"]
     sql: ${outreach_medium_time} ;;
-    drill_fields: [patient_uuid, sender_name, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, average_phone_outreach_1_2_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -175,9 +181,9 @@ view: clinical_operations_outreach {
     type: average
     label: "Average time (in days) between patient creation and second phone outreach"
     filters: [creation_outreach_time: ">=0", outreach_date_date: "-NULL", created_at_date: "-NULL",
-      outreach_rank: "2", outreach_medium: "phone"]
+      outreach_medium_rank: "2", outreach_medium: "phone"]
     sql: ${creation_outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, average_phone_outreach_0_2_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -185,9 +191,9 @@ view: clinical_operations_outreach {
     type: average
     label: "Average time (in days) between second and third phone outreach"
     filters: [outreach_medium_time: ">=0", outreach_date_date: "-NULL", next_outreach_medium_date_date: "-NULL",
-      outreach_rank: "2", outreach_medium: "phone"]
+      outreach_medium_rank: "2", outreach_medium: "phone"]
     sql: ${outreach_medium_time} ;;
-    drill_fields: [patient_uuid, sender_name, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, average_phone_outreach_2_3_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -195,9 +201,9 @@ view: clinical_operations_outreach {
     type: average
     label: "Average time (in days) between patient creation and third phone outreach"
     filters: [creation_outreach_time: ">=0", outreach_date_date: "-NULL", created_at_date: "-NULL",
-      outreach_rank: "3", outreach_medium: "phone"]
+      outreach_medium_rank: "3", outreach_medium: "phone"]
     sql: ${creation_outreach_time} ;;
-    drill_fields: [patient_uuid, sender_name, average_outreach_1_2_time_in_days]
+    drill_fields: [patient_uuid, sender_name, average_phone_outreach_0_3_time_in_days]
     value_format_name: decimal_2
   }
 }

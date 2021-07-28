@@ -1,6 +1,10 @@
 connection: "qa_analytics_db"
 
 include: "/views/*.view.lkml"
+include: "dashboards/clinical_operations_gc_qa.dashboard"
+include: "dashboards/clinical_operations_cc_qa.dashboard"
+include: "dashboards/clinical_operations_outreach_qa.dashboard"
+
 
 explore: partners {
   join: partner_organizations {

@@ -90,7 +90,6 @@ explore: referral_status {
   }
 }
 
-
 explore: clinical_operations {
   join: care_team {
     type: left_outer
@@ -120,6 +119,21 @@ explore: clinical_operations_orders {
     sql_on: ${clinical_operations_orders.encounter_uuid} = ${encounter_details.encounter_uuid};;
     relationship: many_to_one
   }
+  join: partners {
+    type: left_outer
+    sql_on: ${patient_encounter_summary.partner_id} = ${partners.id} ;;
+    relationship: one_to_one
+  }
+  join: partner_organizations {
+    type: left_outer
+    sql_on: ${partners.partner_organization_ids}::jsonb @> ${partner_organizations.id}::text::jsonb ;;
+    relationship: one_to_many
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: one_to_one
+  }
   join: patient_encounter_summary {
     type: left_outer
     sql_on: ${encounter_details.user_uuid} = ${patient_encounter_summary.patient_uuid};;
@@ -138,6 +152,21 @@ explore: clinical_operations_outreach {
     sql_on: ${clinical_operations_outreach.patient_uuid} = ${patient_encounter_summary.patient_uuid};;
     relationship: many_to_one
   }
+  join: partners {
+    type: left_outer
+    sql_on: ${patient_encounter_summary.partner_id} = ${partners.id} ;;
+    relationship: one_to_one
+  }
+  join: partner_organizations {
+    type: left_outer
+    sql_on: ${partners.partner_organization_ids}::jsonb @> ${partner_organizations.id}::text::jsonb ;;
+    relationship: one_to_many
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: one_to_one
+  }
 }
 
 explore: clinical_operations_preauths {
@@ -150,6 +179,21 @@ explore: clinical_operations_preauths {
     type: left_outer
     sql_on: ${clinical_operations_preauths.encounter_uuid} = ${encounter_details.encounter_uuid};;
     relationship: many_to_one
+  }
+  join: partners {
+    type: left_outer
+    sql_on: ${encounter_details.partner_uuid} = ${partners.uuid} ;;
+    relationship: one_to_one
+  }
+  join: partner_organizations {
+    type: left_outer
+    sql_on: ${partners.partner_organization_ids}::jsonb @> ${partner_organizations.id}::text::jsonb ;;
+    relationship: one_to_many
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: one_to_one
   }
   join: patient_encounter_summary {
     type: left_outer

@@ -69,6 +69,10 @@ view: clinical_operations_preauths {
     sql: count_business_days(${date_status_changed_to_awaiting_cc_submission_date}, ${dispatch_date_date}) ;;
   }
 
+  measure: count {
+    type: count
+  }
+
   measure: average_pa_form_sent_time_in_days {
     type: average
     label: "Average PA form submission time (business days)"

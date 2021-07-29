@@ -341,10 +341,6 @@ view: clinical_operations {
     sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
   }
 
-  set: patient_level_fields {
-    fields: [patient_name, patient_email]
-  }
-
   measure: count {
     type: count
   }
@@ -352,7 +348,7 @@ view: clinical_operations {
   measure: average_visit_completion_time_in_days {
     type: average
     label: "Average visit CAP completion time from date of visit"
-    filters: [visit_cap_completion_time: ">=0"]
+    filters: [visit_cap_completion_time: ">=0", encounter_type: "visit"]
     sql: ${visit_cap_completion_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_completion_time_in_days]
     value_format_name: decimal_2
@@ -427,7 +423,7 @@ view: clinical_operations {
     type: average
     label: "Average results CAP Release time from CAP completion date"
     filters: [result_cap_release_time: ">=0"]
-    sql: ${visit_cap_completion_time} ;;
+    sql: ${result_cap_release_time} ;;
     drill_fields: [result_cap_cc_user_name, referral_program, average_result_cap_release_time_in_days]
     value_format_name: decimal_2
     link: {

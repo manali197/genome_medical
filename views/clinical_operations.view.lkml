@@ -410,7 +410,7 @@ view: clinical_operations {
     type: average
     label: "Average visit CAP Release time (visit encounters) from CAP completion date"
     filters: [visit_cap_release_time: ">=0"]
-    sql: ${visit_cap_completion_time} ;;
+    sql: ${visit_cap_release_time} ;;
     drill_fields: [visit_cap_cc_user_name, referral_program, average_visit_cap_release_time_in_days]
     value_format_name: decimal_2
     link: {

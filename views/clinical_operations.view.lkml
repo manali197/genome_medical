@@ -26,44 +26,13 @@ view: clinical_operations {
           aud. "data"->'changes'->>'root[''cap_sent_to_patient'']' IS NOT NULL
         )
       ),
-      total_and_cc_order_sent_by_cc AS (
-        SELECT encounter_uuid, user_name, pos, count(*) AS order_count
-        FROM (
-          SELECT e.encounter_uuid AS encounter_uuid,
-           coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
-           rank() over (partition by gto.id order by gtoh.created_at desc) as pos
-          FROM encounter_details AS e
-          LEFT JOIN gene_test_orders AS gto ON e.encounter_uuid=gto.encounter_uuid
-          LEFT JOIN gene_test_orders_history AS gtoh ON gto.id=gtoh.gene_test_orders_id
-          LEFT JOIN users AS u ON gtoh.user_uuid = u.uuid
-          WHERE e.encounter_type in ('visit', 'cc-intake', 'group-session') AND
-            gtoh.order_status ='sent_to_lab'
-        ) AS encounter_orders
-        GROUP BY encounter_uuid, user_name, pos
-      ),
-      pa_forms_sent_by_cc AS (
-        SELECT e.encounter_uuid AS encounter_uuid,
-          coalesce(nullif(trim(initcap(concat(u.first_name, ' ', u.last_name))), ''), 'Unknown Users') AS user_name,
-          rank() over (partition by pa.id order by pah.created_at desc) as pos
-        FROM encounter_details AS e
-        LEFT JOIN preauthorizations AS pa ON pa.encounter_uuid=e.encounter_uuid
-        LEFT JOIN preauthorizations_history AS pah ON pa.id=pah.preauthorizations_id
-        LEFT JOIN users AS u ON pah.user_uuid = u.uuid
-        WHERE e.encounter_type in ('visit', 'cc-intake', 'group-session') AND
-          pa.dispatch_status='pa_form_sent' AND
-          pah.dispatch_status ='pa_form_sent'
-      ),
       cc_metrics AS (
         SELECT e.encounter_uuid AS encounter_uuid,
           v.user_name AS visit_cap_cc_user_name,
-          r.user_name AS result_cap_cc_user_name,
-          t.user_name AS total_and_cc_order_cc_user_name,
-          p.user_name AS pa_forms_cc_user_name
+          r.user_name AS result_cap_cc_user_name
         FROM encounter_details AS e
         LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = e.encounter_uuid AND v.pos = 1
         LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = e.encounter_uuid AND r.pos = 1
-        LEFT JOIN total_and_cc_order_sent_by_cc t ON t.encounter_uuid = e.encounter_uuid  AND t.pos = 1
-        LEFT JOIN pa_forms_sent_by_cc p ON p.encounter_uuid = e.encounter_uuid AND p.pos = 1
       ),
       high_priority_patients AS (
         SELECT DISTINCT p.patient_uuid AS puuid
@@ -127,8 +96,6 @@ view: clinical_operations {
         oi.date_received_report AS date_received_report,
         cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
         cm.result_cap_cc_user_name AS result_cap_cc_user_name,
-        cm.total_and_cc_order_cc_user_name AS total_and_cc_order_cc_user_name,
-        cm.pa_forms_cc_user_name AS pa_forms_cc_user_name,
         CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
       FROM encounter_details ed
       LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
@@ -344,20 +311,6 @@ view: clinical_operations {
     sql: ${TABLE}.result_cap_cc_user_name ;;
   }
 
-  dimension: total_and_cc_order_cc_user_name {
-    description: "Total and Order Sending CC"
-    type: string
-    hidden: yes
-    sql: ${TABLE}.total_and_cc_order_cc_user_name ;;
-  }
-
-  dimension: pa_forms_cc_user_name {
-    description: "PA Forms Sending CC"
-    type: string
-    hidden: yes
-    sql: ${TABLE}.pa_forms_cc_user_name ;;
-  }
-
   dimension: visit_cap_completion_time {
     type: number
     label: "Visit CAP completion time (visit encounters) from date of visit"
@@ -454,18 +407,6 @@ view: clinical_operations {
     link: {
       label: "Explore Results by Patients"
       url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_result_caps"
-    }
-  }
-
-  measure: count_orders_sent {
-    type: count
-    label: "Total number of orders sent by CCs"
-    hidden: yes
-    filters: [total_and_cc_order_cc_user_name: "-NULL"]
-    drill_fields: [total_and_cc_order_cc_user_name, referral_program, count_orders_sent]
-    link: {
-      label: "Explore Results by Patients"
-      url: "{{ link }}&fields=clinical_operations.patient_name,clinical_operations.patient_email,clinical_operations.referral_program,clinical_operations.count_orders_sent"
     }
   }
 

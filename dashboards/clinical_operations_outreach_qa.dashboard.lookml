@@ -8,11 +8,10 @@
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_grid
-    fields: [clinical_operations_outreach.average_outreach_1_2_time_in_days, clinical_operations.referral_program,
-      clinical_operations_outreach.average_outreach_2_3_time_in_days, clinical_operations_outreach.average_outreach_3_4_time_in_days,
-      clinical_operations_outreach.average_outreach_4_5_time_in_days, clinical_operations_outreach.average_outreach_5_6_time_in_days]
+    fields: [clinical_operations_outreach.average_outreach_1_2_time_in_days, clinical_operations_outreach.average_outreach_2_3_time_in_days,
+      clinical_operations_outreach.average_outreach_3_4_time_in_days, clinical_operations_outreach.average_outreach_4_5_time_in_days,
+      clinical_operations_outreach.average_outreach_5_6_time_in_days, patient_encounter_summary.referral_program]
     filters:
-      clinical_operations_outreach.average_outreach_1_2_time_in_days: NOT NULL
       clinical_operations_outreach.average_outreach_5_6_time_in_days: ''
       clinical_operations_outreach.average_outreach_4_5_time_in_days: ''
       clinical_operations_outreach.average_outreach_2_3_time_in_days: ''
@@ -96,6 +95,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 9
     col: 0
     width: 23
@@ -185,6 +185,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 18
     col: 0
     width: 9
@@ -212,10 +213,9 @@
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_grid
-    fields: [clinical_operations.referral_program, clinical_operations_outreach.average_phone_outreach_0_1_time_in_days,
-      clinical_operations_outreach.average_phone_outreach_1_2_time_in_days, clinical_operations_outreach.average_phone_outreach_2_3_time_in_days]
-    filters:
-      clinical_operations_outreach.average_phone_outreach_0_1_time_in_days: NOT NULL
+    fields: [clinical_operations_outreach.average_phone_outreach_0_1_time_in_days,
+      clinical_operations_outreach.average_phone_outreach_1_2_time_in_days, clinical_operations_outreach.average_phone_outreach_2_3_time_in_days,
+      patient_encounter_summary.referral_program]
     sorts: [clinical_operations_outreach.average_phone_outreach_0_1_time_in_days desc]
     limit: 500
     show_view_names: false
@@ -297,6 +297,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 25
     col: 0
     width: 23
@@ -395,6 +396,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 34
     col: 0
     width: 9
@@ -404,10 +406,9 @@
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_grid
-    fields: [clinical_operations.referral_program, clinical_operations_outreach.average_phone_outreach_0_1_time_in_days,
-      clinical_operations_outreach.average_phone_outreach_0_2_time_in_days, clinical_operations_outreach.average_phone_outreach_0_3_time_in_days]
-    filters:
-      clinical_operations_outreach.average_phone_outreach_0_1_time_in_days: NOT NULL
+    fields: [clinical_operations_outreach.average_phone_outreach_0_1_time_in_days,
+      clinical_operations_outreach.average_phone_outreach_0_2_time_in_days, clinical_operations_outreach.average_phone_outreach_0_3_time_in_days,
+      patient_encounter_summary.referral_program]
     sorts: [clinical_operations_outreach.average_phone_outreach_0_1_time_in_days desc]
     limit: 500
     show_view_names: false
@@ -493,6 +494,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 41
     col: 0
     width: 23
@@ -505,8 +507,6 @@
     fields: [clinical_operations_outreach.average_outreach_1_2_time_in_days, clinical_operations_outreach.average_outreach_2_3_time_in_days,
       clinical_operations_outreach.average_outreach_3_4_time_in_days, clinical_operations_outreach.average_outreach_4_5_time_in_days,
       clinical_operations_outreach.average_outreach_5_6_time_in_days]
-    filters:
-      clinical_operations.referral_program: "-TEST T"
     sorts: [clinical_operations_outreach.average_outreach_1_2_time_in_days desc]
     limit: 500
     x_axis_gridlines: true
@@ -594,6 +594,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 2
     col: 0
     width: 9
@@ -696,6 +697,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 2
     col: 9
     width: 14
@@ -790,6 +792,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 18
     col: 9
     width: 14
@@ -884,6 +887,7 @@
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
     row: 34
     col: 9
     width: 14
@@ -945,3 +949,17 @@
     explore: clinical_operations_outreach
     listens_to_filters: []
     field: referral_channels.name
+  - name: Referral Outreach Automation Enabled
+    title: Referral Outreach Automation Enabled
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: button_group
+      display: inline
+      options: []
+    model: clinical_qa
+    explore: clinical_operations_outreach
+    listens_to_filters: []
+    field: partners.referral_outreach_automation_enabled

@@ -16,7 +16,7 @@
     height: 2
   - title: AVG Time to Complete Visit CAP
     name: AVG Time to Complete Visit CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_line
     fields: [clinical_operations.average_visit_completion_time_in_days, clinical_operations.initial_cap_completed_date_week]
@@ -85,17 +85,17 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_cap_completed_date_date
     row: 5
     col: 0
     width: 11
     height: 6
   - title: AVG Time for Provider to Complete Visit CAP
     name: AVG Time for Provider to Complete Visit CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_grid
     fields: [clinical_operations.average_visit_completion_time_in_days, clinical_operations.visit_provider]
@@ -187,10 +187,10 @@
     note_display: above
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_cap_completed_date_date
     row: 2
     col: 11
     width: 12
@@ -208,7 +208,7 @@
     height: 2
   - title: AVG Time to Complete Results CAP
     name: AVG Time to Complete Results CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_line
     fields: [clinical_operations.average_result_cap_completed_time_in_days, clinical_operations.followup_cap_completed_date_week]
@@ -278,17 +278,17 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 16
     col: 0
     width: 11
     height: 6
   - title: AVG Time for provider to complete Results CAP
     name: AVG Time for provider to complete Results CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_grid
     fields: [clinical_operations.visit_provider, clinical_operations.average_result_cap_completed_time_in_days]
@@ -377,10 +377,10 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 13
     col: 11
     width: 12
@@ -398,7 +398,7 @@
     height: 2
   - title: AVG Time for Order Request to update
     name: AVG Time for Order Request to update
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_line
     fields: [clinical_operations.average_order_request_update_time_in_days, clinical_operations.date_test_recommended_week]
@@ -471,17 +471,17 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.date_test_recommended_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.date_test_recommended_date
     row: 27
     col: 0
     width: 11
     height: 6
   - title: AVG Time for Order Request to update, by Provider
     name: AVG Time for Order Request to update, by Provider
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_grid
     fields: [clinical_operations.visit_provider, clinical_operations.average_order_request_update_time_in_days]
@@ -572,17 +572,17 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.date_test_recommended_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.date_test_recommended_date
     row: 24
     col: 11
     width: 12
     height: 9
   - title: AVG Time for Order Request to update
     name: AVG Time for Order Request to update (2)
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: single_value
     fields: [clinical_operations.average_result_cap_completed_time_in_days]
@@ -633,17 +633,17 @@
     note_display: above
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.date_test_recommended_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.date_test_recommended_date
     row: 24
     col: 0
     width: 11
     height: 3
   - title: 'AVG Time for Provider to Complete Results CAP '
     name: 'AVG Time for Provider to Complete Results CAP '
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: single_value
     fields: [clinical_operations.average_result_cap_completed_time_in_days]
@@ -695,17 +695,17 @@
     note_display: above
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 13
     col: 0
     width: 11
     height: 3
   - title: AVG Time for Provider to Complete Visit CAP
     name: AVG Time for Provider to Complete Visit CAP (2)
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: single_value
     fields: [clinical_operations.average_result_cap_completed_time_in_days]
@@ -758,10 +758,10 @@
     note_display: above
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_cap_completed_date_date
     row: 2
     col: 0
     width: 11
@@ -777,7 +777,7 @@
       type: relative_timeframes
       display: inline
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: clinical_operations.initial_cap_completed_date_date
@@ -791,7 +791,7 @@
       type: checkboxes
       display: inline
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: clinical_operations.is_high_priority_patient
@@ -805,7 +805,7 @@
       type: tag_list
       display: popover
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: partner_organizations.name
@@ -819,7 +819,7 @@
       type: tag_list
       display: popover
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: partners.display_name
@@ -833,7 +833,7 @@
       type: checkboxes
       display: popover
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: referral_channels.name

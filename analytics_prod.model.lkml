@@ -185,3 +185,16 @@ explore: referral_status {
 explore: scp_users {
 
 }
+
+explore:  copper_people {}
+explore: copper_leads {}
+explore: copper_opportunities {}
+explore: copper_custom_fields {}
+explore: copper_companies {
+  join: partners {
+    type: left_outer
+    sql_on: ${copper_companies.name} = ${partners.display_name} ;;
+    relationship: one_to_many
+  }
+
+}

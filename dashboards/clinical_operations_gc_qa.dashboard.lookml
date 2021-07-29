@@ -16,15 +16,13 @@
     height: 2
   - title: AVG Time to Complete Visit CAP
     name: AVG Time to Complete Visit CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_line
     fields: [clinical_operations.average_visit_completion_time_in_days, clinical_operations.initial_cap_completed_date_week]
     filters:
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam"
-      clinical_operations.average_visit_completion_time_in_days: ">0"
+      clinical_operations.average_visit_completion_time_in_days: ">=0"
       clinical_operations.encounter_type: visit
-      clinical_operations.referral_program: "-TEST T"
     sorts: [clinical_operations.initial_cap_completed_date_week desc]
     limit: 500
     x_axis_gridlines: true
@@ -95,15 +93,13 @@
     height: 6
   - title: AVG Time for Provider to Complete Visit CAP
     name: AVG Time for Provider to Complete Visit CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_grid
     fields: [clinical_operations.average_visit_completion_time_in_days, clinical_operations.visit_provider]
     filters:
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam,-NULL"
-      clinical_operations.average_visit_completion_time_in_days: ">0"
+      clinical_operations.average_visit_completion_time_in_days: ">=0"
       clinical_operations.encounter_type: visit
-      clinical_operations.referral_partner: "-TESTING FOR UAT"
     sorts: [clinical_operations.average_visit_completion_time_in_days desc]
     limit: 500
     dynamic_fields: [{dimension: patient_priority, _kind_hint: dimension, _type_hint: string,
@@ -208,13 +204,11 @@
     height: 2
   - title: AVG Time to Complete Results CAP
     name: AVG Time to Complete Results CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_line
     fields: [clinical_operations.average_result_cap_completed_time_in_days, clinical_operations.followup_cap_completed_date_week]
     filters:
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam"
-      clinical_operations.average_result_cap_completed_time_in_days: ">0,NOT NULL"
       clinical_operations.encounter_type: visit,cc-intake,group-session,"lab_test_authorization"
     sorts: [clinical_operations.followup_cap_completed_date_week desc]
     limit: 500
@@ -288,13 +282,11 @@
     height: 6
   - title: AVG Time for provider to complete Results CAP
     name: AVG Time for provider to complete Results CAP
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_grid
     fields: [clinical_operations.visit_provider, clinical_operations.average_result_cap_completed_time_in_days]
     filters:
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam,-NULL"
-      clinical_operations.average_result_cap_completed_time_in_days: ">0,NOT NULL"
       clinical_operations.encounter_type: visit,cc-intake,group-session,"lab_test_authorization"
     sorts: [clinical_operations.average_result_cap_completed_time_in_days desc]
     limit: 500
@@ -398,14 +390,12 @@
     height: 2
   - title: AVG Time for Order Request to update
     name: AVG Time for Order Request to update
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_line
     fields: [clinical_operations.average_order_request_update_time_in_days, clinical_operations.date_test_recommended_week]
     filters:
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam"
       clinical_operations.encounter_type: visit,cc-intake,group-session
-      clinical_operations.average_order_request_update_time_in_days: ">0,NOT NULL"
     sorts: [clinical_operations.date_test_recommended_week desc]
     limit: 500
     x_axis_gridlines: true
@@ -481,14 +471,12 @@
     height: 6
   - title: AVG Time for Order Request to update, by Provider
     name: AVG Time for Order Request to update, by Provider
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: looker_grid
     fields: [clinical_operations.visit_provider, clinical_operations.average_order_request_update_time_in_days]
     filters:
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam,-NULL"
       clinical_operations.encounter_type: visit,cc-intake,group-session,"lab_test_authorization"
-      clinical_operations.average_order_request_update_time_in_days: ">0,NOT NULL"
     sorts: [clinical_operations.average_order_request_update_time_in_days desc]
     limit: 500
     dynamic_fields: [{dimension: patient_priority, _kind_hint: dimension, _type_hint: string,
@@ -582,14 +570,12 @@
     height: 9
   - title: AVG Time for Order Request to update
     name: AVG Time for Order Request to update (2)
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: single_value
-    fields: [clinical_operations.average_result_cap_completed_time_in_days]
+    fields: [clinical_operations.average_order_request_update_time_in_days]
     filters:
       clinical_operations.encounter_type: visit,cc-intake,group-session
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam"
-      clinical_operations.average_result_cap_completed_time_in_days: ">0,NOT NULL"
     limit: 500
     dynamic_fields: [{dimension: relabel, _kind_hint: dimension, _type_hint: string,
         category: dimension, expression: 'if(${clinical_operations.is_high_priority_patient}
@@ -643,14 +629,12 @@
     height: 3
   - title: 'AVG Time for Provider to Complete Results CAP '
     name: 'AVG Time for Provider to Complete Results CAP '
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: single_value
     fields: [clinical_operations.average_result_cap_completed_time_in_days]
     filters:
       clinical_operations.encounter_type: visit,cc-intake,group-session,"lab_test_authorization"
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam"
-      clinical_operations.average_result_cap_completed_time_in_days: ">0,NOT NULL"
     sorts: [clinical_operations.average_result_cap_completed_time_in_days desc]
     limit: 500
     dynamic_fields: [{dimension: relabel, _kind_hint: dimension, _type_hint: string,
@@ -705,16 +689,10 @@
     height: 3
   - title: AVG Time for Provider to Complete Visit CAP
     name: AVG Time for Provider to Complete Visit CAP (2)
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     type: single_value
-    fields: [clinical_operations.average_result_cap_completed_time_in_days]
-    filters:
-      clinical_operations.encounter_type: visit
-      clinical_operations.visit_provider: "-Gayathri@Genomemedical.Com Santhanam"
-      clinical_operations.average_result_cap_completed_time_in_days: ">0,NOT NULL"
-      clinical_operations.referral_program: "-TEST T"
-    sorts: [clinical_operations.average_result_cap_completed_time_in_days desc]
+    fields: [clinical_operations.average_visit_completion_time_in_days]
     limit: 500
     dynamic_fields: [{dimension: relabel, _kind_hint: dimension, _type_hint: string,
         category: dimension, expression: 'if(${clinical_operations.is_high_priority_patient}
@@ -777,7 +755,7 @@
       type: relative_timeframes
       display: inline
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: clinical_operations.initial_cap_completed_date_date
@@ -791,7 +769,7 @@
       type: checkboxes
       display: inline
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: clinical_operations.is_high_priority_patient
@@ -805,7 +783,7 @@
       type: tag_list
       display: popover
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: partner_organizations.name
@@ -819,7 +797,7 @@
       type: tag_list
       display: popover
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: partners.display_name
@@ -833,7 +811,7 @@
       type: checkboxes
       display: popover
       options: []
-    model: clinical_qa
+    model: clinical_prod
     explore: clinical_operations
     listens_to_filters: []
     field: referral_channels.name

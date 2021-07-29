@@ -93,7 +93,7 @@ view: clinical_operations {
         INITCAP(REPLACE(ed.visit_provider, '_', ' ')) AS visit_provider,
         ed.date_test_recommended AS date_test_recommended,
         ed.test_recommended AS test_recommended,
-        oi.date_received_report AS date_received_report,
+        COALESCE(oi.date_received_report, ed.date_received_report) AS date_received_report,
         cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
         cm.result_cap_cc_user_name AS result_cap_cc_user_name,
         CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient

@@ -37,10 +37,10 @@
     rows_font_size: 12
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_visit_summary_sent_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_visit_summary_sent_date
     row: 2
     col: 0
     width: 11
@@ -86,10 +86,10 @@
     series_types: {}
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 17
     col: 0
     width: 11
@@ -113,10 +113,10 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 14
     col: 0
     width: 11
@@ -162,10 +162,10 @@
     series_types: {}
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_visit_summary_sent_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_visit_summary_sent_date
     row: 5
     col: 0
     width: 11
@@ -267,10 +267,10 @@
     note_display: above
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_visit_summary_sent_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_visit_summary_sent_date
     row: 2
     col: 11
     width: 11
@@ -332,10 +332,10 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.initial_visit_summary_sent_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.initial_visit_summary_sent_date
     row: 5
     col: 11
     width: 11
@@ -459,10 +459,10 @@
     note_display: above
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 14
     col: 11
     width: 11
@@ -527,10 +527,10 @@
     defaults_version: 1
     listen:
       Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
-      Report Date Range: clinical_operations.followup_cap_completed_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations.cap_sent_to_patient_date
     row: 17
     col: 11
     width: 11
@@ -575,10 +575,10 @@
     show_comparison_label: true
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_orders.date_test_ordered_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_orders.date_test_ordered_date
     row: 28
     col: 11
     width: 11
@@ -602,10 +602,10 @@
     series_types: {}
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_orders.date_test_ordered_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_orders.date_test_ordered_date
     row: 25
     col: 11
     width: 11
@@ -629,10 +629,10 @@
     series_types: {}
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_orders.date_test_ordered_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_orders.date_test_ordered_date
     row: 25
     col: 0
     width: 11
@@ -677,10 +677,10 @@
     show_comparison_label: true
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_orders.date_test_ordered_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_orders.date_test_ordered_date
     row: 28
     col: 0
     width: 11
@@ -717,10 +717,10 @@
     rows_font_size: 12
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_preauths.dispatch_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_preauths.dispatch_date_date
     row: 36
     col: 0
     width: 11
@@ -765,10 +765,10 @@
     comparison_reverse_colors: false
     show_comparison_label: true
     listen:
-      Report Date Range: clinical_operations_preauths.dispatch_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_preauths.dispatch_date_date
     row: 39
     col: 0
     width: 11
@@ -818,10 +818,10 @@
     conditional_formatting_include_nulls: false
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_preauths.dispatch_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_preauths.dispatch_date_date
     row: 39
     col: 11
     width: 11
@@ -845,10 +845,10 @@
     series_types: {}
     defaults_version: 1
     listen:
-      Report Date Range: clinical_operations_preauths.dispatch_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
+      Report Date Range: clinical_operations_preauths.dispatch_date_date
     row: 36
     col: 11
     width: 11

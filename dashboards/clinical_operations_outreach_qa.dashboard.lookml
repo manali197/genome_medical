@@ -3,8 +3,8 @@
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
-  - title: Program-Specific Time Between All Outreaches
-    name: Program-Specific Time Between All Outreaches
+  - title: Time between patient outreaches (breakdown)
+    name: Time between patient outreaches (breakdown)
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_grid
@@ -100,8 +100,8 @@
     col: 0
     width: 23
     height: 7
-  - title: Time Between Phone Outreaches
-    name: Time Between Phone Outreaches
+  - title: Time between patient outreaches via phone
+    name: Time between patient outreaches via phone
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_column
@@ -190,26 +190,26 @@
     col: 0
     width: 9
     height: 7
-  - name: Phone Outreach
+  - name: Phone Outreaches
     type: text
-    title_text: Phone Outreach
+    title_text: Phone Outreaches
     subtitle_text: ''
     body_text: ''
     row: 16
     col: 0
     width: 23
     height: 2
-  - name: All Outreach
+  - name: All Outreaches
     type: text
-    title_text: All Outreach
+    title_text: All Outreaches
     subtitle_text: ''
     body_text: ''
     row: 0
     col: 0
     width: 23
     height: 2
-  - title: Program-Specific Time Between Phone Outreaches
-    name: Program-Specific Time Between Phone Outreaches
+  - title: Time between patient outreaches via phone (breakdown)
+    name: Time between patient outreaches via phone (breakdown)
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_grid
@@ -302,17 +302,8 @@
     col: 0
     width: 23
     height: 7
-  - name: Patient Creation to Phone Outreach
-    type: text
-    title_text: Patient Creation to Phone Outreach
-    subtitle_text: ''
-    body_text: ''
-    row: 32
-    col: 0
-    width: 23
-    height: 2
-  - title: Time between PT Creation & Phone Outreach
-    name: Time between PT Creation & Phone Outreach
+  - title: Time between patient creation and outreaches via phone
+    name: Time between patient creation and outreaches via phone
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_column
@@ -397,12 +388,12 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
-    row: 34
+    row: 32
     col: 0
     width: 9
     height: 7
-  - title: Program-Specific Time between PT Creation and Phone Outreach
-    name: Program-Specific Time between PT Creation and Phone Outreach
+  - title: Time between patient creation and outreaches via phone (breakdown)
+    name: Time between patient creation and outreaches via phone (breakdown)
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_grid
@@ -495,12 +486,12 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
-    row: 41
+    row: 39
     col: 0
     width: 23
     height: 7
-  - title: Time Between All Outreaches
-    name: Time Between All Outreaches
+  - title: Time between patient outreaches
+    name: Time between patient outreaches
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_column
@@ -599,8 +590,8 @@
     col: 0
     width: 9
     height: 7
-  - title: Time Between All Outreaches
-    name: Time Between All Outreaches (2)
+  - title: Time between patient outreaches (trend)
+    name: Time between patient outreaches (trend)
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_area
@@ -608,10 +599,8 @@
       clinical_operations_outreach.average_outreach_3_4_time_in_days, clinical_operations_outreach.average_outreach_4_5_time_in_days,
       clinical_operations_outreach.average_outreach_5_6_time_in_days, clinical_operations_outreach.outreach_date_week]
     fill_fields: [clinical_operations_outreach.outreach_date_week]
-    filters:
-      clinical_operations_outreach.outreach_date_week: 4 weeks
-    sorts: [clinical_operations_outreach.average_outreach_1_2_time_in_days desc]
-    limit: 500
+    sorts: [clinical_operations_outreach.outreach_date_week desc]
+    limit: 6
     x_axis_gridlines: true
     y_axis_gridlines: true
     show_view_names: false
@@ -702,8 +691,8 @@
     col: 9
     width: 14
     height: 7
-  - title: Time Between Phone Outreaches, Weekly Trend
-    name: Time Between Phone Outreaches, Weekly Trend
+  - title: Time between patient outreaches via phone (trend)
+    name: Time between patient outreaches via phone (trend)
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_area
@@ -711,10 +700,8 @@
       clinical_operations_outreach.average_phone_outreach_1_2_time_in_days, clinical_operations_outreach.average_phone_outreach_2_3_time_in_days,
       clinical_operations_outreach.outreach_date_week]
     fill_fields: [clinical_operations_outreach.outreach_date_week]
-    filters:
-      clinical_operations_outreach.outreach_date_week: 4 weeks
     sorts: [clinical_operations_outreach.outreach_date_week desc]
-    limit: 500
+    limit: 6
     x_axis_gridlines: true
     y_axis_gridlines: true
     show_view_names: false
@@ -797,8 +784,8 @@
     col: 9
     width: 14
     height: 7
-  - title: Time between PT Creation & Phone Outreach (Copy)
-    name: Time between PT Creation & Phone Outreach (Copy)
+  - title: Time between patient creation and outreaches via phone (trend)
+    name: Time between patient creation and outreaches via phone (trend)
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_area
@@ -806,10 +793,8 @@
       clinical_operations_outreach.average_phone_outreach_0_2_time_in_days, clinical_operations_outreach.average_phone_outreach_0_3_time_in_days,
       clinical_operations_outreach.outreach_date_week]
     fill_fields: [clinical_operations_outreach.outreach_date_week]
-    filters:
-      clinical_operations_outreach.outreach_date_week: 4 weeks
     sorts: [clinical_operations_outreach.outreach_date_week desc]
-    limit: 500
+    limit: 6
     x_axis_gridlines: true
     y_axis_gridlines: true
     show_view_names: false
@@ -888,7 +873,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
-    row: 34
+    row: 32
     col: 9
     width: 14
     height: 7

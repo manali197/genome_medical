@@ -45,8 +45,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Result CAPs sent by CCs
-    name: Total Result CAPs sent by CCs
+  - title: Total Result CAPs sent by CCs (breakdown)
+    name: Total Result CAPs sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -95,7 +95,7 @@
     width: 11
     height: 6
   - title: Total Result CAPs sent by CCs
-    name: Total Result CAPs sent by CCs (2)
+    name: Total Result CAPs sent by CCs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -121,8 +121,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Visit CAPs sent by CCs
-    name: Total Visit CAPs sent by CCs (2)
+  - title: Total Visit CAPs sent by CCs (breakdown)
+    name: Total Visit CAPs sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -179,8 +179,8 @@
     col: 0
     width: 22
     height: 2
-  - title: Average time to release Visit CAP (from CAP completion time)
-    name: Average time to release Visit CAP (from CAP completion time)
+  - title: Average time to release Visit CAPs
+    name: Average time to release Visit CAPs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -275,8 +275,8 @@
     col: 11
     width: 11
     height: 3
-  - title: Average time to release Visit CAP
-    name: Average time to release Visit CAP
+  - title: Average time to release Visit CAPs (trend)
+    name: Average time to release Visit CAPs (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
@@ -367,8 +367,8 @@
     col: 0
     width: 22
     height: 2
-  - title: Average time to release Results CAP
-    name: Average time to release Results CAP
+  - title: Average time to release Results CAPs
+    name: Average time to release Results CAPs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -467,14 +467,14 @@
     col: 11
     width: 11
     height: 3
-  - title: Average time to release Results CAP
-    name: Average time to release Results CAP (2)
+  - title: Average time to release Results CAPs (trend)
+    name: Average time to release Results CAPs (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
-    fields: [clinical_operations.average_result_cap_release_time_in_days, clinical_operations.followup_cap_completed_date_week]
-    fill_fields: [clinical_operations.followup_cap_completed_date_week]
-    sorts: [clinical_operations.followup_cap_completed_date_week desc]
+    fields: [clinical_operations.average_result_cap_release_time_in_days, clinical_operations.cap_sent_to_patient_week]
+    fill_fields: [clinical_operations.cap_sent_to_patient_week]
+    sorts: [clinical_operations.cap_sent_to_patient_week desc]
     limit: 500
     x_axis_gridlines: true
     y_axis_gridlines: true
@@ -535,8 +535,8 @@
     col: 11
     width: 11
     height: 6
-  - title: Average time to place Test Orders
-    name: Average time to place Test Orders
+  - title: Average time to place Test Orders (breakdown)
+    name: Average time to place Test Orders (breakdown)
     model: clinical_qa
     explore: clinical_operations_orders
     type: looker_grid
@@ -584,7 +584,7 @@
     width: 11
     height: 6
   - title: Average time to place Test Orders
-    name: Average time to place Test Orders (2)
+    name: Average time to place Test Orders
     model: clinical_qa
     explore: clinical_operations_orders
     type: single_value
@@ -637,8 +637,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Orders sent by CCs
-    name: Total Orders sent by CCs (2)
+  - title: Total Orders sent by CCs (breakdown)
+    name: Total Orders sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations_orders
     type: looker_grid
@@ -725,8 +725,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Prior Authorization forms sent by CCs
-    name: Total Prior Authorization forms sent by CCs (2)
+  - title: Total Prior Authorization forms sent by CCs (breakdown)
+    name: Total Prior Authorization forms sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations_preauths
     type: looker_grid
@@ -773,8 +773,8 @@
     col: 0
     width: 11
     height: 6
-  - title: Prior Authorization form submission time
-    name: Prior Authorization form submission time
+  - title: Prior Authorization form submission time (trend)
+    name: Prior Authorization form submission time (trend)
     model: clinical_qa
     explore: clinical_operations_preauths
     type: looker_line
@@ -827,7 +827,7 @@
     width: 11
     height: 6
   - title: Prior Authorization form submission time
-    name: Prior Authorization form submission time (2)
+    name: Prior Authorization form submission time
     model: clinical_qa
     explore: clinical_operations_preauths
     type: single_value
@@ -859,7 +859,7 @@
     subtitle_text: ''
     body_text: The difference, in business days, between the "Result CAP Completed
       Date" and "Result CAP Sent To Patient On Date". Data with missing date(s), or
-      resulting negative time difference, is ignore in the calculation.
+      resulting negative time difference, is ignored in the calculation.
     row: 50
     col: 7
     width: 7
@@ -879,7 +879,7 @@
     subtitle_text: ''
     body_text: The difference, in business days, between the "Visit CAP Completed
       Date" and "Visit CAP Sent To Patient On". Data with missing date(s), or resulting
-      negative time difference, is ignore in the calculation.
+      negative time difference, is ignored in the calculation.
     row: 50
     col: 0
     width: 7
@@ -910,18 +910,18 @@
     subtitle_text: ''
     body_text: The difference, in business days, between the "Visit CAP Completed
       Date" and "Date Test Ordered". Data with missing date(s), or resulting negative
-      time difference, is ignore in the calculation.
+      time difference, is ignored in the calculation.
     row: 47
     col: 14
     width: 7
     height: 3
-  - name: Prior Authorization form submission time (3)
+  - name: Prior Authorization form submission time (2)
     type: text
     title_text: Prior Authorization form submission time
     subtitle_text: ''
     body_text: The difference, in business days, between the "Date PA Status Reason
       Changed to Awaiting-CC-Submission" and "PA Dispatch Date". Data with missing
-      date(s), or resulting negative time difference, is ignore in the calculation.
+      date(s), or resulting negative time difference, is ignored in the calculation.
     row: 50
     col: 14
     width: 7

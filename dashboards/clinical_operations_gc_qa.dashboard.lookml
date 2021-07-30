@@ -3,19 +3,17 @@
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
-  - name: VISIT CAP METRICS -- Average business days from Date of Visit to completed
-      Visit CAP
+  - name: Visit CAP Metrics
     type: text
-    title_text: VISIT CAP METRICS -- Average business days from Date of Visit to completed
-      Visit CAP
+    title_text: Visit CAP Metrics
     subtitle_text: ''
     body_text: ''
     row: 0
     col: 0
     width: 23
     height: 2
-  - title: AVG Time to Complete Visit CAP
-    name: AVG Time to Complete Visit CAP
+  - title: Average time to complete Visit CAPs (trend)
+    name: Average time to complete Visit CAPs (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
@@ -91,8 +89,8 @@
     col: 0
     width: 11
     height: 6
-  - title: AVG Time for Provider to Complete Visit CAP
-    name: AVG Time for Provider to Complete Visit CAP
+  - title: Average time for providers to complete Visit CAPs (breakdown)
+    name: Average time for providers to complete Visit CAPs (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -191,19 +189,17 @@
     col: 11
     width: 12
     height: 9
-  - name: RESULTS CAP METRICS -- Average business days from date report received to
-      completed Results CAP
+  - name: Result CAP Metrics
     type: text
-    title_text: RESULTS CAP METRICS -- Average business days from date report received
-      to completed Results CAP
+    title_text: Result CAP Metrics
     subtitle_text: ''
     body_text: ''
     row: 11
     col: 0
     width: 23
     height: 2
-  - title: AVG Time to Complete Results CAP
-    name: AVG Time to Complete Results CAP
+  - title: Average time for providers to complete Results CAPs (trend)
+    name: Average time for providers to complete Results CAPs (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
@@ -280,8 +276,8 @@
     col: 0
     width: 11
     height: 6
-  - title: AVG Time for provider to complete Results CAP
-    name: AVG Time for provider to complete Results CAP
+  - title: Average time for providers to complete Results CAPs (breakdown)
+    name: Average time for providers to complete Results CAPs (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -377,19 +373,17 @@
     col: 11
     width: 12
     height: 9
-  - name: ORDER REQUEST METRICS -- Average business days from date of visit to Order
-      Request updated
+  - name: Order Placement Metrics
     type: text
-    title_text: ORDER REQUEST METRICS -- Average business days from date of visit
-      to Order Request updated
+    title_text: Order Placement Metrics
     subtitle_text: ''
     body_text: ''
     row: 22
     col: 0
     width: 23
     height: 2
-  - title: AVG Time for Order Request to update
-    name: AVG Time for Order Request to update
+  - title: Average time for providers to update Order Requests (trend)
+    name: Average time for providers to update Order Requests (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
@@ -469,8 +463,8 @@
     col: 0
     width: 11
     height: 6
-  - title: AVG Time for Order Request to update, by Provider
-    name: AVG Time for Order Request to update, by Provider
+  - title: Average time for providers to update Order Requests (breakdown)
+    name: Average time for providers to update Order Requests (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -568,8 +562,8 @@
     col: 11
     width: 12
     height: 9
-  - title: AVG Time for Order Request to update
-    name: AVG Time for Order Request to update (2)
+  - title: Average time for providers to update Order Requests
+    name: Average time for providers to update Order Requests
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -627,8 +621,8 @@
     col: 0
     width: 11
     height: 3
-  - title: 'AVG Time for Provider to Complete Results CAP '
-    name: 'AVG Time for Provider to Complete Results CAP '
+  - title: Average time for providers to complete Results CAPs
+    name: Average time for providers to complete Results CAPs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -687,8 +681,8 @@
     col: 0
     width: 11
     height: 3
-  - title: AVG Time for Provider to Complete Visit CAP
-    name: AVG Time for Provider to Complete Visit CAP (2)
+  - title: Average time for providers to complete Visit CAPs
+    name: Average time for providers to complete Visit CAPs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -743,6 +737,48 @@
     row: 2
     col: 0
     width: 11
+    height: 3
+  - name: Definitions
+    type: text
+    title_text: Definitions
+    subtitle_text: ''
+    body_text: ''
+    row: 33
+    col: 0
+    width: 23
+    height: 2
+  - name: Visit CAP completion time
+    type: text
+    title_text: Visit CAP completion time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the “Date of Service” and
+      “Visit CAP Completed Date”. Data with missing date(s), or resulting negative
+      time difference, is ignored in the calculation.
+    row: 35
+    col: 0
+    width: 8
+    height: 3
+  - name: Result CAP completion time
+    type: text
+    title_text: Result CAP completion time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the “Order Report Received
+      Date” and “Result CAP Completed Date”. Data with missing date(s), or resulting
+      negative time difference, is ignored in the calculation.
+    row: 35
+    col: 8
+    width: 8
+    height: 3
+  - name: Order Request update time
+    type: text
+    title_text: Order Request update time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the “Date of Service” and
+      “Date Test Recommended”. Data with missing date(s), or resulting negative time
+      difference, is ignored in the calculation.
+    row: 35
+    col: 16
+    width: 8
     height: 3
   filters:
   - name: Report Date Range

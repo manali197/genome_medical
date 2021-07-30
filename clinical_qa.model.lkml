@@ -240,3 +240,22 @@ explore: clinical_operations_preauths {
     relationship: many_to_one
   }
 }
+
+explore: clinical_operations_combined {
+  from: clinical_operations
+  join: clinical_operations_orders {
+    type: left_outer
+    sql_on: ${clinical_operations_combined.encounter_uuid} = ${clinical_operations_orders.encounter_uuid} ;;
+    relationship: one_to_many
+  }
+  join: clinical_operations_preauths {
+    type: left_outer
+    sql_on: ${clinical_operations_preauths.encounter_uuid} = ${clinical_operations_combined.encounter_uuid} ;;
+    relationship: one_to_many
+  }
+  join: clinical_operations_outreach {
+    type: left_outer
+    sql_on: ${clinical_operations_combined.user_uuid} = ${clinical_operations_outreach.patient_uuid} ;;
+    relationship: many_to_one
+  }
+}

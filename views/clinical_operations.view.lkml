@@ -162,13 +162,13 @@ view: clinical_operations {
   dimension: requested_specialty {
     description: "Requested Specialty"
     type: string
-    sql: ${TABLE}.requested_specialty ;;
+    sql: initcap(replace(${TABLE}.requested_specialty,'_',' ')) ;;
   }
 
   dimension: provider_indicated_specialty {
     description: "Provider Indicated Specialty"
     type: string
-    sql: ${TABLE}.provider_indicated_specialty ;;
+    sql: initcap(replace(${TABLE}.provider_indicated_specialty,'_',' ')) ;;
   }
 
   dimension: patient_name {

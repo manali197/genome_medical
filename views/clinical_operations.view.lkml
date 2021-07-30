@@ -78,6 +78,9 @@ view: clinical_operations {
           ELSE ed.encounter_type
         END AS encounter_type,
         ed.encounter_uuid AS encounter_uuid,
+        ed.consultation_type AS consultation_type,
+        ed.vsee_specialty AS requested_specialty,
+        ed.provider_indicated_specialty AS provider_indicated_specialty,
         ed.created_at AS created_at,
         ed.date_of_service AS date_of_service,
         ed.initial_visit_summary_sent AS initial_visit_summary_sent,
@@ -148,6 +151,24 @@ view: clinical_operations {
     type: string
     primary_key: yes
     sql: ${TABLE}.encounter_uuid ;;
+  }
+
+  dimension: consultation_type {
+    description: "Consultation Type"
+    type: string
+    sql: ${TABLE}.consultation_type ;;
+  }
+
+  dimension: requested_specialty {
+    description: "Requested Specialty"
+    type: string
+    sql: ${TABLE}.requested_specialty ;;
+  }
+
+  dimension: provider_indicated_specialty {
+    description: "Provider Indicated Specialty"
+    type: string
+    sql: ${TABLE}.provider_indicated_specialty ;;
   }
 
   dimension: patient_name {

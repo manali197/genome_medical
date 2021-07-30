@@ -1,5 +1,5 @@
 - dashboard: clinical_operations_report_gc_metrics_qa
-  title: Clinical_Operations_Report (GC Metrics) (QA)
+  title: Clinical Operations Report (GC Metrics) (QA)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:

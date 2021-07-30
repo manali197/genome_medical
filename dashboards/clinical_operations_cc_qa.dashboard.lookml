@@ -1,5 +1,5 @@
 - dashboard: clinical_operations_report_cc_metrics_qa
-  title: Clinical_Operations_Report (CC Metrics) (QA)
+  title: Clinical Operations Report (CC Metrics) (QA)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:

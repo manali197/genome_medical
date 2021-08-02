@@ -116,7 +116,7 @@ view: clinical_operations_orders {
   dimension: order_placement_time {
     type: number
     label: "Test order placement time (in business days) from date visit CAP Completed"
-    sql: count_business_days(coalesce(${cap_completed_date_date}, ${date_test_ordered_date}), ${date_test_ordered_date}) ;;
+    sql: count_business_days(coalesce(${cap_completed_date_time}::timestamp, ${date_test_ordered_time}::timestamp), ${date_test_ordered_time}::timestamp) ;;
   }
 
   measure: average_order_placement_time_in_days {

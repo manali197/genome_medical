@@ -335,31 +335,31 @@ view: clinical_operations {
   dimension: visit_cap_completion_time {
     type: number
     label: "Visit CAP completion time (visit encounters) from date of visit"
-    sql: count_business_days(${date_of_service_date}, ${initial_cap_completed_date_date}) ;;
+    sql: count_business_days(${date_of_service_time}::timestamp, ${initial_cap_completed_date_time}::timestamp) ;;
   }
 
   dimension: visit_cap_release_time {
     type: number
     label: "Visit CAP Release time (visit encounters) from CAP completion date"
-    sql: count_business_days(${initial_cap_completed_date_date}, ${initial_visit_summary_sent_date}) ;;
+    sql: count_business_days(${initial_cap_completed_date_time}::timestamp, ${initial_visit_summary_sent_time}::timestamp) ;;
   }
 
   dimension: result_cap_completed_time {
     type: number
     label: "Results CAP completion time from date report was received"
-    sql: count_business_days(${date_received_report_date}, ${followup_cap_completed_date_date}) ;;
+    sql: count_business_days(${date_received_report_time}::timestamp, ${followup_cap_completed_date_time}::timestamp) ;;
   }
 
   dimension: result_cap_release_time {
     type: number
     label: "Results CAP Release time from CAP completion date"
-    sql: count_business_days(${followup_cap_completed_date_date}, ${cap_sent_to_patient_date}) ;;
+    sql: count_business_days(${followup_cap_completed_date_time}::timestamp, ${cap_sent_to_patient_time}::timestamp) ;;
   }
 
   dimension: order_request_update_time {
     type: number
     label: "Order-request update time from date of visit"
-    sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
+    sql: count_business_days(${date_of_service_time}::timestamp, ${date_test_recommended_time}::timestamp) ;;
   }
 
   measure: count {

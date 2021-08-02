@@ -93,19 +93,19 @@ view: clinical_operations_outreach {
   dimension: outreach_time {
     type: number
     label: "Time (in business days) between the current and next outreach"
-    sql: count_business_days(${outreach_date_date}, ${next_outreach_date_date}) ;;
+    sql: count_business_days(${outreach_date_time}::timestamp, ${next_outreach_date_time}::timestamp) ;;
   }
 
   dimension: outreach_medium_time {
     type: number
     label: "Time (in business days) between the current and next outreach with the same medium"
-    sql: count_business_days(${outreach_date_date}, ${next_outreach_medium_date_date}) ;;
+    sql: count_business_days(${outreach_date_time}::timestamp, ${next_outreach_medium_date_time}::timestamp) ;;
   }
 
   dimension: creation_outreach_time {
     type: number
     label: "Time (in business days) between the patient creation and current outreach"
-    sql: count_business_days(${created_at_date}, ${outreach_date_date}) ;;
+    sql: count_business_days(${created_at_time}::timestamp, ${outreach_date_time}::timestamp) ;;
   }
 
   measure: count {

@@ -44,7 +44,7 @@ explore: completed_encounters {
   }
   join: providers {
     type: left_outer
-    sql_on: ${completed_encounters.visit_provider} = concat_ws(' ', ${providers.first_name}, ${providers.last_name}) ;;
+    sql_on: ${completed_encounters.visit_provider} = concat_ws(' ', ${providers.first_name}, ${providers.middle_name}, ${providers.last_name}) ;;
     relationship: one_to_one
   }
   join: gmi_provider_details {

@@ -808,7 +808,7 @@ view: referral_status {
 
   measure: count_encounters {
     type: count_distinct
-    description: "Number of encounters"
+    label: "Number of unique encounters"
     filters: [encounter_uuid: "-NULL"]
     sql: ${encounter_uuid} ;;
     drill_fields: [encounter_type, referral_program,consultation_type, count_encounters]
@@ -816,7 +816,7 @@ view: referral_status {
 
   measure: count_patients_with_encounters {
     type: count_distinct
-    description: "Number of patients with at least one encounter"
+    label: "Number of unqiue patients with at least one encounter"
     filters: [encounter_uuid: "-NULL"]
     sql: ${patient_uuid} ;;
     drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
@@ -824,7 +824,7 @@ view: referral_status {
 
   measure: total_patients_count {
     type: count_distinct
-    description: "Number of registered patients"
+    label: "Number of registered patients"
     sql: ${patient_uuid} ;;
     drill_fields: [referral_channel, referral_program, total_patients_count]
     }
@@ -836,7 +836,7 @@ view: referral_status {
 
   measure: count_patients_with_scheduled_encounters {
     type: count_distinct
-    description: "Number of patients with at least 1 visit scheduled"
+    label: "Number of unique patients with at least 1 visit scheduled"
     sql: ${patient_uuid} ;;
     filters: [referral_visit_status: "Scheduled"]
     drill_fields: [referral_channel, referral_program, count_patients_with_scheduled_encounters]
@@ -844,7 +844,7 @@ view: referral_status {
 
   measure: count_patients_with_morethan_1_encounters {
     type: count_distinct
-    description: "Number of patients with at least 1 visit scheduled"
+    label: "Number of unique patients with at least 1 scheduled encounter"
     sql: ${patient_uuid} ;;
     filters: [referral_visit_status: "Scheduled"]
     drill_fields: [referral_channel, referral_program, count_patients_with_morethan_1_encounters]
@@ -858,7 +858,7 @@ view: referral_status {
 
   measure: count_patients_with_outreach {
     type:  count_distinct
-    description: "Number of patients with at least one outreach event"
+    label: "Number of unique patients with at least one outreach event"
     filters: [number_of_outreaches: ">=1"]
     drill_fields: [referral_channel, referral_program, count_patients_with_outreach]
     sql: ${patient_uuid} ;;
@@ -866,7 +866,7 @@ view: referral_status {
 
   measure: count_patients_with_appointment {
     type:  count_distinct
-    description: "Number of patients with at least one appointment"
+    label: "Number of unique patients with at least one scheduled appointment"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled"]
     drill_fields: [referral_channel, referral_program, visit_status, count_patients_with_appointment]
     sql: ${patient_uuid} ;;
@@ -874,7 +874,7 @@ view: referral_status {
 
   measure: count_patients_with_order {
     type:  count_distinct
-    description: "Number of patients with test recommended"
+    label: "Number of unique patients with test recommended"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, test_order_status, count_patients_with_order]
     sql: ${patient_uuid} ;;
@@ -882,7 +882,7 @@ view: referral_status {
 
   measure: count_patients_with_ror {
     type:  count_distinct
-    description: "Number of patients with followup outreach done"
+    label: "Number of unique patients with followup outreach done"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", consultation_type: "%return of result%"]
     drill_fields: [referral_channel, referral_program, ror_visit_status, count_patients_with_ror]
     sql: ${patient_uuid} ;;
@@ -890,7 +890,7 @@ view: referral_status {
 
   measure: count_patients_with_result_sent {
     type:  count_distinct
-    description: "Number of patients with results sent"
+    label: "Number of unique patients with results sent"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", consultation_type: "%return of result%", date_received_report_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, count_patients_with_result_sent]
     sql: ${patient_uuid} ;;

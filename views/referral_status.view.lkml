@@ -910,7 +910,7 @@ view: referral_status {
 
   measure: count_patients_with_order {
     type:  count_distinct
-    label: "Number of unique patients with an order"
+    label: "Number of unique patients with an order placed after a visit encounter"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, test_order_status, count_patients_with_order]
     sql: ${patient_uuid} ;;
@@ -918,7 +918,7 @@ view: referral_status {
 
   measure: count_patients_with_ror {
     type:  count_distinct
-    label: "Number of unique patients with an RoR consultation"
+    label: "Number of unique patients with a RoR consultation"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", consultation_type: "Return of Results"]
     drill_fields: [referral_channel, referral_program, ror_visit_status, count_patients_with_ror]
     sql: ${patient_uuid} ;;
@@ -926,7 +926,7 @@ view: referral_status {
 
   measure: count_patients_with_result_sent {
     type:  count_distinct
-    label: "Number of unique patients with results sent"
+    label: "Number of unique patients with results sent after a visit encounter"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", date_received_report_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, count_patients_with_result_sent]
     sql: ${patient_uuid} ;;

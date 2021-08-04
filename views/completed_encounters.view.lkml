@@ -342,20 +342,20 @@ view: completed_encounters {
 
   dimension: count_business_day_in_current_month {
     type: number
-    description: "Number of completed business days in the current month"
+    label: "Number of completed business days in the current month"
     sql: count_business_days(date_trunc('MONTH',now())::date, now()::date) ;;
   }
 
   dimension: count_business_day_in_previous_month {
     type: number
-    description: "Number of completed business days in the previous month"
+    label: "Number of completed business days in the previous month"
     sql: count_business_days(date_trunc('month', current_date - interval '1' month)::date,
             date_trunc('month', current_date)::date) ;;
   }
 
   dimension: count_business_day_in_dos_month {
     type: number
-    description: "Number of completed business days in the given date of service month"
+    label: "Number of completed business days in the given date of service month"
     sql: count_business_days(date_trunc('MONTH',${date_of_service_date})::date,
             date_trunc('month', ${date_of_service_date} + interval '1' month)::date) ;;
   }
@@ -368,21 +368,29 @@ view: completed_encounters {
   measure: count_completed_encounters {
     type: count
     filters: [encounter_uuid: "-NULL"]
-    description: "Number of completed encounters"
+    label: "Number of completed encounters"
     drill_fields: [encounter_type, referral_program, count_completed_encounters]
   }
 
   measure: count_patients_with_completed_encounters {
     type: count_distinct
     filters: [patient_uuid: "-NULL", encounter_uuid: "-NULL"]
-    description: "Number of unique patients with completed encounters"
-    drill_fields: [encounter_type, referral_program, count_completed_encounters]
+    label: "Number of unique patients with completed encounters"
+    drill_fields: [encounter_type, referral_program, count_patients_with_completed_encounters]
+    sql: ${TABLE} ;;
+  }
+
+  measure: count_patients_with_completed_visit_encounters {
+    type: count_distinct
+    filters: [patient_uuid: "-NULL", encounter_uuid: "-NULL", encounter_type: "visit"]
+    label: "Number of unique patients with completed visit encounters"
+    drill_fields: [referral_program, count_patients_with_completed_visit_encounters]
     sql: ${TABLE} ;;
   }
 
   measure: count_new_patients {
     type: count
-    description: "Number of first-timer patients"
+    label: "Number of first-timer patients"
     filters: [is_first_completed_encounter: "Yes"]
     drill_fields: [patient_email, date_of_service_date, visit_provider, referral_program, referral_channel, count_new_patients]
   }

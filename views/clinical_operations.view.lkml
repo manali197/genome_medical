@@ -26,14 +26,6 @@ view: clinical_operations {
           aud. "data"->'changes'->>'root[''cap_sent_to_patient'']' IS NOT NULL
         )
       ),
-      cc_metrics AS (
-        SELECT e.encounter_uuid AS encounter_uuid,
-          v.user_name AS visit_cap_cc_user_name,
-          r.user_name AS result_cap_cc_user_name
-        FROM encounter_details AS e
-        LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = e.encounter_uuid AND v.pos = 1
-        LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = e.encounter_uuid AND r.pos = 1
-      ),
       high_priority_patients AS (
         SELECT DISTINCT p.patient_uuid AS puuid
         FROM audit_trail at
@@ -97,20 +89,21 @@ view: clinical_operations {
         ed.date_test_recommended AS date_test_recommended,
         ed.test_recommended AS test_recommended,
         COALESCE(oi.date_received_report, ed.date_received_report) AS date_received_report,
-        cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
-        cm.result_cap_cc_user_name AS result_cap_cc_user_name,
+        v.user_name AS visit_cap_cc_user_name,
+        r.user_name AS result_cap_cc_user_name,
         CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
       FROM encounter_details ed
       LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
       LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
       LEFT JOIN order_info oi ON oi.encounter_uuid = ed.encounter_uuid
-      LEFT JOIN cc_metrics AS cm ON cm.encounter_uuid = ed.encounter_uuid
       LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
       LEFT JOIN partners AS patient_level_prt ON pes.partner_id::text = patient_level_prt.data->>'id'
       LEFT JOIN partner_orgs AS po ON prt.data->>'id' = po.id
       LEFT JOIN partner_orgs AS patient_level_po ON pes.partner_id::text = patient_level_po.id
       LEFT JOIN referral_channels AS rc ON prt.data->>'referral_channel_id' = rc.data ->> 'id'
       LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
+      LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = ed.encounter_uuid AND v.pos = 1
+      LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = ed.encounter_uuid AND r.pos = 1
       WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)
     ;;
   }

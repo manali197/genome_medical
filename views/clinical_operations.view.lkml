@@ -375,7 +375,7 @@ view: clinical_operations {
   measure: average_result_cap_completed_time_in_days {
     type: average
     label: "Average results CAP completion time from date report was received"
-    filters: [result_cap_completed_time: ">=0"]
+    filters: [result_cap_completed_time: ">=0", encounter_type: "visit, group-session, cc-intake, lab_test_authorization"]
     sql: ${result_cap_completed_time} ;;
     drill_fields: [visit_provider, referral_program, average_result_cap_completed_time_in_days]
     value_format_name: decimal_2

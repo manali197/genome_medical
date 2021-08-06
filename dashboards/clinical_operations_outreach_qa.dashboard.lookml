@@ -91,11 +91,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.next_outreach_date_date
     row: 9
     col: 0
     width: 23
@@ -105,8 +105,8 @@
     model: clinical_qa
     explore: clinical_operations_outreach
     type: looker_column
-    fields: [clinical_operations_outreach.average_phone_outreach_0_1_time_in_days,
-      clinical_operations_outreach.average_phone_outreach_1_2_time_in_days, clinical_operations_outreach.average_phone_outreach_2_3_time_in_days]
+    fields: [clinical_operations_outreach.average_phone_outreach_1_2_time_in_days,
+      clinical_operations_outreach.average_phone_outreach_2_3_time_in_days]
     limit: 500
     x_axis_gridlines: false
     y_axis_gridlines: true
@@ -181,11 +181,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
     row: 18
     col: 0
     width: 9
@@ -293,11 +293,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
     row: 25
     col: 0
     width: 23
@@ -383,11 +383,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.outreach_date_date
     row: 32
     col: 0
     width: 9
@@ -481,11 +481,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.outreach_date_date
     row: 39
     col: 0
     width: 23
@@ -581,11 +581,11 @@
     map: usa
     map_projection: ''
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.next_outreach_date_date
     row: 2
     col: 0
     width: 9
@@ -682,11 +682,11 @@
     map: usa
     map_projection: ''
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.next_outreach_date_date
     row: 2
     col: 9
     width: 14
@@ -775,11 +775,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
     row: 18
     col: 9
     width: 14
@@ -868,11 +868,11 @@
     labelSize: 10pt
     showLegend: true
     listen:
-      Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
+      Report Date Range: clinical_operations_outreach.outreach_date_date
     row: 32
     col: 9
     width: 14
@@ -904,7 +904,8 @@
       options: []
     model: clinical_qa
     explore: clinical_operations_outreach
-    listens_to_filters: []
+    listens_to_filters: [Referral Partner, Referral Channel, Referral Outreach Automation
+        Enabled]
     field: partners.display_name
   - name: Referral Partner
     title: Referral Partner
@@ -918,7 +919,8 @@
       options: []
     model: clinical_qa
     explore: clinical_operations_outreach
-    listens_to_filters: []
+    listens_to_filters: [Referral Program, Referral Channel, Referral Outreach Automation
+        Enabled]
     field: partner_organizations.name
   - name: Referral Channel
     title: Referral Channel
@@ -932,7 +934,8 @@
       options: []
     model: clinical_qa
     explore: clinical_operations_outreach
-    listens_to_filters: []
+    listens_to_filters: [Referral Program, Referral Partner, Referral Outreach Automation
+        Enabled]
     field: referral_channels.name
   - name: Referral Outreach Automation Enabled
     title: Referral Outreach Automation Enabled
@@ -946,5 +949,5 @@
       options: []
     model: clinical_qa
     explore: clinical_operations_outreach
-    listens_to_filters: []
+    listens_to_filters: [Referral Program, Referral Partner, Referral Channel]
     field: partners.referral_outreach_automation_enabled

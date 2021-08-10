@@ -226,3 +226,49 @@ explore: clinical_operations_preauths {
     relationship: many_to_one
   }
 }
+
+explore: scheduling_slots {
+  join: providers {
+    type: left_outer
+    sql_on: ${scheduling_slots.provider_uuid} = ${providers.uuid} ;;
+    relationship: one_to_one
+  }
+  join: gmi_provider_details {
+    type: left_outer
+    sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid} ;;
+    relationship: one_to_one
+  }
+}
+
+explore: appointments {
+  join: partners {
+    type: left_outer
+    sql_on: ${appointments.partner_uuid} = ${partners.uuid} ;;
+    relationship: one_to_one
+  }
+  join: partner_organizations {
+    type: left_outer
+    sql_on: ${partners.partner_organization_ids}::jsonb @> ${partner_organizations.id}::text::jsonb ;;
+    relationship: one_to_many
+  }
+  join: referral_channels {
+    type: left_outer
+    sql_on: ${partners.referral_channel_id} = ${referral_channels.id} ;;
+    relationship: one_to_one
+  }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${appointments.patient_uuid} = ${patient_encounter_summary.patient_uuid} ;;
+    relationship: one_to_one
+  }
+  join: providers {
+    type: left_outer
+    sql_on: ${appointments.provider_uuid} = ${providers.uuid} ;;
+    relationship: one_to_one
+  }
+  join: gmi_provider_details {
+    type: left_outer
+    sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid} ;;
+    relationship: one_to_one
+  }
+}

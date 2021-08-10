@@ -66,7 +66,7 @@ view: clinical_operations_preauths {
   dimension: pa_form_sent_time {
     type: number
     label: "PA form submission time (business days)"
-    sql: count_business_days(${date_status_changed_to_awaiting_cc_submission_date}, ${dispatch_date_date}) ;;
+    sql: count_business_days(${date_status_changed_to_awaiting_cc_submission_time}::timestamp, ${dispatch_date_time}::timestamp) ;;
   }
 
   measure: count {

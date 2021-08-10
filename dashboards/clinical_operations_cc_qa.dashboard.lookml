@@ -1,5 +1,5 @@
 - dashboard: clinical_operations_report_cc_metrics_qa
-  title: Clinical_Operations_Report (CC Metrics) (QA)
+  title: Clinical Operations Report (CC Metrics) (QA)
   layout: newspaper
   preferred_viewer: dashboards-next
   elements:
@@ -45,8 +45,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Result CAPs sent by CCs
-    name: Total Result CAPs sent by CCs
+  - title: Total Result CAPs sent by CCs (breakdown)
+    name: Total Result CAPs sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -95,7 +95,7 @@
     width: 11
     height: 6
   - title: Total Result CAPs sent by CCs
-    name: Total Result CAPs sent by CCs (2)
+    name: Total Result CAPs sent by CCs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -121,8 +121,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Visit CAPs sent by CCs
-    name: Total Visit CAPs sent by CCs (2)
+  - title: Total Visit CAPs sent by CCs (breakdown)
+    name: Total Visit CAPs sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations
     type: looker_grid
@@ -179,8 +179,8 @@
     col: 0
     width: 22
     height: 2
-  - title: AVG time to release Visit CAP (from CAP completion time)
-    name: AVG time to release Visit CAP (from CAP completion time)
+  - title: Average time to release Visit CAPs
+    name: Average time to release Visit CAPs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -275,8 +275,8 @@
     col: 11
     width: 11
     height: 3
-  - title: AVG time to release Visit CAP
-    name: AVG time to release Visit CAP
+  - title: Average time to release Visit CAPs (trend)
+    name: Average time to release Visit CAPs (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
@@ -340,35 +340,35 @@
     col: 11
     width: 11
     height: 7
-  - name: Results CAPs Metrics
+  - name: Results CAP Metrics
     type: text
-    title_text: Results CAPs Metrics
+    title_text: Results CAP Metrics
     subtitle_text: ''
     body_text: ''
     row: 12
     col: 0
     width: 22
     height: 2
-  - name: Prior Authorization Form Metrics (NEED TO UPDATE FILTER)
+  - name: Prior Authorization Metrics
     type: text
-    title_text: Prior Authorization Form Metrics (NEED TO UPDATE FILTER)
+    title_text: Prior Authorization Metrics
     subtitle_text: ''
     body_text: ''
     row: 34
     col: 0
     width: 22
     height: 2
-  - name: Orders Sent Metrics (NEED TO UPDATE FILTER)
+  - name: Orders Placement Metrics
     type: text
-    title_text: Orders Sent Metrics (NEED TO UPDATE FILTER)
+    title_text: Orders Placement Metrics
     subtitle_text: ''
     body_text: ''
     row: 23
     col: 0
     width: 22
     height: 2
-  - title: AVG time to release Results CAP
-    name: AVG time to release Results CAP
+  - title: Average time to release Results CAPs
+    name: Average time to release Results CAPs
     model: clinical_qa
     explore: clinical_operations
     type: single_value
@@ -467,14 +467,14 @@
     col: 11
     width: 11
     height: 3
-  - title: AVG time to release Results CAP
-    name: AVG time to release Results CAP (2)
+  - title: Average time to release Results CAPs (trend)
+    name: Average time to release Results CAPs (trend)
     model: clinical_qa
     explore: clinical_operations
     type: looker_line
-    fields: [clinical_operations.average_result_cap_release_time_in_days, clinical_operations.followup_cap_completed_date_week]
-    fill_fields: [clinical_operations.followup_cap_completed_date_week]
-    sorts: [clinical_operations.followup_cap_completed_date_week desc]
+    fields: [clinical_operations.average_result_cap_release_time_in_days, clinical_operations.cap_sent_to_patient_week]
+    fill_fields: [clinical_operations.cap_sent_to_patient_week]
+    sorts: [clinical_operations.cap_sent_to_patient_week desc]
     limit: 500
     x_axis_gridlines: true
     y_axis_gridlines: true
@@ -535,8 +535,8 @@
     col: 11
     width: 11
     height: 6
-  - title: AVG time to place test order
-    name: AVG time to place test order
+  - title: Average time to place Test Orders (breakdown)
+    name: Average time to place Test Orders (breakdown)
     model: clinical_qa
     explore: clinical_operations_orders
     type: looker_grid
@@ -583,8 +583,8 @@
     col: 11
     width: 11
     height: 6
-  - title: AVG time to place test order
-    name: AVG time to place test order (2)
+  - title: Average time to place Test Orders
+    name: Average time to place Test Orders
     model: clinical_qa
     explore: clinical_operations_orders
     type: single_value
@@ -610,8 +610,8 @@
     col: 11
     width: 11
     height: 3
-  - title: Total Orders Sent by CCs
-    name: Total Orders Sent by CCs
+  - title: Total Orders sent by CCs
+    name: Total Orders sent by CCs
     model: clinical_qa
     explore: clinical_operations_orders
     type: single_value
@@ -637,8 +637,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Orders Sent by CCs
-    name: Total Orders Sent by CCs (2)
+  - title: Total Orders sent by CCs (breakdown)
+    name: Total Orders sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations_orders
     type: looker_grid
@@ -685,8 +685,8 @@
     col: 0
     width: 11
     height: 6
-  - title: Total Prior Authorization Forms sent by CCs
-    name: Total Prior Authorization Forms sent by CCs
+  - title: Total Prior Authorization forms sent by CCs
+    name: Total Prior Authorization forms sent by CCs
     model: clinical_qa
     explore: clinical_operations_preauths
     type: single_value
@@ -725,8 +725,8 @@
     col: 0
     width: 11
     height: 3
-  - title: Total Prior Authorization Forms sent by CCs
-    name: Total Prior Authorization Forms sent by CCs (2)
+  - title: Total Prior Authorization forms sent by CCs (breakdown)
+    name: Total Prior Authorization forms sent by CCs (breakdown)
     model: clinical_qa
     explore: clinical_operations_preauths
     type: looker_grid
@@ -773,8 +773,8 @@
     col: 0
     width: 11
     height: 6
-  - title: PA Form Submission Time
-    name: PA Form Submission Time
+  - title: Prior Authorization form submission time (trend)
+    name: Prior Authorization form submission time (trend)
     model: clinical_qa
     explore: clinical_operations_preauths
     type: looker_line
@@ -826,8 +826,8 @@
     col: 11
     width: 11
     height: 6
-  - title: PA Form Submission Time
-    name: PA Form Submission Time (2)
+  - title: Prior Authorization form submission time
+    name: Prior Authorization form submission time
     model: clinical_qa
     explore: clinical_operations_preauths
     type: single_value
@@ -852,6 +852,79 @@
     row: 36
     col: 11
     width: 11
+    height: 3
+  - name: Result CAP release time
+    type: text
+    title_text: Result CAP release time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the "Result CAP Completed
+      Date" and "Result CAP Sent To Patient On Date". Data with missing date(s), or
+      resulting negative time difference, is ignored in the calculation.
+    row: 50
+    col: 7
+    width: 7
+    height: 3
+  - name: Definitions
+    type: text
+    title_text: Definitions
+    subtitle_text: ''
+    body_text: ''
+    row: 45
+    col: 0
+    width: 22
+    height: 2
+  - name: Visit CAP release time
+    type: text
+    title_text: Visit CAP release time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the "Visit CAP Completed
+      Date" and "Visit CAP Sent To Patient On". Data with missing date(s), or resulting
+      negative time difference, is ignored in the calculation.
+    row: 50
+    col: 0
+    width: 7
+    height: 3
+  - name: Result CAP count
+    type: text
+    title_text: Result CAP count
+    subtitle_text: ''
+    body_text: A Result CAP is attributed to the CC who last updated the "Result CAP
+      Sent To Patient On Date" field.
+    row: 47
+    col: 7
+    width: 7
+    height: 3
+  - name: Visit CAP count
+    type: text
+    title_text: Visit CAP count
+    subtitle_text: ''
+    body_text: A Visit CAP is attributed to the CC who last updated the "Visit CAP
+      Sent To Patient On Date" field.
+    row: 47
+    col: 0
+    width: 7
+    height: 3
+  - name: Order placement time
+    type: text
+    title_text: Order placement time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the "Visit CAP Completed
+      Date" and "Date Test Ordered". Data with missing date(s), or resulting negative
+      time difference, is ignored in the calculation.
+    row: 47
+    col: 14
+    width: 7
+    height: 3
+  - name: Prior Authorization form submission time (2)
+    type: text
+    title_text: Prior Authorization form submission time
+    subtitle_text: ''
+    body_text: The difference, in business days, between the "Date PA Status Reason
+      Changed to Awaiting-CC-Submission" and "PA Dispatch Date". Data with missing
+      date(s), or resulting negative time difference, is ignored in the calculation.
+    row: 50
+    col: 14
+    width: 7
     height: 3
   filters:
   - name: Is High Priority Patient (Yes / No)

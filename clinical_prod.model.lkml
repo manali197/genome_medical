@@ -16,6 +16,16 @@ explore: partners {
 }
 
 explore: gene_test_orders {
+  join: encounter_details {
+    type: left_outer
+    sql_on: ${gene_test_orders.encounter_uuid} = ${encounter_details.encounter_uuid};;
+    relationship: many_to_one
+  }
+  join: patient_encounter_summary {
+    type: left_outer
+    sql_on: ${encounter_details.user_uuid} = ${patient_encounter_summary.patient_uuid};;
+    relationship: many_to_one
+  }
   join: gene_test_results {
     type: left_outer
     sql_on: ${gene_test_orders.order_uuid} = ${gene_test_results.order_uuid} ;;
@@ -270,5 +280,24 @@ explore: appointments {
     type: left_outer
     sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid} ;;
     relationship: one_to_one
+  }
+}
+
+explore: clinical_operations_combined {
+  from: clinical_operations
+  join: clinical_operations_orders {
+    type: left_outer
+    sql_on: ${clinical_operations_combined.encounter_uuid} = ${clinical_operations_orders.encounter_uuid} ;;
+    relationship: one_to_many
+  }
+  join: clinical_operations_preauths {
+    type: left_outer
+    sql_on: ${clinical_operations_preauths.encounter_uuid} = ${clinical_operations_combined.encounter_uuid} ;;
+    relationship: one_to_many
+  }
+  join: clinical_operations_outreach {
+    type: left_outer
+    sql_on: ${clinical_operations_combined.user_uuid} = ${clinical_operations_outreach.patient_uuid} ;;
+    relationship: many_to_one
   }
 }

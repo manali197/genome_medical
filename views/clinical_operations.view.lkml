@@ -26,14 +26,6 @@ view: clinical_operations {
           aud. "data"->'changes'->>'root[''cap_sent_to_patient'']' IS NOT NULL
         )
       ),
-      cc_metrics AS (
-        SELECT e.encounter_uuid AS encounter_uuid,
-          v.user_name AS visit_cap_cc_user_name,
-          r.user_name AS result_cap_cc_user_name
-        FROM encounter_details AS e
-        LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = e.encounter_uuid AND v.pos = 1
-        LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = e.encounter_uuid AND r.pos = 1
-      ),
       high_priority_patients AS (
         SELECT DISTINCT p.patient_uuid AS puuid
         FROM audit_trail at
@@ -78,6 +70,9 @@ view: clinical_operations {
           ELSE ed.encounter_type
         END AS encounter_type,
         ed.encounter_uuid AS encounter_uuid,
+        ed.consultation_type AS consultation_type,
+        ed.vsee_specialty AS requested_specialty,
+        ed.provider_indicated_specialty AS provider_indicated_specialty,
         ed.created_at AS created_at,
         ed.date_of_service AS date_of_service,
         ed.initial_visit_summary_sent AS initial_visit_summary_sent,
@@ -93,21 +88,22 @@ view: clinical_operations {
         INITCAP(REPLACE(ed.visit_provider, '_', ' ')) AS visit_provider,
         ed.date_test_recommended AS date_test_recommended,
         ed.test_recommended AS test_recommended,
-        oi.date_received_report AS date_received_report,
-        cm.visit_cap_cc_user_name AS visit_cap_cc_user_name,
-        cm.result_cap_cc_user_name AS result_cap_cc_user_name,
+        COALESCE(oi.date_received_report, ed.date_received_report) AS date_received_report,
+        v.user_name AS visit_cap_cc_user_name,
+        r.user_name AS result_cap_cc_user_name,
         CASE WHEN hpp.puuid IS NULL THEN false ELSE true END AS is_high_priority_patient
       FROM encounter_details ed
       LEFT JOIN patient_encounter_summary pes ON ed.user_uuid = pes.patient_uuid
       LEFT JOIN high_priority_patients hpp ON hpp.puuid = ed.user_uuid
       LEFT JOIN order_info oi ON oi.encounter_uuid = ed.encounter_uuid
-      LEFT JOIN cc_metrics AS cm ON cm.encounter_uuid = ed.encounter_uuid
       LEFT JOIN partners AS prt ON ed.partner_uuid = prt.uuid
       LEFT JOIN partners AS patient_level_prt ON pes.partner_id::text = patient_level_prt.data->>'id'
       LEFT JOIN partner_orgs AS po ON prt.data->>'id' = po.id
       LEFT JOIN partner_orgs AS patient_level_po ON pes.partner_id::text = patient_level_po.id
       LEFT JOIN referral_channels AS rc ON prt.data->>'referral_channel_id' = rc.data ->> 'id'
       LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
+      LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = ed.encounter_uuid AND v.pos = 1
+      LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = ed.encounter_uuid AND r.pos = 1
       WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)
     ;;
   }
@@ -148,6 +144,24 @@ view: clinical_operations {
     type: string
     primary_key: yes
     sql: ${TABLE}.encounter_uuid ;;
+  }
+
+  dimension: consultation_type {
+    description: "Consultation Type"
+    type: string
+    sql: ${TABLE}.consultation_type ;;
+  }
+
+  dimension: requested_specialty {
+    description: "Requested Specialty"
+    type: string
+    sql: initcap(replace(${TABLE}.requested_specialty,'_',' ')) ;;
+  }
+
+  dimension: provider_indicated_specialty {
+    description: "Provider Indicated Specialty"
+    type: string
+    sql: initcap(replace(${TABLE}.provider_indicated_specialty,'_',' ')) ;;
   }
 
   dimension: patient_name {
@@ -314,35 +328,31 @@ view: clinical_operations {
   dimension: visit_cap_completion_time {
     type: number
     label: "Visit CAP completion time (visit encounters) from date of visit"
-    sql: count_business_days(${date_of_service_date}, ${initial_cap_completed_date_date}) ;;
+    sql: count_business_days(${date_of_service_time}::timestamp, ${initial_cap_completed_date_time}::timestamp) ;;
   }
 
   dimension: visit_cap_release_time {
     type: number
     label: "Visit CAP Release time (visit encounters) from CAP completion date"
-    sql: count_business_days(${initial_cap_completed_date_date}, ${initial_visit_summary_sent_date}) ;;
+    sql: count_business_days(${initial_cap_completed_date_time}::timestamp, ${initial_visit_summary_sent_time}::timestamp) ;;
   }
 
   dimension: result_cap_completed_time {
     type: number
     label: "Results CAP completion time from date report was received"
-    sql: count_business_days(${date_received_report_date}, ${followup_cap_completed_date_date}) ;;
+    sql: count_business_days(${date_received_report_time}::timestamp, ${followup_cap_completed_date_time}::timestamp) ;;
   }
 
   dimension: result_cap_release_time {
     type: number
     label: "Results CAP Release time from CAP completion date"
-    sql: count_business_days(${followup_cap_completed_date_date}, ${cap_sent_to_patient_date}) ;;
+    sql: count_business_days(${followup_cap_completed_date_time}::timestamp, ${cap_sent_to_patient_time}::timestamp) ;;
   }
 
   dimension: order_request_update_time {
     type: number
     label: "Order-request update time from date of visit"
-    sql: count_business_days(${date_of_service_date}, ${date_test_recommended_date}) ;;
-  }
-
-  set: patient_level_fields {
-    fields: [patient_name, patient_email]
+    sql: count_business_days(${date_of_service_time}::timestamp, ${date_test_recommended_time}::timestamp) ;;
   }
 
   measure: count {
@@ -352,7 +362,7 @@ view: clinical_operations {
   measure: average_visit_completion_time_in_days {
     type: average
     label: "Average visit CAP completion time from date of visit"
-    filters: [visit_cap_completion_time: ">=0"]
+    filters: [visit_cap_completion_time: ">=0", encounter_type: "visit"]
     sql: ${visit_cap_completion_time} ;;
     drill_fields: [visit_provider, referral_program, average_visit_completion_time_in_days]
     value_format_name: decimal_2
@@ -365,7 +375,7 @@ view: clinical_operations {
   measure: average_result_cap_completed_time_in_days {
     type: average
     label: "Average results CAP completion time from date report was received"
-    filters: [result_cap_completed_time: ">=0"]
+    filters: [result_cap_completed_time: ">=0", encounter_type: "visit, group-session, cc-intake, lab_test_authorization"]
     sql: ${result_cap_completed_time} ;;
     drill_fields: [visit_provider, referral_program, average_result_cap_completed_time_in_days]
     value_format_name: decimal_2
@@ -414,7 +424,7 @@ view: clinical_operations {
     type: average
     label: "Average visit CAP Release time (visit encounters) from CAP completion date"
     filters: [visit_cap_release_time: ">=0"]
-    sql: ${visit_cap_completion_time} ;;
+    sql: ${visit_cap_release_time} ;;
     drill_fields: [visit_cap_cc_user_name, referral_program, average_visit_cap_release_time_in_days]
     value_format_name: decimal_2
     link: {
@@ -427,7 +437,7 @@ view: clinical_operations {
     type: average
     label: "Average results CAP Release time from CAP completion date"
     filters: [result_cap_release_time: ">=0"]
-    sql: ${visit_cap_completion_time} ;;
+    sql: ${result_cap_release_time} ;;
     drill_fields: [result_cap_cc_user_name, referral_program, average_result_cap_release_time_in_days]
     value_format_name: decimal_2
     link: {

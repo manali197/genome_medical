@@ -270,7 +270,7 @@ view: clinical_operations {
     description: "Date Test Ordered (UTC)"
     type: time
     hidden: yes
-    drill_fields: [encounter_type, referral_program]
+    drill_fields: [encounter_type, referral_program,user_uuid]
     timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_test_ordered" ;;
   }
@@ -284,7 +284,7 @@ view: clinical_operations {
   dimension_group: ror_date_contacted {
     description: "RoR Date Contacted (UTC)"
     type: time
-    drill_fields: [encounter_type, referral_program]
+    drill_fields: [encounter_type, referral_program,user_uuid]
     timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."ror_date_contacted" ;;
   }
@@ -292,7 +292,7 @@ view: clinical_operations {
   dimension_group: date_received_report {
     description: "Date Received Report (UTC)"
     type: time
-    drill_fields: [encounter_type, referral_program]
+    drill_fields: [encounter_type, referral_program,user_uuid]
     timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_received_report" ;;
   }
@@ -318,7 +318,7 @@ view: clinical_operations {
   dimension_group: date_test_recommended {
     description: "Date Test Recommended (UTC)"
     type: time
-    drill_fields: [encounter_type, referral_program]
+    drill_fields: [encounter_type, referral_program,user_uuid]
     timeframes: [raw, time, date, day_of_week, week_of_year, week, month, month_name, quarter, year]
     sql: ${TABLE}."date_test_recommended" ;;
   }
@@ -400,7 +400,7 @@ view: clinical_operations {
     label: "Average visit CAP completion time from date of visit"
     filters: [visit_cap_completion_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
-    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
+    drill_fields: [visit_provider, encounter_uuid, referral_program, referral_partner, referral_channel,
       patient_name, patient_email, average_visit_completion_time_in_days]
     value_format_name: decimal_2
   }
@@ -410,7 +410,7 @@ view: clinical_operations {
     label: "Average results CAP completion time from date report was received"
     filters: [result_cap_completed_time: ">=0"]
     sql: ${result_cap_completed_time} ;;
-    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
+    drill_fields: [visit_provider, encounter_uuid, referral_program, referral_partner, referral_channel,
       patient_name, patient_email, average_result_cap_completed_time_in_days]
     value_format_name: decimal_2
   }
@@ -420,7 +420,7 @@ view: clinical_operations {
     label: "Average order-request update time from date of visit"
     filters: [order_request_update_time: ">=0"]
     sql: ${order_request_update_time} ;;
-    drill_fields: [visit_provider, referral_program, referral_partner, referral_channel,
+    drill_fields: [visit_provider, encounter_uuid, referral_program, referral_partner, referral_channel,
       patient_name, patient_email, average_order_request_update_time_in_days]
     value_format_name: decimal_2
   }
@@ -430,7 +430,7 @@ view: clinical_operations {
     label: "Total number of visit CAPs sent by CCs"
     filters: [visit_cap_cc_user_name: "-NULL"]
     drill_fields: [visit_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+      patient_name, patient_email, encounter_uuid]
   }
 
   measure: count_result_caps {
@@ -438,7 +438,7 @@ view: clinical_operations {
     label: "Total number of result CAPs sent by CCs"
     filters: [result_cap_cc_user_name: "-NULL"]
     drill_fields: [result_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+      patient_name, patient_email, encounter_uuid]
   }
 
   measure: count_orders_sent {
@@ -447,7 +447,7 @@ view: clinical_operations {
     hidden: yes
     filters: [total_and_cc_order_cc_user_name: "-NULL"]
     drill_fields: [total_and_cc_order_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+      patient_name, patient_email, encounter_uuid]
   }
 
   measure: count_pa_forms_sent {
@@ -456,7 +456,7 @@ view: clinical_operations {
     hidden: yes
     filters: [pa_forms_cc_user_name: "-NULL"]
     drill_fields: [pa_forms_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email]
+      patient_name, patient_email, encounter_uuid]
   }
 
   measure: average_visit_cap_release_time_in_days {
@@ -465,7 +465,7 @@ view: clinical_operations {
     filters: [visit_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
     drill_fields: [visit_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_visit_cap_release_time_in_days]
+      patient_name, patient_email, encounter_uuid, average_visit_cap_release_time_in_days]
     value_format_name: decimal_2
   }
 
@@ -475,7 +475,7 @@ view: clinical_operations {
     filters: [result_cap_release_time: ">=0"]
     sql: ${visit_cap_completion_time} ;;
     drill_fields: [result_cap_cc_user_name, referral_program, referral_partner, referral_channel,
-      patient_name, patient_email, average_result_cap_release_time_in_days]
+      patient_name, patient_email, encounter_uuid, average_result_cap_release_time_in_days]
     value_format_name: decimal_2
   }
 }

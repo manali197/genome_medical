@@ -21,6 +21,19 @@ view: referral_status {
           ) outreach
           GROUP BY patient_uuid
         ),
+        patient_outreach_ror AS (
+          SELECT patient_uuid, jsonb_agg(outreach) AS outreaches
+          FROM (
+            SELECT patient_uuid AS patient_uuid,
+              date_time AS outreach_date,
+              communication_medium_subtype_name AS outreach_medium,
+              patient_communication_outcome_display_name AS outreach_outcome,
+              ROW_NUMBER() OVER (PARTITION BY patient_uuid ORDER BY date_time) AS rank
+            FROM patient_communication_details
+            WHERE communication_type_name ='ror_outreach'
+          ) outreach
+          GROUP BY patient_uuid
+        ),
         patient_outreach_before_encounter_creation AS (
           SELECT e.encounter_uuid, jsonb_agg(outreach) AS outreaches
           FROM (
@@ -98,6 +111,7 @@ view: referral_status {
           pos.outreach_window_completed AS patient_outreach_setting_outreach_window_completed,
           pos.outreach_window_completed_date AS patient_outreach_setting_outreach_window_completed_date,
           pot.outreaches AS patient_outreach_events,
+          pot_ror.outreaches AS patient_ror_outreach_events,
           potec.outreaches AS patient_outreach_events_before_encounter,
           coalesce(etr.relationship_to_patient, '') AS relationship_to_patient,
           coalesce(etr.drug_interaction, '') AS drug_interaction,
@@ -106,7 +120,7 @@ view: referral_status {
           etr.drug_dosage_adjustment_recommended AS drug_dosage_adjustment_recommended,
           coalesce(etr.pharmd, '') AS pharmd,
           coalesce(etr.state_of_visit, '') AS state_of_visit,
-          etr.visit_provider AS visit_provider,
+          INITCAP(REPLACE(etr.visit_provider, '_', ' ')) AS visit_provider,
           coalesce(p.patient_state, '') AS patient_state,
           etr.test_recommended AS test_recommended,
           CASE
@@ -139,6 +153,7 @@ view: referral_status {
         FROM patient_encounter_summary AS p
         LEFT JOIN patient_outreach_settings pos ON pos.patient_uuid = p.patient_uuid
         LEFT JOIN patient_outreach pot ON pot.patient_uuid = p.patient_uuid
+        LEFT JOIN patient_outreach_ror pot_ror ON pot_ror.patient_uuid = p.patient_uuid
         LEFT JOIN encounter_details AS etr ON etr.user_uuid = p.patient_uuid
         LEFT JOIN patient_outreach_before_encounter_creation potec ON potec.encounter_uuid = etr.encounter_uuid
         LEFT JOIN first_visit_status_encounters fe ON fe.encounter_uuid = etr.encounter_uuid AND fe.position = 1
@@ -488,6 +503,12 @@ view: referral_status {
     sql: ${TABLE}.patient_outreach_events ;;
   }
 
+  dimension: patient_ror_outreach_events {
+    description: "A list of all patient RoR outreach events"
+    type: string
+    sql: ${TABLE}.patient_ror_outreach_events ;;
+  }
+
   dimension: patient_outreach_events_before_encounter {
     description: "A list of all patient outreach events that happened before encounter creation"
     type: string
@@ -754,6 +775,13 @@ view: referral_status {
     drill_fields: [referral_program, referral_partner, referral_channel]
   }
 
+  dimension: number_of_ror_outreaches {
+    type: number
+    description: "The total number of RoR outreaches that have happended for each patient"
+    sql: jsonb_array_length(${TABLE}.patient_ror_outreach_events) ;;
+    drill_fields: [referral_program, referral_partner, referral_channel]
+  }
+
   dimension: number_of_outreaches_before_encounter_creation {
     type: number
     description: "The total number of outreaches that have happended for each patient before an encounter creation"
@@ -808,7 +836,7 @@ view: referral_status {
 
   measure: count_encounters {
     type: count_distinct
-    description: "Number of encounters"
+    label: "Number of unique encounters"
     filters: [encounter_uuid: "-NULL"]
     sql: ${encounter_uuid} ;;
     drill_fields: [encounter_type, referral_program,consultation_type, count_encounters]
@@ -816,7 +844,7 @@ view: referral_status {
 
   measure: count_patients_with_encounters {
     type: count_distinct
-    description: "Number of patients with at least one encounter"
+    label: "Number of unqiue patients with at least one encounter"
     filters: [encounter_uuid: "-NULL"]
     sql: ${patient_uuid} ;;
     drill_fields: [referral_channel, referral_program, count_patients_with_encounters]
@@ -824,7 +852,7 @@ view: referral_status {
 
   measure: total_patients_count {
     type: count_distinct
-    description: "Number of registered patients"
+    label: "Number of registered patients"
     sql: ${patient_uuid} ;;
     drill_fields: [referral_channel, referral_program, total_patients_count]
     }
@@ -836,7 +864,7 @@ view: referral_status {
 
   measure: count_patients_with_scheduled_encounters {
     type: count_distinct
-    description: "Number of patients with at least 1 visit scheduled"
+    label: "Number of unique patients with at least 1 visit scheduled"
     sql: ${patient_uuid} ;;
     filters: [referral_visit_status: "Scheduled"]
     drill_fields: [referral_channel, referral_program, count_patients_with_scheduled_encounters]
@@ -844,7 +872,7 @@ view: referral_status {
 
   measure: count_patients_with_morethan_1_encounters {
     type: count_distinct
-    description: "Number of patients with at least 1 visit scheduled"
+    label: "Number of unique patients with at least 1 scheduled encounter"
     sql: ${patient_uuid} ;;
     filters: [referral_visit_status: "Scheduled"]
     drill_fields: [referral_channel, referral_program, count_patients_with_morethan_1_encounters]
@@ -858,15 +886,23 @@ view: referral_status {
 
   measure: count_patients_with_outreach {
     type:  count_distinct
-    description: "Number of patients with at least one outreach event"
+    label: "Number of unique patients with at least one outreach event"
     filters: [number_of_outreaches: ">=1"]
     drill_fields: [referral_channel, referral_program, count_patients_with_outreach]
     sql: ${patient_uuid} ;;
   }
 
+  measure: count_patients_with_ror_outreach {
+    type:  count_distinct
+    label: "Number of unique patients with at least one RoR outreach event"
+    filters: [number_of_ror_outreaches: ">=1"]
+    drill_fields: [referral_channel, referral_program, count_patients_with_ror_outreach]
+    sql: ${patient_uuid} ;;
+  }
+
   measure: count_patients_with_appointment {
     type:  count_distinct
-    description: "Number of patients with at least one appointment"
+    label: "Number of unique patients with at least one scheduled appointment"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled"]
     drill_fields: [referral_channel, referral_program, visit_status, count_patients_with_appointment]
     sql: ${patient_uuid} ;;
@@ -874,7 +910,7 @@ view: referral_status {
 
   measure: count_patients_with_order {
     type:  count_distinct
-    description: "Number of patients with test recommended"
+    label: "Number of unique patients with an order placed after a visit encounter"
     filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, test_order_status, count_patients_with_order]
     sql: ${patient_uuid} ;;
@@ -882,16 +918,16 @@ view: referral_status {
 
   measure: count_patients_with_ror {
     type:  count_distinct
-    description: "Number of patients with followup outreach done"
-    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", consultation_type: "%return of result%"]
+    label: "Number of unique patients with a RoR consultation"
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", consultation_type: "Return of Results"]
     drill_fields: [referral_channel, referral_program, ror_visit_status, count_patients_with_ror]
     sql: ${patient_uuid} ;;
   }
 
   measure: count_patients_with_result_sent {
     type:  count_distinct
-    description: "Number of patients with results sent"
-    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", order_creation_date_date: "-NULL", consultation_type: "%return of result%", date_received_report_date: "-NULL"]
+    label: "Number of unique patients with results sent after a visit encounter"
+    filters: [encounter_type: "visit", referral_visit_status: "Scheduled", date_received_report_date: "-NULL"]
     drill_fields: [referral_channel, referral_program, count_patients_with_result_sent]
     sql: ${patient_uuid} ;;
   }

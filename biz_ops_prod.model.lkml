@@ -42,6 +42,17 @@ explore: completed_encounters {
     sql_on: ${gene_test_orders_medical_codes.medical_code_uuid} = ${gene_test_orders_medical_code_details.uuid} ;;
     relationship: one_to_one
   }
+  join: providers {
+    type: left_outer
+    sql_on: ${completed_encounters.visit_provider} = concat_ws(' ', replace(${providers.first_name}, '-', ' '), replace(${providers.last_name}, '''', ' ')) ;;
+    relationship: one_to_one
+  }
+  join: gmi_provider_details {
+    type: left_outer
+    sql_on: ${providers.uuid} = ${gmi_provider_details.provider_uuid}
+      and ${completed_encounters.date_of_service_date} >= ${gmi_provider_details.effective_date};;
+    relationship: one_to_many
+  }
 }
 
 explore: gene_test_orders {

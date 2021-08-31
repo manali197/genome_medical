@@ -420,6 +420,11 @@ view: clinical_operations {
     }
   }
 
+  measure: count_abcc {
+    type: count
+
+  }
+
   measure: average_visit_cap_release_time_in_days {
     type: average
     label: "Average visit CAP Release time (visit encounters) from CAP completion date"

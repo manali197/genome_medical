@@ -85,6 +85,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_cap_completed_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 5
     col: 0
     width: 11
@@ -172,6 +173,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.followup_cap_completed_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 16
     col: 0
     width: 11
@@ -269,6 +271,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.followup_cap_completed_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 13
     col: 11
     width: 12
@@ -359,6 +362,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.date_test_recommended_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 27
     col: 0
     width: 11
@@ -458,6 +462,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.date_test_recommended_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 24
     col: 11
     width: 12
@@ -517,6 +522,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.date_test_recommended_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 24
     col: 0
     width: 11
@@ -577,6 +583,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.followup_cap_completed_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 13
     col: 0
     width: 11
@@ -634,6 +641,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_cap_completed_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 2
     col: 0
     width: 11
@@ -776,6 +784,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_cap_completed_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 2
     col: 11
     width: 12
@@ -851,3 +860,17 @@
     explore: clinical_operations
     listens_to_filters: [Referral Partner, Referral Program]
     field: referral_channels.name
+  - name: Include Deleted Patients
+    title: Include Deleted Patients
+    type: field_filter
+    default_value: 'Yes'
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: button_group
+      display: inline
+      options: []
+    model: clinical_qa
+    explore: clinical_operations
+    listens_to_filters: []
+    field: patient_encounter_summary.is_deleted

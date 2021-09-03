@@ -96,6 +96,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.next_outreach_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 9
     col: 0
     width: 23
@@ -186,6 +187,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 18
     col: 0
     width: 9
@@ -298,6 +300,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 25
     col: 0
     width: 23
@@ -388,6 +391,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.outreach_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 32
     col: 0
     width: 9
@@ -486,6 +490,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.outreach_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 39
     col: 0
     width: 23
@@ -586,6 +591,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.next_outreach_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 2
     col: 0
     width: 9
@@ -687,6 +693,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.next_outreach_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 2
     col: 9
     width: 14
@@ -780,6 +787,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.next_outreach_medium_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 18
     col: 9
     width: 14
@@ -873,6 +881,7 @@
       Referral Channel: referral_channels.name
       Referral Outreach Automation Enabled: partners.referral_outreach_automation_enabled
       Report Date Range: clinical_operations_outreach.outreach_date_date
+      Include Deleted Patients: patient_encounter_summary.is_deleted
     row: 32
     col: 9
     width: 14
@@ -951,3 +960,17 @@
     explore: clinical_operations_outreach
     listens_to_filters: [Referral Program, Referral Partner, Referral Channel]
     field: partners.referral_outreach_automation_enabled
+  - name: Include Deleted Patients
+    title: Include Deleted Patients
+    type: field_filter
+    default_value: 'Yes'
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: button_group
+      display: inline
+      options: []
+    model: clinical_qa
+    explore: clinical_operations_outreach
+    listens_to_filters: []
+    field: patient_encounter_summary.is_deleted

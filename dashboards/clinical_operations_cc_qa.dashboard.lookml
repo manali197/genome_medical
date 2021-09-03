@@ -36,12 +36,12 @@
     header_font_size: 12
     rows_font_size: 12
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_visit_summary_sent_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 2
     col: 0
     width: 11
@@ -86,12 +86,12 @@
     defaults_version: 1
     series_types: {}
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.cap_sent_to_patient_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 17
     col: 0
     width: 11
@@ -114,12 +114,12 @@
     conditional_formatting_include_nulls: false
     defaults_version: 1
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.cap_sent_to_patient_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 14
     col: 0
     width: 11
@@ -164,12 +164,12 @@
     defaults_version: 1
     series_types: {}
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_visit_summary_sent_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 5
     col: 0
     width: 11
@@ -270,12 +270,12 @@
     note_state: expanded
     note_display: above
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_visit_summary_sent_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 2
     col: 11
     width: 11
@@ -336,12 +336,12 @@
     conditional_formatting_include_nulls: false
     defaults_version: 1
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.initial_visit_summary_sent_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 5
     col: 11
     width: 11
@@ -464,12 +464,12 @@
     note_state: expanded
     note_display: above
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.cap_sent_to_patient_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 14
     col: 11
     width: 11
@@ -533,12 +533,12 @@
     conditional_formatting_include_nulls: false
     defaults_version: 1
     listen:
-      Is High Priority Patient (Yes / No): clinical_operations.is_high_priority_patient
       Referral Program: partners.display_name
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations.cap_sent_to_patient_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is High Priority Patient: clinical_operations.is_high_priority_patient
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 17
     col: 11
     width: 11
@@ -587,7 +587,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_orders.date_test_ordered_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 28
     col: 11
     width: 11
@@ -615,7 +615,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_orders.date_test_ordered_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 25
     col: 11
     width: 11
@@ -643,7 +643,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_orders.date_test_ordered_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 25
     col: 0
     width: 11
@@ -692,7 +692,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_orders.date_test_ordered_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 28
     col: 0
     width: 11
@@ -733,7 +733,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_preauths.dispatch_date_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 36
     col: 0
     width: 11
@@ -782,7 +782,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_preauths.dispatch_date_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 39
     col: 0
     width: 11
@@ -836,7 +836,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_preauths.dispatch_date_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 39
     col: 11
     width: 11
@@ -864,7 +864,7 @@
       Referral Partner: partner_organizations.name
       Referral Channel: referral_channels.name
       Report Date Range: clinical_operations_preauths.dispatch_date_date
-      Include Deleted Patients: patient_encounter_summary.is_deleted
+      Is Deleted Patient: patient_encounter_summary.is_deleted
     row: 36
     col: 11
     width: 11
@@ -943,20 +943,6 @@
     width: 7
     height: 3
   filters:
-  - name: Is High Priority Patient (Yes / No)
-    title: Is High Priority Patient (Yes / No)
-    type: field_filter
-    default_value: ''
-    allow_multiple_values: true
-    required: false
-    ui_config:
-      type: checkboxes
-      display: inline
-      options: []
-    model: clinical_qa
-    explore: clinical_operations
-    listens_to_filters: []
-    field: clinical_operations.is_high_priority_patient
   - name: Report Date Range
     title: Report Date Range
     type: field_filter
@@ -996,7 +982,7 @@
       display: popover
       options: []
     model: clinical_qa
-    explore: clinical_operations
+    explore: partners
     listens_to_filters: [Referral Partner, Referral Channel]
     field: partners.display_name
   - name: Referral Channel
@@ -1013,8 +999,22 @@
     explore: clinical_operations
     listens_to_filters: [Referral Program, Referral Partner]
     field: referral_channels.name
-  - name: Include Deleted Patients
-    title: Include Deleted Patients
+  - name: Is High Priority Patient
+    title: Is High Priority Patient
+    type: field_filter
+    default_value: ''
+    allow_multiple_values: true
+    required: false
+    ui_config:
+      type: button_group
+      display: inline
+      options: []
+    model: clinical_qa
+    explore: clinical_operations
+    listens_to_filters: []
+    field: clinical_operations.is_high_priority_patient
+  - name: Is Deleted Patient
+    title: Is Deleted Patient
     type: field_filter
     default_value: ''
     allow_multiple_values: true

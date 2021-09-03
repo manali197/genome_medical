@@ -104,7 +104,6 @@ view: clinical_operations {
       LEFT JOIN referral_channels AS patient_level_rc ON patient_level_prt.data ->>'referral_channel_id' = patient_level_rc.data->>'id'
       LEFT JOIN visit_cap_sent_by_cc v ON v.encounter_uuid = ed.encounter_uuid AND v.pos = 1
       LEFT JOIN result_cap_sent_by_cc r ON r.encounter_uuid = ed.encounter_uuid AND r.pos = 1
-      WHERE (pes.is_deleted is NULL OR pes.is_deleted = false)
     ;;
   }
 
